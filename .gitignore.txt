@@ -1,0 +1,33 @@
+Mic:~ boss$ git add .
+fatal: Not a git repository (or any of the parent directories): .git
+Mic:~ boss$ cd /Users/boss/Sites/ARCH\ project/arch-ne 
+Mic:arch-ne boss$ git add .
+Mic:arch-ne boss$ git commit -m "changed LICENSE-1.0 file extension"
+[master 544a00e] changed LICENSE-1.0 file extension
+ 1 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 licenses/.LICENSE-1.0.swp
+Mic:arch-ne boss$ git push origin master
+licenses/.LICENSE-1.0.swp
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+-- INSERT -- 
