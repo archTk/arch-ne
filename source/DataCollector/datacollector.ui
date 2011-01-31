@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<class>DataCollector</class>
+<widget class="QWidget" name="DataCollector">
+<property name="styleSheet">
+<string notr="true">
+QWidget#DataCollector {margin:0;padding:0;border: 0px solid #ffffff;}
+QToolButton { 
+     border: 0px solid #515151;
+     border-radius: 3px;
+     background-color: #515151;
+     margin-left: 5px;
+}
+QToolButton:hover {background-color: #919191;}
+QToolButton:pressed {background-color: #fafafa;}
+QSplitter::handle:vertical{height: 1px;border:0px solid #515151;}
+QSplitter {border:0px solid transparent;}
+QFrame#domStatusFrame,QFrame#middleToolbarFrame {
+     background-color: #313131;
+     margin:0px;padding:0px;border:0px solid transparent;height:40px;
+}
+QPlainTextEdit {color:#000000;border 0px solid transparent;margin:0;padding:0;background-color:#ffffbf}
+QTreeView#treeView{border:0px solid #ffffff,background-color:#ffa000;}
+QToolBar {min-height:33px;border: 0px solid #515151;margin-left:5px;}
+QLabel {border-radius: 3px;border:0px solid #515151}
+QPushButton {border-radius:5px;min-width:80px;border:1px solid #515151;}
+QComboBox {font:10px;backgroun-color:#ffffff;margin-left:30px;margin-right:10px}
+</string>
+</property>
+	<layout class="QVBoxLayout" name="vboxLayout">
+		<property name="margin"><number>0</number></property>
+		<property name="spacing"><number>0</number></property>
+   		<item>
+    			<widget class="QSplitter" name="splitter">
+                                <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+     				<property name="orientation"><enum>Qt::Vertical</enum></property>
+				<widget class="QTreeView" name="treeView">
+				<property name="alternatingRowColors"><bool>true</bool></property>
+				<property name="selectionBehavior"><enum>QAbstractItemView::SelectItems</enum></property>
+				<property name="horizontalScrollMode"><enum>QAbstractItemView::ScrollPerPixel</enum></property>
+				<property name="indentation"><number>10</number></property>
+				<property name="animated"><bool>false</bool></property>
+				<property name="allColumnsShowFocus"><bool>true</bool></property>
+				</widget>
+				<widget class="QFrame" name="middleToolbarFrame">
+                                <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+				<property name="maximumHeight"><number>40</number></property>
+				<property name="minimumHeight"><number>40</number></property>
+                        	<layout class="QHBoxLayout" name="midToolbarLayout">
+				<property name="spacing"><number>10</number></property>
+				<property name="margin"><number>0</number></property>
+				<item>
+					<widget class="QToolBar" name="treeToolBar">
+					<addaction name="actionAddChild"/>
+					<addaction name="actionRemoveElement"/>
+					<addaction name="actionUndo"/>
+					<addaction name="actionRedo"/>
+					<addaction name="actionReset"/>
+					</widget>
+				</item>
+				<item>
+					<widget class="QComboBox" name="mainComboBox" >
+					<property name="maximumHeight"><number>32</number></property>
+					</widget>
+				</item>
+				<item>
+					<widget class="QToolBar" name="comboToolBar">
+					<property name="maximumWidth" ><number>100</number></property>
+					<addaction name="actionOkCombo"/>
+					<addaction name="actionCancelCombo"/>
+					</widget>
+				</item>
+                                </layout>
+                                </widget>
+				<widget class="QPlainTextEdit" name="workingDomText">
+                                <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+				</widget>
+			</widget>
+   		</item>
+		<item>
+			<widget class="QFrame" name="domStatusFrame">
+				<property name="maximumHeight"><number>40</number></property>
+				<property name="minimumHeight"><number>40</number></property>
+                                <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+                        <layout class="QHBoxLayout" name="domStatusLayout">
+			<property name="margin"><number>4</number></property>
+			<property name="spacing"><number>10</number></property>
+			<item>
+			<widget class="QToolBar" name="lowerToolBar">
+			<property name="maximumWidth" ><number>40</number></property>
+			<addaction name="actionShowDom"/>
+			</widget>
+                        </item>
+			<item>
+			<widget class="QLabel" name="domStatusLabel">
+			<property name="text"><string/></property>
+			<property name="wordWrap"><bool>true</bool></property>
+			</widget>
+                        </item>
+                        </layout>
+			</widget>
+		</item>
+		<item>
+			<layout class="QHBoxLayout" name="buttonLayout">
+			<property name="spacing"><number>0</number></property>
+			<property name="margin"><number>0</number></property>
+			<item>
+				<spacer name="horizontalSpacer">
+				<property name="orientation"><enum>Qt::Horizontal</enum></property>
+				<property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+				</spacer>
+			</item>
+			<item>
+				<widget class="QPushButton" name="cancelButton">
+				<property name="text"><string>Cancel</string></property>
+				<property name="icon"><iconset><normaloff>:icons/cancel.png</normaloff>:icons/cancel.png</iconset>
+				</property>
+				</widget>
+			</item>
+			<item>
+				<widget class="QPushButton" name="applyButton">
+				<property name="text"><string>Apply</string></property>
+				<property name="icon"><iconset><normaloff>:icons/apply.png</normaloff>:icons/apply.png</iconset>
+				</property>
+				</widget>
+			</item>
+			<item>
+				<widget class="QPushButton" name="okButton">
+				<property name="text"><string>Ok</string></property>
+				<property name="icon"><iconset><normaloff>:icons/ok.png</normaloff>:icons/ok.png</iconset>
+				</property>
+				</widget>
+			</item>
+			<item>
+				<spacer name="horizontalSpacer_2"><property name="orientation"><enum>Qt::Horizontal</enum></property>
+				<property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      				</spacer>
+			</item>
+		</layout>
+		</item>
+	</layout>
+  <action name="actionUndo">
+   <property name="icon"><iconset><normaloff>:icons/undo.png</normaloff>:icons/undo.png</iconset></property>
+   <property name="text"><string>Undo</string></property>
+   <property name="toolTip"><string>Undo</string></property>
+   <property name="statusTip"><string>Undo</string></property>
+   <property name="shortcut"><string>Alt+Left</string></property>
+  </action>
+  <action name="actionRedo">
+    <property name="icon"><iconset><normaloff>:icons/redo.png</normaloff>:icons/redo.png</iconset></property>
+   <property name="text"><string>Redo</string></property>
+   <property name="toolTip"><string>Redo</string></property>
+   <property name="statusTip"><string>Redo</string></property>
+   <property name="shortcut"><string>Alt+Right</string></property>
+  </action>
+  <action name="actionReset">
+   <property name="icon"><iconset><normaloff>:icons/reset.png</normaloff>:icons/reset.png</iconset></property>
+   <property name="text"><string>Reset</string></property>
+   <property name="toolTip"><string>Reset</string></property>
+   <property name="statusTip"><string>Reset</string></property>
+  </action>
+  <action name="actionOkCombo">
+   <property name="icon"><iconset><normaloff>:icons/apply.png</normaloff>:icons/apply.png</iconset></property>
+   <property name="text"><string>Ok</string></property>
+   <property name="toolTip"><string>Ok</string></property>
+   <property name="statusTip"><string>Ok</string></property>
+  </action>
+  <action name="actionCancelCombo">
+   <property name="icon"><iconset><normaloff>:icons/cancel.png</normaloff>:icons/cancel.png</iconset></property>
+   <property name="text"><string>Cancel</string></property>
+   <property name="toolTip"><string>Cancel</string></property>
+   <property name="statusTip"><string>Cancel</string></property>
+  </action>
+  <action name="actionAddChild">
+   <property name="icon"><iconset><normaloff>:icons/add_child.png</normaloff>:icons/add_child.png</iconset></property>
+   <property name="text"><string>Add Child Element</string></property>
+   <property name="toolTip"><string>Add Child Element</string></property>
+   <property name="statusTip"><string>Add Child Element</string></property>
+  </action>
+  <action name="actionRemoveElement">
+   <property name="icon"><iconset><normaloff>:icons/remove_element.png</normaloff>:icons/remove_element.png</iconset></property>
+   <property name="text"><string>Remove Element</string></property>
+   <property name="toolTip"><string>Remove Element</string></property>
+   <property name="statusTip"><string>Remove Element</string></property>
+  </action>
+  <action name="actionShowDom">
+   <property name="checkable"><bool>true</bool></property>
+   <property name="icon"><iconset><normaloff>:icons/show_dom.png</normaloff>:icons/show_dom.png</iconset></property>
+   <property name="text"><string>Show/Hide Dom</string></property>
+   <property name="toolTip"><string>Show/Hide Dom</string></property>
+   <property name="statusTip"><string>Show/Hide Dom</string></property>
+  </action>
+ </widget>
+ <resources>
+  <include location="DataCollector.qrc"/>
+ </resources>
+ <connections/>
+</ui>
