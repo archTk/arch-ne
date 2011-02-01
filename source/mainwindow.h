@@ -63,10 +63,10 @@ public:
     QAction* homeViewAct;
     QAction* infoAct;
     QAction* meshAct;
+
     QAction* redoAct;
     QAction* removeSegmentAct;
     QAction* selectElementsAct;
-    QAction* setPreferencesAct;
     QAction* showGridAct;
     QAction* showLabelsAct;
     QAction* snapToGridAct;
@@ -110,7 +110,6 @@ protected:
 
 private slots:
     void about();
-    //void appContrHasLoaded();
     void documentWasModified();
     void newNetwork();
     void openNetwork();
@@ -126,6 +125,7 @@ private slots:
 public slots:
     void restoreCurs();
     void setCurs();
+    void setPath(QString thePythonPath, QString theScriptPath);
     void updateMainWindow();
     void mouseEnteredInDock();
     void dockClosed();
@@ -174,6 +174,7 @@ private:
     QAction* saveAsAct;
     QAction* exitAct;
     QAction* aboutAct;
+    QAction* preferencesAct;
 
     QMap<QWidget*, QPoint> dataCollectorList;
 

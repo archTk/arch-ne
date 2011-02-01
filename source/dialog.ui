@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
+    <width>550</width>
     <height>300</height>
    </rect>
   </property>
@@ -25,26 +25,7 @@
   <property name="windowTitle">
    <string>Preferences...</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttBox">
-   <property name="geometry">
-    <rect>
-     <x>70</x>
-     <y>260</y>
-     <width>461</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-   <property name="centerButtons">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="pythonLabel">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -55,78 +36,201 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>18</pointsize>
+     <pointsize>14</pointsize>
     </font>
    </property>
    <property name="text">
     <string>Python</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="pythonLocation">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>50</y>
+     <y>52</y>
      <width>62</width>
      <height>16</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="text">
-    <string>Location</string>
+    <string>Location:</string>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>40</y>
-     <width>361</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QLabel" name="meshGenLabel">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>130</y>
+     <y>120</y>
      <width>181</width>
      <height>21</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>18</pointsize>
+     <pointsize>14</pointsize>
     </font>
    </property>
    <property name="text">
-    <string>MeshGenerato_Scipt</string>
+    <string>MeshGenerator_Script</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4">
+  <widget class="QLabel" name="mehGenLocation">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>170</y>
+     <y>152</y>
      <width>62</width>
      <height>16</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="text">
-    <string>Location</string>
+    <string>Location:</string>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit_2">
+  <widget class="QLineEdit" name="pythonEdit">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>160</y>
-     <width>361</width>
-     <height>31</height>
+     <x>90</x>
+     <y>51</y>
+     <width>341</width>
+     <height>20</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="meshGenEdit">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>151</y>
+     <width>341</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>250</y>
+     <width>164</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pythonChoose">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>46</y>
+     <width>101</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Choose...</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="scriptChoose">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>147</y>
+     <width>101</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Choose...</string>
    </property>
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>okPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>427</x>
+     <y>259</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>307</x>
+     <y>187</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>cancelPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>393</x>
+     <y>264</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>245</x>
+     <y>242</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pythonChoose</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>pythonChoosePressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>482</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>411</x>
+     <y>18</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>scriptChoose</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>scriptChoosePressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>482</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>389</x>
+     <y>108</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>okPressed()</slot>
+  <slot>cancelPressed()</slot>
+  <slot>pythonChoosePressed()</slot>
+  <slot>scriptChoosePressed()</slot>
+ </slots>
 </ui>

@@ -288,22 +288,27 @@ void InputOutput::saveGraph(const QString &fileName, Graph *graph, GraphProperti
     emit graphSaved(graphName);
 }
 
+void InputOutput::setPaths(QString thePythonPath, QString theScriptPath)
+{
+    pythonPath = thePythonPath;
+    scriptPath = theScriptPath;
+}
+
 void InputOutput::generateMesh(const QString &fileName)
 {
-    QString python = "/usr/local/bin/python2.6";
     meshOut = fileName;
     meshOut.remove("_graph.xml");
     meshOut.append("_mesh.xml");
 
     QStringList arguments;
-    arguments << "/Users/boss/Work/Development/Qt/pyNS/MeshGenerator_Script.py" << "-i" << fileName << "-o" << meshOut << "-v" << "5e-2";
+    arguments << scriptPath << "-i" << fileName << "-o" << meshOut << "-v" << "5e-2";
 
     pyNS = new QProcess(this);
     //connect(pyNS, SIGNAL(started()), this, SIGNAL(setCurs()));
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshingComplete()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
-    pyNS->start(python, arguments);
+    pyNS->start(pythonPath, arguments);
 }
 
 void InputOutput::errorFromExternal(QProcess::ProcessError)

@@ -18,7 +18,7 @@
 
 #include "dialog.h"
 
-#include <QGridLayout>
+#include <QFileDialog>
 #include <QLabel>
 #include <QPushButton>
 
@@ -27,24 +27,37 @@ using namespace std;
 QTextStream dialout(stdout);
 
 Dialog::Dialog(QWidget *parent) :
-    QDialog(parent)
+        QDialog(parent), ui(new Ui::Dialog)
 {
-    setupUi(this);
-
-    connect(buttBox, SIGNAL(accepted()), this, SLOT(okPressed()));
-    connect(buttBox, SIGNAL(rejected()), this, SLOT(cancelPressed()));
+    ui->setupUi(this);
 
 }
 
-void Dialog::okPressed()
+void Dialog::setPaths(QString thePythonPath, QString theScriptPath)
 {
-    dialout << "okPressed" << endl;
-    // TO DO: save the data in the text field;
-    cancelPressed();
+    ui->pythonEdit->setText(thePythonPath);
+    ui->meshGenEdit->setText(theScriptPath);
 }
 
 void Dialog::cancelPressed()
 {
-    dialout << "cancel" << endl;
     close();
+}
+
+void Dialog::okPressed()
+{
+    emit stringToMW(ui->pythonEdit->text(), ui->meshGenEdit->text());
+    cancelPressed();
+}
+
+void Dialog::pythonChoosePressed()
+{
+    QString pythonPath = QFileDialog::getOpenFileName(this, tr("Set Python path"), "/home");
+    ui->pythonEdit->setText(pythonPath);
+}
+
+void Dialog::scriptChoosePressed()
+{
+    QString scriptPath = QFileDialog::getOpenFileName(this, tr("Set MeshGenerator_Script.py path"), "/home");
+    ui->meshGenEdit->setText(scriptPath);
 }

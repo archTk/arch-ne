@@ -271,11 +271,11 @@ void MainWindow::createActions()
     aboutAct->setStatusTip(tr("Show the ARCHNetworkEditor's About box"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
-    setPreferencesAct = new QAction(tr("Set Preferences..."), this);
-    setPreferencesAct->setShortcuts(QKeySequence::Preferences);
-    //setPreferencesAct->setShortcut(tr("Ctrl+,"));
-    setPreferencesAct->setStatusTip(tr("Set application preferences"));
-    connect(setPreferencesAct, SIGNAL(triggered()), this, SLOT(setPrefPressed()));
+    preferencesAct = new QAction(tr("preferences..."), this);
+    preferencesAct->setShortcuts(QKeySequence::Preferences);
+    //preferencesAct->setShortcut(tr("Ctrl+,"));
+    preferencesAct->setStatusTip(tr("Set application preferences"));
+    connect(preferencesAct, SIGNAL(triggered()), this, SLOT(setPrefPressed()));
 }
 
 void MainWindow::createMenus()
@@ -295,7 +295,7 @@ void MainWindow::createMenus()
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
     editMenu->addSeparator();
-    editMenu->addAction(setPreferencesAct);
+    editMenu->addAction(preferencesAct);
 
     menuBar()->addSeparator();
 
@@ -429,11 +429,6 @@ void MainWindow::writeSettings()
     settings.setValue("pythonPath", pythonPath);
     settings.setValue("scriptPath", scriptPath);
 }
-
-/*void MainWindow::appContrHasLoaded()
-{
-    readSettings(); // It restores user's preferences.
-}*/
 
 bool MainWindow::maybeSave()
 {
@@ -692,8 +687,16 @@ QString MainWindow::getScriptPath()
 void MainWindow::setPrefPressed()
 {
     Dialog prefDialog;
+    prefDialog.setPaths(pythonPath, scriptPath);
+    connect(&prefDialog, SIGNAL(stringToMW(QString, QString)), this, SLOT(setPath(QString,QString)));
 
     prefDialog.exec();
+}
+
+void MainWindow::setPath(QString thePythonPath, QString theScriptPath)
+{
+    pythonPath = thePythonPath;
+    scriptPath = theScriptPath;
 }
 
 void MainWindow::setCurs()

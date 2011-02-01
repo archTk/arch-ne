@@ -24,6 +24,7 @@
 #include "DataCollector/datacollector.h"
 
 #include <QDialog>
+#include <QMessageBox>
 #include <QWidget>
 #include <QGridLayout>
 
@@ -171,6 +172,7 @@ void AppController::generateMesh(const QString &fileName)
 
     InputOutput* inputOutput = new InputOutput();
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(graphHasBeenSaved(QString)));
+
     inputOutput->saveGraph(fileName, workspace->getGraph(), workspace->getGraphProperties(), nodes, edges);
 
     emit restoreCurs();
@@ -179,6 +181,36 @@ void AppController::generateMesh(const QString &fileName)
 void AppController::graphHasBeenSaved(const QString &fileName)
 {
     InputOutput* inputOutput = new InputOutput();
+    QString pythonPath = mainWindow->getPythonPath();
+    QString scriptPath = mainWindow->getScriptPath();
+
+    if (pythonPath.isEmpty()) {
+        emit restoreCurs();
+        QMessageBox messBox(0);
+        messBox.setWindowTitle(tr("WARNING!"));
+        messBox.setText(tr("Python path has not been set.\n"
+                           "Please set it in Preferences..."));
+        messBox.addButton(QMessageBox::Ok);
+
+        messBox.exec();
+        return;
+    }
+
+    if (scriptPath.isEmpty()) {
+        emit restoreCurs();
+        QMessageBox messBox(0);
+        messBox.setWindowTitle(tr("WARNING!"));
+        messBox.setText(tr("MeshGenerator_Script.py path has not been set.\n"
+                           "Please set it in Preferences..."));
+        messBox.addButton(QMessageBox::Ok);
+
+
+        messBox.exec();
+        return;
+    }
+
+    inputOutput->setPaths(mainWindow->getPythonPath(), mainWindow->getScriptPath());
+
     inputOutput->generateMesh(fileName);
     connect(inputOutput, SIGNAL(meshFileReady(QString)), this, SLOT(meshHasBeenGenerated(QString)));
 }

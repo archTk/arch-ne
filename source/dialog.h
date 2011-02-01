@@ -19,23 +19,31 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
-#include <QDialog>
 #include "ui_dialog.h"
+#include <QLineEdit>
+#include <QDialog>
 
-class Dialog : public QDialog, private Ui::Dialog
+//class Dialog : public QDialog, private Ui::Dialog
+class Dialog : public QDialog
 {
     Q_OBJECT
 public:
     explicit Dialog(QWidget *parent = 0);
+    void setPaths(QString thePythonPath, QString theScriptPath);
 
 signals:
+    void stringToMW(QString pyhton, QString script);
 
 public slots:
 
 private slots:
     void cancelPressed();
     void okPressed();
+    void pythonChoosePressed();
+    void scriptChoosePressed();
 
+private:
+    Ui::Dialog *ui;
 };
 
 #endif // DIALOG_H
