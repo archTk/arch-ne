@@ -1,14 +1,12 @@
-/////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2011 - ARCH vascular Netwrok Editor workgroup
+//   Copyright 2011 Mario Negri Institute & Orobix Srl
 //
-//                    Orobix Srl -- www.orobix.com
-//
-//   Licensed under the ARCH vascular Netwrok Editor License, Version 1.0 (the "License");
+//   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
 //
-//       https://github.com/archTk/arch-ne/licenses/LICENSE-1.0
+//       http://www.apache.org/licenses/LICENSE-2.0
 //
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +14,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 //
-/////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #include <QtGui>
 #include "treeitem.h"
@@ -27,7 +25,7 @@ TreeModel::TreeModel( QObject *parent)
 {
      QVector<QVariant> rootData;
      QStringList headers;
-     headers << tr("Property") << tr("Value") << tr("attribute") <<tr("type") << tr("members") << tr("leftmembers") << tr("removable");
+     headers << tr("Property") << tr("Value") << tr("attribute") <<tr("type") << tr("members") << tr("leftmembers") << tr("removable") <<tr("RO");
 
      foreach (QString header, headers)
          rootData << header;
@@ -52,8 +50,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
      if (role == Qt::FontRole){
          TreeItem *tempitem = getItem(index);
-         QString domType = tempitem->data(2).toString();
-         if ( domType != "1" && index.column()==0){
+         if (!tempitem->data(2).toBool() && index.column()==0){
          QFont boldFont;
          boldFont.setBold(true);
          return boldFont;
@@ -73,10 +70,10 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
      if (!index.isValid())
          return 0;
 
-     TreeItem *tempitem = getItem(index);
-     QStringList iMembers = tempitem->data(4).toStringList();
      if (index.column()==1){
-        if(!iMembers.isEmpty()){
+        if(getItem(index)->data(7).toBool())
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable ;
+        if(!getItem(index)->data(4).toStringList().isEmpty()){
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable ;
         } else {
             return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;

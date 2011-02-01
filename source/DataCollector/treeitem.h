@@ -23,9 +23,9 @@
 #include <QVariant>
 #include <QVector>
 
-class TreeItem
-{
-public:
+ class TreeItem
+ {
+ public:
      TreeItem(const QVector<QVariant> &data, TreeItem *parent = 0);
      ~TreeItem();
 
@@ -45,6 +45,6 @@ public:
      QList<TreeItem*> childItems;
      QVector<QVariant> itemData;
      TreeItem *parentItem;
-};
+ };
 
-#endif
+ #endif

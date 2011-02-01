@@ -13,6 +13,7 @@ QToolButton {
 }
 QToolButton:hover {background-color: #919191;}
 QToolButton:pressed {background-color: #fafafa;}
+QToolButton:checked {background-color: #bababa;}
 QSplitter::handle:vertical{height: 1px;border:0px solid #515151;}
 QSplitter {border:0px solid transparent;}
 QFrame#domStatusFrame,QFrame#middleToolbarFrame {
@@ -87,8 +88,9 @@ QComboBox {font:10px;backgroun-color:#ffffff;margin-left:30px;margin-right:10px}
 			<property name="spacing"><number>10</number></property>
 			<item>
 			<widget class="QToolBar" name="lowerToolBar">
-			<property name="maximumWidth" ><number>40</number></property>
+			<property name="maximumWidth" ><number>90</number></property>
 			<addaction name="actionShowDom"/>
+			<addaction name="actionEditDom"/>
 			</widget>
                         </item>
 			<item>
@@ -139,6 +141,14 @@ QComboBox {font:10px;backgroun-color:#ffffff;margin-left:30px;margin-right:10px}
 		</layout>
 		</item>
 	</layout>
+  <action name="actionEditDom">
+   <property name="checkable"><bool>true</bool></property>
+   <property name="icon"><iconset><normaloff>:icons/show_dom.png</normaloff>:icons/show_dom.png</iconset></property>
+   <property name="text"><string>Edit Dom</string></property>
+   <property name="toolTip"><string>Edit Dom</string></property>
+   <property name="statusTip"><string>Edit Dom</string></property>
+   <property name="shortcut"><string>Alt+E</string></property>
+  </action>
   <action name="actionUndo">
    <property name="icon"><iconset><normaloff>:icons/undo.png</normaloff>:icons/undo.png</iconset></property>
    <property name="text"><string>Undo</string></property>

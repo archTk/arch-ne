@@ -1,14 +1,12 @@
-/////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2011 - ARCH vascular Netwrok Editor workgroup
+//   Copyright 2011 Mario Negri Institute & Orobix Srl
 //
-//                    Orobix Srl -- www.orobix.com
-//
-//   Licensed under the ARCH vascular Netwrok Editor License, Version 1.0 (the "License");
+//   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
 //
-//       https://github.com/archTk/arch-ne/licenses/LICENSE-1.0
+//       http://www.apache.org/licenses/LICENSE-2.0
 //
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +14,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 //
-/////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #include <QtGui>
 #include <QtGui/QTreeView>
@@ -74,7 +72,8 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     setupUi(this);
 
     workingDomText->setReadOnly(true);
-    actionShowDom->setChecked(true);
+    actionShowDom->setChecked(false);
+    workingDomText->hide();
     mainComboBox->setEnabled(false);
     actionOkCombo->setEnabled(false);
     actionCancelCombo->setEnabled(false);
@@ -94,6 +93,7 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     treeView->setColumnHidden(4,true);
     treeView->setColumnHidden(5,true);
     treeView->setColumnHidden(6,true);
+    treeView->setColumnHidden(7,true);
     setupData();
 
     connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(treeViewDataChanged()));
@@ -110,6 +110,7 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     connect(actionOkCombo,SIGNAL(triggered()),this, SLOT(okCombo()));
     connect(actionCancelCombo,SIGNAL(triggered()),this, SLOT(cancelCombo()));
     connect(actionReset, SIGNAL(triggered()), this, SLOT(resetClicked()));
+    connect(actionEditDom, SIGNAL(triggered()), this, SLOT(editDomToggled()));
       
 }
 
@@ -128,6 +129,20 @@ void DataCollector::setupData()
     undoStack.replace(0,workingDom);
 }
 
+void DataCollector::editDomToggled()
+{
+    if(actionEditDom->isChecked()){
+        workingDomText->setReadOnly(false);
+        treeView->setEnabled(false);
+    } else {
+        workingDomText->setReadOnly(true);
+        treeView->setEnabled(true);
+        workingDom = workingDomText->toPlainText();
+        updateHistory();
+        loadStack(undoStack.size()-1);
+    }
+}
+
 void DataCollector::loadStack(int stackId)
 {
     avoidUpdateFlag = true;
@@ -137,10 +152,18 @@ void DataCollector::loadStack(int stackId)
     QDomDocument domDoc;
     domDoc.setContent(undoStack.at(stackId));    
     QDomElement rootElement = domDoc.documentElement();
-
     DomToTree(rootElement,rootParent,treeView->rootIndex(),true);
-    avoidUpdateFlag = false;
     treeView->setColumnWidth(0,200);
+    treeView->setExpanded(model->index(0,0,treeView->rootIndex()),true);
+    QModelIndex mainIndex = model->index(0,0,treeView->rootIndex()); 
+    for (int i=0;i<model->rowCount(mainIndex);++i){
+        if(model->data(model->index(i,2,mainIndex)).toBool() and requestHiddenItems.indexOf(model->data(model->index(i,0,mainIndex)).toString()) >=0 )
+            treeView->setRowHidden(i,mainIndex,true);
+
+        if(model->data(model->index(i,2,mainIndex)).toBool() and requestReadOnlyItems.indexOf(model->data(model->index(i,0,mainIndex)).toString()) >=0 )
+            model->setData(model->index(i,7,mainIndex),QVariant(true), Qt::EditRole);
+    }
+    avoidUpdateFlag = false;
     newStack=false; 
     updateDomStatus();
     newStack=true;
@@ -321,7 +344,7 @@ int DataCollector::insertChild(bool isAttribute,bool required,QModelIndex index,
     model->setData(model->index(iRow, 4, index), QVariant(members), Qt::EditRole);
     model->setData(model->index(iRow, 6, index), QVariant(required), Qt::EditRole);
     if (isAttribute){
-        model->setData(model->index(iRow, 2, index), QVariant("1"), Qt::EditRole);
+        model->setData(model->index(iRow, 2, index), QVariant(isAttribute), Qt::EditRole);
     } else {
         QStringList splitList;
         for (int i=0;i<members.size();++i)
@@ -329,7 +352,6 @@ int DataCollector::insertChild(bool isAttribute,bool required,QModelIndex index,
         model->setData(model->index(iRow, 5, index), QVariant(splitList), Qt::EditRole);
         updateLeftMembers(index);
     }
-    treeView->setExpanded(index,true);
     return iRow;
 }
 
@@ -553,6 +575,8 @@ void DataCollector::treeViewDataChanged()
 {
     if (avoidUpdateFlag)
        return;
+    if (actionEditDom->isChecked())
+       return;
 
     updateDomStatus();
     updateTools();
@@ -582,8 +606,8 @@ void DataCollector::TreeToDom(QDomDocument *doc,QDomElement iDomElement,QModelIn
     for (int i=0;i<rowCount;++i){
         QString iName = model->data(model->index(i,0,index)).toString();
         QString iValue = model->data(model->index(i,1,index)).toString();
-        QString iIsAttribute = model->data(model->index(i,2,index)).toString();
-        if (iIsAttribute == "1"){
+        bool iIsAttribute = model->data(model->index(i,2,index)).toBool();
+        if (iIsAttribute){
             if (!iValue.isEmpty())
                 iDomElement.setAttribute(iName,iValue);
         } else {

@@ -45,6 +45,7 @@ public:
     void setReadOnlyItems(QVector<QString> theReadOnlyItems);
 
 public slots:
+    void editDomToggled();
     void buttonApplyClicked();
     void buttonOkClicked();
     void resetClicked();
