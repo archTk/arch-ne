@@ -82,16 +82,23 @@ void GraphProperties::insertEdgeFromXML(QString edgeId, QString attrName, QStrin
 void GraphProperties::deleteNode(int nodeId)
 {
     nodesProperties.remove(nodeId);
+    nodesNames.remove(nodeId);
 }
 
 void GraphProperties::deleteNodeFromGraph(int nodeId)
 {
-    nodesProperties.remove(nodeId);
+    deleteNode(nodeId);
 }
 
 void GraphProperties::deleteEdge(int edgeId)
 {
     edgesProperties.remove(edgeId);
+    edgesNames.remove(edgeId);
+}
+
+void GraphProperties::deleteEdgeFromGraph(int edgeId)
+{
+    deleteEdge(edgeId);
 }
 
 void GraphProperties::setNodeProperties(int nodeId, QString nodeProperties)

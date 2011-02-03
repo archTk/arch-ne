@@ -61,6 +61,7 @@ signals:
 
 public slots:
     void deleteNodeFromGraph(int nodeId);
+    void deleteEdgeFromGraph(int edgeId);
 
 private:
     QMap<int, QPointF> nodesLayout;

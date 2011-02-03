@@ -1,17 +1,17 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/add_child.png</file>
-        <file>icons/remove_element.png</file>
-        <file>icons/show_dom.png</file>
-        <file>icons/apply.png</file>
-        <file>icons/reset.png</file>
-        <file>icons/redo.png</file>
-        <file>icons/undo.png</file>
-        <file>icons/cancel.png</file>
-        <file>icons/ok.png</file>
-        <file>xml/vascular_network_v3.2.xsd</file>
-        <file>xml/getSubSchema.xq</file>
-        <file>xml/getElementInfo.xq</file>
-        <file>xml/getEnumeration.xq</file>
+       <file>icons/add_child.png</file>
+       <file>icons/remove_element.png</file>
+       <file>icons/show_dom.png</file>
+       <file>icons/apply.png</file>
+       <file>icons/reset.png</file>
+       <file>icons/redo.png</file>
+       <file>icons/undo.png</file>
+       <file>icons/cancel.png</file>
+       <file>icons/ok.png</file>
+       <file>xml/vascular_network_v3.2.xsd</file>
+       <file>xml/getSubSchema.xq</file>
+       <file>xml/getElementInfo.xq</file>
+       <file>xml/getEnumeration.xq</file>
     </qresource>
 </RCC>

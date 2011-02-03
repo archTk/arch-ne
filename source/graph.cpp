@@ -160,6 +160,7 @@ void Graph::deleteEdge(int edge)
     }
 
     edges.remove(edge);
+    emit edgeDeleted(edge);
 }
 
 int Graph::nodesOccurrence(int node)

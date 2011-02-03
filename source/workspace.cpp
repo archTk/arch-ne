@@ -47,6 +47,9 @@ Workspace::Workspace(QObject *parent) :
     connect(graph, SIGNAL(nodeDeleted(int)), graphLayout, SLOT(deleteNodeFromGraph(int)));
     connect(graph, SIGNAL(nodeDeleted(int)), graphProperties, SLOT(deleteNodeFromGraph(int)));
 
+    connect(graph, SIGNAL(edgeDeleted(int)), graphLayout, SLOT(deleteEdgeFromGraph(int)));
+    connect(graph, SIGNAL(edgeDeleted(int)), graphProperties, SLOT(deleteEdgeFromGraph(int)));
+
     connect(graphMesh, SIGNAL(setEdgeType(int,QString)), graphProperties, SLOT(setEdgeType(int,QString)));
 
     unraveller = new Unraveller(graph, graphLayout, this, this);

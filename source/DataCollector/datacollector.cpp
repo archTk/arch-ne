@@ -1,18 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2011 Mario Negri Institute & Orobix Srl
+// Copyright 2011 Mario Negri Institute & Orobix Srl
 //
-//   Licensed under the Apache License, Version 2.0 (the "License");
-//   you may not use this file except in compliance with the License.
-//   You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//       http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
-//   Unless required by applicable law or agreed to in writing, software
-//   distributed under the License is distributed on an "AS IS" BASIS,
-//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//   See the License for the specific language governing permissions and
-//   limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -23,6 +23,7 @@
 #include "datacollector.h"
 #include "queryexecuter.h"
 #include "treemodel.h"
+#include "treedelegate.h"
 
 class MessageHandler : public QAbstractMessageHandler
 {
@@ -87,6 +88,9 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     setRequestSchemaPath(":xml/vascular_network_v3.2.xsd");
 
     TreeModel *model = new TreeModel();
+//t
+    treeView->setItemDelegate(new TreeDelegate);
+//t
     treeView->setModel(model);
     treeView->setColumnHidden(2,true);
     treeView->setColumnHidden(3,true);
@@ -98,7 +102,7 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
 
     connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(treeViewDataChanged()));
     connect(treeView->selectionModel(),SIGNAL(selectionChanged(const QItemSelection &,const QItemSelection &)),this, SLOT(updateTools()));
-    connect(treeView,SIGNAL(activated(QModelIndex)),this, SLOT(itemActivated(QModelIndex)));
+    //connect(treeView,SIGNAL(activated(QModelIndex)),this, SLOT(itemActivated(QModelIndex)));
     connect(applyButton, SIGNAL(clicked()), this, SLOT(buttonApplyClicked()));
     connect(okButton, SIGNAL(clicked()), this, SLOT(buttonOkClicked()));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
@@ -132,9 +136,13 @@ void DataCollector::setupData()
 void DataCollector::editDomToggled()
 {
     if(actionEditDom->isChecked()){
+        actionShowDom->setChecked(true);
+        workingDomText->show();
         workingDomText->setReadOnly(false);
         treeView->setEnabled(false);
     } else {
+        actionShowDom->setChecked(false);
+        workingDomText->hide();
         workingDomText->setReadOnly(true);
         treeView->setEnabled(true);
         workingDom = workingDomText->toPlainText();
@@ -173,7 +181,7 @@ void DataCollector::loadStack(int stackId)
 
 void DataCollector::itemActivated(QModelIndex index)
 {
-    if (index.column()!=1)
+/*    if (index.column()!=1)
         return;
     
     QAbstractItemModel *model = treeView->model();
@@ -194,7 +202,7 @@ void DataCollector::itemActivated(QModelIndex index)
     actionCancelCombo->setEnabled(true);
     actionAddChild->setEnabled(false);
     actionRemoveElement->setEnabled(false);
-    actionReset->setEnabled(false);
+    actionReset->setEnabled(false);*/
 }
 
 void DataCollector::removeRow(QModelIndex index)
@@ -473,7 +481,7 @@ void DataCollector::updateTools()
 void DataCollector::showDomToggled()
 {
     if(actionShowDom->isChecked()){
-        workingDomText->show();        
+        workingDomText->show(); 
     } else {
         workingDomText->hide();
     }

@@ -95,13 +95,17 @@ void GraphLayout::deleteNode(int nodeId)
 
 void GraphLayout::deleteNodeFromGraph(int nodeId)
 {
-    nodesLayout.remove(nodeId);
-    nodesMovable.remove(nodeId);
+    deleteNode(nodeId);
 }
 
 void GraphLayout::deleteEdge(int edgeId)
 {
     edgesLayout.remove(edgeId);
+}
+
+void GraphLayout::deleteEdgeFromGraph(int edgeId)
+{
+    deleteEdge(edgeId);
 }
 
 QPointF GraphLayout::getNodePosition(int nodeId)

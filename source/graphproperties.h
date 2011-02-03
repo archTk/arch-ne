@@ -69,6 +69,7 @@ signals:
 
 public slots:
     void deleteNodeFromGraph(int nodeId);
+    void deleteEdgeFromGraph(int edgeId);
     void setEdgeType(int edgeId, QString theType);  // It is used for applyDefaultMesh(), thus setNodeType is not needed.
 
 private:

@@ -65,6 +65,7 @@ public:
 
 signals:
     void nodeDeleted(int nodeId);
+    void edgeDeleted(int edgeId);
 
 public slots:
 
