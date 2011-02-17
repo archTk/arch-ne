@@ -24,5 +24,7 @@
         <file>images/importMesh.png</file>
         <file>images/importNet.png</file>
         <file>images/mesh.png</file>
+        <file>images/BC.png</file>
+        <file>images/SP.png</file>
     </qresource>
 </RCC>
