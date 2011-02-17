@@ -31,7 +31,6 @@ public:
     explicit Dialog(QWidget *parent = 0);
 
 signals:
-    void stringToMW(QString pyhton, QString script);
 
 public slots:
 

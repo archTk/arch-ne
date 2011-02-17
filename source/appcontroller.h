@@ -59,6 +59,9 @@ public slots:
     void generateMesh(const QString& fileName);
     void graphHasBeenSaved(const QString& fileName);
 
+    void spPressed();
+    void bcPressed();
+
     void meshHasBeenGenerated(const QString& fileName);
 
     void saveNetwork(const QString& fileName);

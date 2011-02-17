@@ -47,7 +47,6 @@ void Dialog::cancelPressed()
 
 void Dialog::okPressed()
 {
-    emit stringToMW(ui->pythonEdit->text(), ui->meshGenEdit->text());
     QSettings settings("archTk", "ARCHNetworkEditor");
     settings.setValue("pythonPath", ui->pythonEdit->text());
     settings.setValue("scriptPath", ui->meshGenEdit->text());

@@ -57,6 +57,7 @@ void AppController::createConnections()
     editorArea->setWorkspace(workspace);
 
     connect(mainWindow, SIGNAL(addSegmentPressed()), workspace, SLOT(addSegment()));
+    connect(mainWindow, SIGNAL(bcPressed()), this, SLOT(bcPressed()));
     connect(mainWindow, SIGNAL(blockNodesPressed()), workspace, SLOT(blockNodes()));
     connect(mainWindow, SIGNAL(defaultMeshPressed()), workspace, SLOT(applyDefaultMesh()));
     connect(mainWindow, SIGNAL(dockClosedSig()), this, SLOT(dockClosed()));
@@ -72,6 +73,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(showLabelsPressed()), workspace, SLOT(showLabels()));
     connect(mainWindow, SIGNAL(snapToGridPressed()), workspace, SLOT(snapToGrid()));
     connect(mainWindow, SIGNAL(splitSegmentPressed()), workspace, SLOT(splitSegment()));
+    connect(mainWindow, SIGNAL(spPressed()), this, SLOT(spPressed()));
     connect(mainWindow, SIGNAL(superEdgePressed()), workspace, SLOT(superEdge()));
     connect(mainWindow, SIGNAL(translatePressed()), workspace, SLOT(translate()));
     connect(mainWindow, SIGNAL(undoPressed()), workspace, SLOT(undo()));
@@ -185,6 +187,16 @@ void AppController::graphHasBeenSaved(const QString &fileName)
 
     inputOutput->generateMesh(fileName);
     connect(inputOutput, SIGNAL(meshFileReady(QString)), this, SLOT(meshHasBeenGenerated(QString)));
+}
+
+void AppController::bcPressed()
+{
+    appout << "bcPressed" << endl;
+}
+
+void AppController::spPressed()
+{
+    appout << "spPressed" << endl;
 }
 
 void AppController::meshHasBeenGenerated(const QString &fileName)

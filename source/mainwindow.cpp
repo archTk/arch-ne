@@ -184,6 +184,14 @@ void MainWindow::createActions()
     redoAct = new QAction(QIcon(":/images/redo.png"), tr("Redo"), this);
     redoAct->setShortcut(tr("Ctrl+shift+Z"));
     connect(redoAct, SIGNAL(triggered()), this, SIGNAL(redoPressed()));
+
+    bcAct = new QAction(QIcon(":/images/BC.png"), tr("Set Boundary Conditions"), this);
+    bcAct->setStatusTip(tr("Set Boundary Conditions"));
+    connect(bcAct, SIGNAL(triggered()), this, SIGNAL(bcPressed()));
+
+    spAct = new QAction(QIcon(":/images/SP.png"), tr("Set Simulation Parameters"), this);
+    spAct->setStatusTip(tr("Set Simulation Parameters"));
+    connect(spAct, SIGNAL(triggered()), this, SIGNAL(spPressed()));
     /////
 
     addSegmentAct = new QAction(QIcon(":/images/addSegment.png"), tr("&Add Segment"), this);
@@ -294,6 +302,9 @@ void MainWindow::createMenus()
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
     editMenu->addSeparator();
+    editMenu->addAction(bcAct);
+    editMenu->addAction(spAct);
+    editMenu->addSeparator();
     editMenu->addAction(preferencesAct);
 
     menuBar()->addSeparator();
@@ -389,6 +400,8 @@ void MainWindow::createToolBars()
     operationToolBar->addAction(meshAct);
     operationToolBar->addAction(defaultMeshAct);
     operationToolBar->addAction(infoAct);
+    operationToolBar->addAction(bcAct);
+    operationToolBar->addAction(spAct);
 }
 
 void MainWindow::createStatusBar()

@@ -51,29 +51,9 @@ public:
     void hideDock();
     void showDock();
 
-    QAction* addSegmentAct;
-    QAction* blockNodesAct;
-    QAction* defaultMeshAct;
-    QAction* homeViewAct;
-    QAction* infoAct;
-    QAction* meshAct;
-
-    QAction* redoAct;
-    QAction* removeSegmentAct;
-    QAction* selectElementsAct;
-    QAction* showGridAct;
-    QAction* showLabelsAct;
-    QAction* snapToGridAct;
-    QAction* splitSegmentAct;
-    QAction* superEdgeAct;
-    QAction* translateAct;
-    QAction* undoAct;
-    QAction* unravelNetAct;
-    QAction* zoomInAct;
-    QAction* zoomOutAct;
-
 signals:
     void addSegmentPressed();
+    void bcPressed();
     void blockNodesPressed();
     void defaultMeshPressed();
     void homeViewPressed();
@@ -91,6 +71,7 @@ signals:
     void showLabelsPressed();
     void snapToGridPressed();
     void splitSegmentPressed();
+    void spPressed();
     void superEdgePressed();
     void translatePressed();
     void undoPressed();
@@ -159,15 +140,36 @@ private:
 
     QActionGroup* operationGroup;
 
+    QAction* aboutAct;
+    QAction* addSegmentAct;
+    QAction* bcAct;
+    QAction* blockNodesAct;
+    QAction* defaultMeshAct;
+    QAction* exitAct;
+    QAction* homeViewAct;
+    QAction* importMeshAct;
+    QAction* importNetworkAct;
+    QAction* infoAct;
+    QAction* meshAct;
     QAction* newNetworkAct;
     QAction* openNetworkAct;
-    QAction* importNetworkAct;
-    QAction* importMeshAct;
+    QAction* preferencesAct;
+    QAction* redoAct;
+    QAction* removeSegmentAct;
     QAction* saveAct;
     QAction* saveAsAct;
-    QAction* exitAct;
-    QAction* aboutAct;
-    QAction* preferencesAct;
+    QAction* selectElementsAct;
+    QAction* showGridAct;
+    QAction* showLabelsAct;
+    QAction* snapToGridAct;
+    QAction* spAct;
+    QAction* splitSegmentAct;
+    QAction* superEdgeAct;
+    QAction* translateAct;
+    QAction* undoAct;
+    QAction* unravelNetAct;
+    QAction* zoomInAct;
+    QAction* zoomOutAct;
 
     QMap<QWidget*, QPoint> dataCollectorList;
 };
