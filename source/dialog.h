@@ -29,7 +29,6 @@ class Dialog : public QDialog
     Q_OBJECT
 public:
     explicit Dialog(QWidget *parent = 0);
-    void setPaths(QString thePythonPath, QString theScriptPath);
 
 signals:
     void stringToMW(QString pyhton, QString script);

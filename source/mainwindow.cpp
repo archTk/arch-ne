@@ -20,7 +20,6 @@
 #include <QDockWidget>
 #include <QGridLayout>
 
-#include "dialog.h"
 #include "mainwindow.h"
 #include "editorarea.h"
 #include "workspace.h"
@@ -275,7 +274,7 @@ void MainWindow::createActions()
     preferencesAct->setShortcuts(QKeySequence::Preferences);
     //preferencesAct->setShortcut(tr("Ctrl+,"));
     preferencesAct->setStatusTip(tr("Set application preferences"));
-    connect(preferencesAct, SIGNAL(triggered()), this, SLOT(setPrefPressed()));
+    connect(preferencesAct, SIGNAL(triggered()), this, SIGNAL(setPrefPressed()));
 }
 
 void MainWindow::createMenus()
@@ -414,8 +413,6 @@ void MainWindow::readSettings()
     QSettings settings("archTk", "ARCHNetworkEditor");
     QPoint pos = settings.value("pos", QPoint(0, 0)).toPoint();
     QSize size = settings.value("size", QSize(800, 600)).toSize();
-    pythonPath = settings.value("pythonPath", QString()).toString();
-    scriptPath = settings.value("scriptPath", QString()).toString();
 
     resize(size);
     move(pos);
@@ -426,8 +423,6 @@ void MainWindow::writeSettings()
     QSettings settings("archTk", "ARCHNetworkEditor");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
-    settings.setValue("pythonPath", pythonPath);
-    settings.setValue("scriptPath", scriptPath);
 }
 
 bool MainWindow::maybeSave()
@@ -662,41 +657,6 @@ void MainWindow::showStatusBarMessage(QString theMessage)
 void MainWindow::setFileName(QString theName)
 {
     setCurrentFile(theName);
-}
-
-void MainWindow::setPythonPath(QString thePythonPath)
-{
-    pythonPath = thePythonPath;
-}
-
-void MainWindow::setScriptPath(QString theScriptPath)
-{
-    scriptPath = theScriptPath;
-}
-
-QString MainWindow::getPythonPath()
-{
-    return pythonPath;
-}
-
-QString MainWindow::getScriptPath()
-{
-    return scriptPath;
-}
-
-void MainWindow::setPrefPressed()
-{
-    Dialog prefDialog;
-    prefDialog.setPaths(pythonPath, scriptPath);
-    connect(&prefDialog, SIGNAL(stringToMW(QString, QString)), this, SLOT(setPath(QString,QString)));
-
-    prefDialog.exec();
-}
-
-void MainWindow::setPath(QString thePythonPath, QString theScriptPath)
-{
-    pythonPath = thePythonPath;
-    scriptPath = theScriptPath;
 }
 
 void MainWindow::setCurs()

@@ -90,10 +90,10 @@ Workspace::Workspace(QObject *parent) :
 
 void Workspace::addSegment()
 {
-    QSettings settings("archTk", "ARCHNetworkEditor");
-    QString pythonPath = settings.value("pythonPath", QString()).toString();
-    QString scriptPath = settings.value("scriptPath", QString()).toString();
-    wsout << "ecco:" << endl << pythonPath << endl << scriptPath << endl;
+    //QSettings settings("archTk", "ARCHNetworkEditor");
+    //QString pythonPath = settings.value("pythonPath", QString()).toString();
+    //QString scriptPath = settings.value("scriptPath", QString()).toString();
+    //wsout << "ecco:" << endl << pythonPath << endl << scriptPath << endl;
 
     selectedTool = addS;
 

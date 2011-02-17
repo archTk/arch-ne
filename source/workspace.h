@@ -107,7 +107,6 @@ public:
     ApplicationStatus* getCurrentStatus();
 
 signals:
-    //void setCurs();
     void restoreCurs();
     void updateSignal();
     void contentsChanged();

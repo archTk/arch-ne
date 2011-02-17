@@ -46,7 +46,7 @@ public:
     void generateMesh(const QString& fileName);
     void loadMeshAfterGenerating(const QString& fileName, GraphMesh* graphMesh);
 
-    void setPaths(QString thePythonPath, QString theScriptPath);
+    void setPreferences();
 
 signals:
     void curFileName(QString theName);
@@ -63,8 +63,6 @@ private:
     void loadLayout(QDomDocument theDomDoc, GraphLayout* graphLayout);
 
     QProcess* pyNS;
-    QString pythonPath;
-    QString scriptPath;
 
     QString meshOut;
 };

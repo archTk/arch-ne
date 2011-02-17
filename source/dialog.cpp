@@ -21,6 +21,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QPushButton>
+#include <QSettings>
 
 #include <QTextStream>
 using namespace std;
@@ -31,12 +32,12 @@ Dialog::Dialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-}
+    QSettings settings("archTk", "ARCHNetworkEditor");
+    QString pythonPath = settings.value("pythonPath", QString()).toString();
+    QString scriptPath = settings.value("scriptPath", QString()).toString();
 
-void Dialog::setPaths(QString thePythonPath, QString theScriptPath)
-{
-    ui->pythonEdit->setText(thePythonPath);
-    ui->meshGenEdit->setText(theScriptPath);
+    ui->pythonEdit->setText(pythonPath);
+    ui->meshGenEdit->setText(scriptPath);
 }
 
 void Dialog::cancelPressed()
@@ -47,6 +48,9 @@ void Dialog::cancelPressed()
 void Dialog::okPressed()
 {
     emit stringToMW(ui->pythonEdit->text(), ui->meshGenEdit->text());
+    QSettings settings("archTk", "ARCHNetworkEditor");
+    settings.setValue("pythonPath", ui->pythonEdit->text());
+    settings.setValue("scriptPath", ui->meshGenEdit->text());
     cancelPressed();
 }
 

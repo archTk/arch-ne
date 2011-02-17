@@ -22,7 +22,7 @@
 #include "graphproperties.h"
 #include "graph.h"
 #include "graphlayout.h"
-#include "graphproperties.h""
+#include "graphproperties.h"
 
 #include <iostream>
 #include <QTextStream>

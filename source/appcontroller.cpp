@@ -67,6 +67,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
     connect(mainWindow, SIGNAL(selectElementsPressed()), workspace, SLOT(selectElements()));
+    connect(mainWindow, SIGNAL(setPrefPressed()), this, SLOT(setPreferences()));
     connect(mainWindow, SIGNAL(showGridPressed()), workspace, SLOT(showGrid()));
     connect(mainWindow, SIGNAL(showLabelsPressed()), workspace, SLOT(showLabels()));
     connect(mainWindow, SIGNAL(snapToGridPressed()), workspace, SLOT(snapToGrid()));
@@ -181,35 +182,6 @@ void AppController::generateMesh(const QString &fileName)
 void AppController::graphHasBeenSaved(const QString &fileName)
 {
     InputOutput* inputOutput = new InputOutput();
-    QString pythonPath = mainWindow->getPythonPath();
-    QString scriptPath = mainWindow->getScriptPath();
-
-    if (pythonPath.isEmpty()) {
-        emit restoreCurs();
-        QMessageBox messBox(0);
-        messBox.setWindowTitle(tr("WARNING!"));
-        messBox.setText(tr("Python path has not been set.\n"
-                           "Please set it in Preferences..."));
-        messBox.addButton(QMessageBox::Ok);
-
-        messBox.exec();
-        return;
-    }
-
-    if (scriptPath.isEmpty()) {
-        emit restoreCurs();
-        QMessageBox messBox(0);
-        messBox.setWindowTitle(tr("WARNING!"));
-        messBox.setText(tr("MeshGenerator_Script.py path has not been set.\n"
-                           "Please set it in Preferences..."));
-        messBox.addButton(QMessageBox::Ok);
-
-
-        messBox.exec();
-        return;
-    }
-
-    inputOutput->setPaths(mainWindow->getPythonPath(), mainWindow->getScriptPath());
 
     inputOutput->generateMesh(fileName);
     connect(inputOutput, SIGNAL(meshFileReady(QString)), this, SLOT(meshHasBeenGenerated(QString)));
@@ -239,6 +211,12 @@ void AppController::saveNetwork(const QString& fileName)
     QString theMessage(tr("Network saved"));
     emit messageToBeDisplayed(theMessage);
     emit restoreCurs();
+}
+
+void AppController::setPreferences()
+{
+    InputOutput* inputOutput = new InputOutput();
+    inputOutput->setPreferences();
 }
 
 void AppController::clear()
@@ -358,23 +336,3 @@ void AppController::dockClosed()
     requestMap.clear();
     dataCollectorList.clear();
 }
-
-/*void AppController::setPythonPath(QString thePythonPath)
-{
-    pythonPath = thePythonPath;
-}
-
-void AppController::setScriptPath(QString theScriptPath)
-{
-    scriptPath = theScriptPath;
-}
-
-QString AppController::getPythonPath()
-{
-    return pythonPath;
-}
-
-QString AppController::getScriptPath()
-{
-    return scriptPath;
-}*/

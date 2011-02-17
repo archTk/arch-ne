@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "dialog.h"
 #include "graph.h"
 #include "graphlayout.h"
 #include "graphproperties.h"
@@ -288,14 +289,35 @@ void InputOutput::saveGraph(const QString &fileName, Graph *graph, GraphProperti
     emit graphSaved(graphName);
 }
 
-void InputOutput::setPaths(QString thePythonPath, QString theScriptPath)
-{
-    pythonPath = thePythonPath;
-    scriptPath = theScriptPath;
-}
-
 void InputOutput::generateMesh(const QString &fileName)
 {
+    QSettings settings("archTk", "ARCHNetworkEditor");
+    QString pythonPath = settings.value("pythonPath", QString()).toString();
+    QString scriptPath = settings.value("scriptPath", QString()).toString();
+
+    if (pythonPath.isEmpty()) {
+        QMessageBox messBox(0);
+        messBox.setWindowTitle(tr("WARNING!"));
+        messBox.setText(tr("Python path has not been set.\n"
+                           "Please set it in Preferences..."));
+        messBox.addButton(QMessageBox::Ok);
+
+        messBox.exec();
+        return;
+    }
+
+    if (scriptPath.isEmpty()) {
+        QMessageBox messBox(0);
+        messBox.setWindowTitle(tr("WARNING!"));
+        messBox.setText(tr("MeshGenerator_Script.py path has not been set.\n"
+                           "Please set it in Preferences..."));
+        messBox.addButton(QMessageBox::Ok);
+
+
+        messBox.exec();
+        return;
+    }
+
     meshOut = fileName;
     meshOut.remove("_graph.xml");
     meshOut.append("_mesh.xml");
@@ -376,6 +398,13 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
     }
 
     meshInFile.close();
+}
+
+void InputOutput::setPreferences()
+{
+    Dialog prefDialog;
+
+    prefDialog.exec();
 }
 
 void InputOutput::saveNetwork(const QString& fileName, Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties,

@@ -62,6 +62,7 @@ public slots:
     void meshHasBeenGenerated(const QString& fileName);
 
     void saveNetwork(const QString& fileName);
+    void setPreferences();
 
     void dataRequest(QPoint elementRequest);
     void dataConfirmed(QString cookie ,QString elementData);

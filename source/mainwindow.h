@@ -51,12 +51,6 @@ public:
     void hideDock();
     void showDock();
 
-    void setPythonPath(QString thePythonPath);
-    void setScriptPath(QString theScriptPath);
-
-    QString getPythonPath();
-    QString getScriptPath();
-
     QAction* addSegmentAct;
     QAction* blockNodesAct;
     QAction* defaultMeshAct;
@@ -92,6 +86,7 @@ signals:
     void removeSegmentPressed();
     void saveNetwork(const QString& fileName);
     void selectElementsPressed();
+    void setPrefPressed();
     void showGridPressed();
     void showLabelsPressed();
     void snapToGridPressed();
@@ -118,14 +113,12 @@ private slots:
     void meshPressed();
     bool save();
     bool saveAs();
-    void setPrefPressed();
     void tabsContentChanged();
     void elementsBeenHit(QVector<QPoint> hitEls);
 
 public slots:
     void restoreCurs();
     void setCurs();
-    void setPath(QString thePythonPath, QString theScriptPath);
     void updateMainWindow();
     void mouseEnteredInDock();
     void dockClosed();
@@ -177,10 +170,6 @@ private:
     QAction* preferencesAct;
 
     QMap<QWidget*, QPoint> dataCollectorList;
-
-    QString pythonPath; // Path to python.
-    QString scriptPath; // Path to MeshGenerator_Script.py. This file is inside pyNS.
-    // These QStrings are here to use writeSettings and readSettings.
 };
 
 #endif // MAINWINDOW_H
