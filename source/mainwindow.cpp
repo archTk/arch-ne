@@ -426,9 +426,13 @@ void MainWindow::readSettings()
     QSettings settings("archTk", "ARCHNetworkEditor");
     QPoint pos = settings.value("pos", QPoint(0, 0)).toPoint();
     QSize size = settings.value("size", QSize(800, 600)).toSize();
+    int opToolBarPos = settings.value("operationToolBarPosition", int(1)).toInt();
+
+//    QFlags<Qt::ToolBarArea> opToolBarPos(opToolBarPosInt);
 
     resize(size);
     move(pos);
+    addToolBar((Qt::ToolBarArea)opToolBarPos, operationToolBar);
 }
 
 void MainWindow::writeSettings()
@@ -436,6 +440,7 @@ void MainWindow::writeSettings()
     QSettings settings("archTk", "ARCHNetworkEditor");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
+    settings.setValue("operationToolBarPosition", toolBarArea(operationToolBar));
 }
 
 bool MainWindow::maybeSave()
