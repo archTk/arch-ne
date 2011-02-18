@@ -46,6 +46,8 @@ public:
     void generateMesh(const QString& fileName);
     void loadMeshAfterGenerating(const QString& fileName, GraphMesh* graphMesh);
 
+    void customizeGraph(const QString& fileName);
+
     void setPreferences();
 
 signals:

@@ -39,14 +39,7 @@ public:
     void setEditorArea(EditorArea* theEditorArea);
     void createConnections();
 
-    //void setPythonPath(QString thePythonPath);
-    //void setScriptPath(QString theScriptPath);
-
-    //QString getPythonPath();
-    //QString getScriptPath();
-
 signals:
-    //void appContrLoaded();
     void messageToBeDisplayed(QString theMessage);
     void restoreCurs();
     void setCurs();
@@ -57,12 +50,14 @@ public slots:
     void loadGraphFromGraph();
     void loadMesh();
     void generateMesh(const QString& fileName);
-    void graphHasBeenSaved(const QString& fileName);
+    void customizeGraph(const QString& fileName);
+    void goMeshing(const QString& fileName);
 
     void spPressed();
     void bcPressed();
 
     void meshHasBeenGenerated(const QString& fileName);
+    void graphHasBeenCustomized(const QString& fileName);
 
     void saveNetwork(const QString& fileName);
     void setPreferences();
@@ -76,6 +71,8 @@ public slots:
 private:
     void clear();
     int uniqueDataRequestKey();
+    void collectData(QPoint elementRequest, QString XMLString, QVector<QString> hiddenItems,
+                     QVector<QString> readonlyItems, QString XMLSchema);
 
     MainWindow* mainWindow;
     Workspace* workspace;

@@ -275,8 +275,6 @@ void InputOutput::saveGraph(const QString &fileName, Graph *graph, GraphProperti
 
     networkResult.append("</NetworkGraph>\n");
 
-    //IOout << networkResult << endl;
-
     QFile networkFile(graphName);
 
     networkFile.open( QIODevice::WriteOnly );
@@ -313,7 +311,6 @@ void InputOutput::generateMesh(const QString &fileName)
                            "Please set it in Preferences..."));
         messBox.addButton(QMessageBox::Ok);
 
-
         messBox.exec();
         return;
     }
@@ -326,7 +323,6 @@ void InputOutput::generateMesh(const QString &fileName)
     arguments << scriptPath << "-i" << fileName << "-o" << meshOut << "-v" << "5e-2";
 
     pyNS = new QProcess(this);
-    //connect(pyNS, SIGNAL(started()), this, SIGNAL(setCurs()));
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshingComplete()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
@@ -400,11 +396,16 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
     meshInFile.close();
 }
 
+void InputOutput::customizeGraph(const QString &fileName)
+{
+
+}
+
 void InputOutput::setPreferences()
 {
-    Dialog prefDialog;
+    Dialog propDialog;
 
-    prefDialog.exec();
+    propDialog.exec();
 }
 
 void InputOutput::saveNetwork(const QString& fileName, Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties,

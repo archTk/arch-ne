@@ -25,7 +25,7 @@ TreeModel::TreeModel( QObject *parent)
 {
      QVector<QVariant> rootData;
      QStringList headers;
-     headers << tr("Property") << tr("Value") << tr("attribute") <<tr("type") << tr("members") << tr("leftmembers") << tr("removable") <<tr("RO");
+     headers <<tr("Property")<< tr("Value")<<"att"<<"typ"<<"mbrs"<<"lftmbrs"<<"rmv"<<"RO"<<"+"<<"-";
 
      foreach (QString header, headers)
          rootData << header;
@@ -132,12 +132,23 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
          return QVariant();
 
      if (role == Qt::FontRole){
-         TreeItem *tempitem = getItem(index);
-         if (!tempitem->data(2).toBool() && index.column()==0){
+         if (index.column() == 0 and !getItem(index)->data(2).toBool()){
          QFont boldFont;
          boldFont.setBold(true);
          return boldFont;
          }
+     }
+
+     /*if (role == Qt::BackgroundRole){
+         if (index.column() == 8 or index.column() == 9)
+             return QBrush(QColor("#515151"));
+     }*/
+
+     if (role == Qt::DecorationRole){
+         if(index.column()==8 and !getItem(index)->data(2).toBool() and !getItem(index)->data(5).toStringList().isEmpty())
+             return QIcon(":icons/add_child.png");
+         if(index.column()==9 and !getItem(index)->data(6).toBool())
+             return QIcon(":icons/remove_element.png");
      }
 
      if (role != Qt::DisplayRole && role != Qt::EditRole)
@@ -152,13 +163,19 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
      if (!index.isValid())
          return 0;
+     if (index.column()==9)
+         return Qt::ItemIsEnabled;
+
+     if (index.column()==8 and !getItem(index)->data(5).toStringList().isEmpty())
+         return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+
      if (index.column()!=1)
          return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-     if(getItem(index)->data(7).toBool())
+     if (getItem(index)->data(7).toBool())
          return Qt::ItemIsEnabled | Qt::ItemIsSelectable ;
 
-     if(!getItem(index)->data(2).toBool() and !getItem(index)->data(4).toStringList().isEmpty())
+     if (!getItem(index)->data(2).toBool() and !getItem(index)->data(4).toStringList().isEmpty())
          return Qt::ItemIsEnabled | Qt::ItemIsSelectable ;
 
      return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;

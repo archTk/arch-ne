@@ -26,5 +26,8 @@
         <file>images/mesh.png</file>
         <file>images/BC.png</file>
         <file>images/SP.png</file>
+        <file>XMLschema/schema.xsd</file>
+        <file>XMLschema/boundary_conditions.xsd</file>
+        <file>images/custom.png</file>
     </qresource>
 </RCC>

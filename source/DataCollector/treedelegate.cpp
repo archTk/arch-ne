@@ -17,7 +17,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <QtGui>
-
 #include "treedelegate.h"
 
 void TreeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const
@@ -31,12 +30,17 @@ QSize TreeDelegate::sizeHint(const QStyleOptionViewItem &option,const QModelInde
 }
 
 QWidget *TreeDelegate::createEditor(QWidget *parent,const QStyleOptionViewItem &option,const QModelIndex &index) const
-
 {
-    QStringList list = index.model()->data(index.model()->index(index.row(),4,index.parent())).toStringList();
+    QStringList list;
+    if (index.column()==1)
+        list.append(index.model()->data(index.model()->index(index.row(),4,index.parent())).toStringList());
+    else if (index.column()==8)
+        list.append(index.model()->data(index.model()->index(index.row(),5,index.parent())).toStringList());
+
     if (!list.isEmpty()) {
+        if (index.column()==1)
+            list.prepend("..."); 
         QComboBox *editor = new QComboBox(parent);
-        list.prepend("...");  
         editor->insertItems(0,list);
         return editor;
     } else {
@@ -46,7 +50,12 @@ QWidget *TreeDelegate::createEditor(QWidget *parent,const QStyleOptionViewItem &
 
 void TreeDelegate::setEditorData(QWidget *editor,const QModelIndex &index) const
 {
-    QStringList list = index.model()->data(index.model()->index(index.row(),4,index.parent())).toStringList();
+    QStringList list;
+    if (index.column()==1)
+        list.append(index.model()->data(index.model()->index(index.row(),4,index.parent())).toStringList());
+    else if (index.column()==8)
+        list.append(index.model()->data(index.model()->index(index.row(),5,index.parent())).toStringList());
+
     if (!list.isEmpty()) {
         QComboBox *comboBox = static_cast<QComboBox *>(editor);
         int currIndex = comboBox->findText(index.model()->data(index).toString())>=0 ? comboBox->findText(index.model()->data(index).toString()): 0;
@@ -58,7 +67,12 @@ void TreeDelegate::setEditorData(QWidget *editor,const QModelIndex &index) const
 
 void TreeDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,const QModelIndex &index) const
 {
-    QStringList list = index.model()->data(index.model()->index(index.row(),4,index.parent())).toStringList();
+    QStringList list;
+    if (index.column()==1)
+        list.append(index.model()->data(index.model()->index(index.row(),4,index.parent())).toStringList());
+    else if (index.column()==8)
+        list.append(index.model()->data(index.model()->index(index.row(),5,index.parent())).toStringList());
+
     if (!list.isEmpty()) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
         QString value = comboBox->currentText()=="..." ? "": comboBox->currentText();

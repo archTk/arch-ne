@@ -75,7 +75,7 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     workingDomText->setReadOnly(true);
     actionShowDom->setChecked(false);
     workingDomText->hide();
-    mainComboBox->setEnabled(false);
+    detailStatusLabel->hide();
     actionOkCombo->setEnabled(false);
     actionCancelCombo->setEnabled(false);
 
@@ -85,12 +85,9 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     setElementDom(XMLString);
     setElementCookie(cookie);
     setReadOnlyItems(readOnlyItems);
-    setRequestSchemaPath(":xml/vascular_network_v3.2.xsd");
 
     TreeModel *model = new TreeModel();
-//t
     treeView->setItemDelegate(new TreeDelegate);
-//t
     treeView->setModel(model);
     treeView->setColumnHidden(2,true);
     treeView->setColumnHidden(3,true);
@@ -98,24 +95,34 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     treeView->setColumnHidden(5,true);
     treeView->setColumnHidden(6,true);
     treeView->setColumnHidden(7,true);
-    setupData();
 
     connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(treeViewDataChanged()));
     connect(treeView->selectionModel(),SIGNAL(selectionChanged(const QItemSelection &,const QItemSelection &)),this, SLOT(updateTools()));
-    //connect(treeView,SIGNAL(activated(QModelIndex)),this, SLOT(itemActivated(QModelIndex)));
+    connect(treeView,SIGNAL(clicked(QModelIndex)),this, SLOT(viewClicked(QModelIndex)));
     connect(applyButton, SIGNAL(clicked()), this, SLOT(buttonApplyClicked()));
     connect(okButton, SIGNAL(clicked()), this, SLOT(buttonOkClicked()));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
     connect(actionShowDom,SIGNAL(triggered()),this, SLOT(showDomToggled()));
     connect(actionUndo,SIGNAL(triggered()),this, SLOT(undoClicked()));
     connect(actionRedo,SIGNAL(triggered()),this, SLOT(redoClicked()));
-    connect(actionRemoveElement,SIGNAL(triggered()),this, SLOT(removeElement()));
-    connect(actionAddChild,SIGNAL(triggered()),this, SLOT(addChild()));
-    connect(actionOkCombo,SIGNAL(triggered()),this, SLOT(okCombo()));
-    connect(actionCancelCombo,SIGNAL(triggered()),this, SLOT(cancelCombo()));
     connect(actionReset, SIGNAL(triggered()), this, SLOT(resetClicked()));
     connect(actionEditDom, SIGNAL(triggered()), this, SLOT(editDomToggled()));
-      
+}
+
+void DataCollector::viewClicked(QModelIndex index)
+{
+    if(index.column()==9 and actionRemoveElement->isEnabled())
+        removeRow(index);
+    QAbstractItemModel *model = treeView->model();
+    QStringList leftMembers = model->data(model->index(index.row(),5,index.parent())).toStringList();
+    if(index.column()==8 and leftMembers.size()==1){
+        QDomDocument *doc = new QDomDocument(); 
+        QDomElement addedElement = doc->createElement(leftMembers.at(0));
+        avoidUpdateFlag=true;
+        DomToTree(addedElement,model->data(model->index(index.row(),3,index.parent())).toString(),model->index(index.row(),0,index.parent()));
+        avoidUpdateFlag=false;
+        updateDomStatus();
+    }
 }
 
 void DataCollector::setupData()
@@ -162,6 +169,8 @@ void DataCollector::loadStack(int stackId)
     QDomElement rootElement = domDoc.documentElement();
     DomToTree(rootElement,rootParent,treeView->rootIndex(),true);
     treeView->setColumnWidth(0,200);
+    treeView->setColumnWidth(8,100);
+    treeView->setColumnWidth(9,25);
     treeView->setExpanded(model->index(0,0,treeView->rootIndex()),true);
     QModelIndex mainIndex = model->index(0,0,treeView->rootIndex()); 
     for (int i=0;i<model->rowCount(mainIndex);++i){
@@ -177,32 +186,6 @@ void DataCollector::loadStack(int stackId)
     newStack=true;
     updateTools();
     autoFill=true;
-}
-
-void DataCollector::itemActivated(QModelIndex index)
-{
-/*    if (index.column()!=1)
-        return;
-    
-    QAbstractItemModel *model = treeView->model();
-    if(!model->data(model->index(index.row(),2,index.parent())).toBool())
-       return;
-
-    QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
-    if(list.isEmpty())
-       return;
-    list.prepend("...");  
- 
-    treeView->setEnabled(false);
-    mainComboBox->clear();
-    mainComboBox->setEnabled(true);
-    mainComboBox->insertItems(0,list);
-    mainComboBox->setFocus();
-    actionOkCombo->setEnabled(true);
-    actionCancelCombo->setEnabled(true);
-    actionAddChild->setEnabled(false);
-    actionRemoveElement->setEnabled(false);
-    actionReset->setEnabled(false);*/
 }
 
 void DataCollector::removeRow(QModelIndex index)
@@ -245,44 +228,6 @@ QStringList DataCollector::getEnumeration(QString iType)
     docFile.close();
     return resultList;
 }
-
-void DataCollector::okCombo()
-{
-    QModelIndex index = treeView->selectionModel()->currentIndex();
-    QAbstractItemModel *model = treeView->model();
-    QString inputString = mainComboBox->currentText();
-    if(model->data(model->index(index.row(),2,index.parent())).toBool()){
-        if (inputString=="...")
-            inputString.clear();
-        model->setData(index,QVariant(inputString), Qt::EditRole);
-    } else {
-        QDomDocument *doc = new QDomDocument(); 
-        QDomElement addedElement = doc->createElement(inputString);
-        avoidUpdateFlag=true;
-        DomToTree(addedElement,model->data(model->index(index.row(),3,index.parent())).toString(),index);
-        avoidUpdateFlag=false;
-        updateDomStatus();
-    }
-    treeView->setEnabled(true);
-    mainComboBox->clear();
-    mainComboBox->setEnabled(false);
-    actionOkCombo->setEnabled(false);
-    actionCancelCombo->setEnabled(false);
-    actionReset->setEnabled(true);
-    updateTools();
-}
-
-void DataCollector::cancelCombo()
-{
-    treeView->setEnabled(true);
-    mainComboBox->clear();
-    mainComboBox->setEnabled(false);
-    actionOkCombo->setEnabled(false);
-    actionCancelCombo->setEnabled(false);
-    actionReset->setEnabled(true);
-    updateTools();
-}
-
 
 QList<QStringList> DataCollector::getElementInfo(QString elementName, QString parentName)
 {
@@ -427,39 +372,11 @@ void DataCollector::updateLeftMembers(QModelIndex index)
     model->setData(model->index(index.row(), 5, index.parent()), QVariant(mNames), Qt::EditRole);
 }
 
-void DataCollector::addChild()
-{
-    QModelIndex index = treeView->selectionModel()->currentIndex();
-    QAbstractItemModel *model = treeView->model();
-    QStringList mNames = model->data(model->index(index.row(),5,index.parent())).toStringList();
-    QString inputString;
-    if (mNames.size()==1){
-        inputString = mNames.at(0);
-        QDomDocument *doc = new QDomDocument(); 
-        QDomElement addedElement = doc->createElement(inputString);
-        avoidUpdateFlag=true;
-        DomToTree(addedElement,model->data(model->index(index.row(),3,index.parent())).toString(),index);
-        avoidUpdateFlag=false;
-        updateDomStatus();
-        updateTools();
-    } else {
-        treeView->setEnabled(false);
-        mainComboBox->clear();
-        mainComboBox->setEnabled(true);
-        mainComboBox->insertItems(0,mNames);
-        mainComboBox->setFocus();
-        actionOkCombo->setEnabled(true);
-        actionCancelCombo->setEnabled(true);
-        actionAddChild->setEnabled(false);
-        actionRemoveElement->setEnabled(false);
-        actionReset->setEnabled(false);
-    }
-}
-
 void DataCollector::updateTools()
 {
      actionUndo->setEnabled(currentStack > 0);
      actionRedo->setEnabled(currentStack < undoStack.size()-1);
+     actionReset->setEnabled(currentStack > 0);
 
      bool viewSelected = !treeView->selectionModel()->selection().isEmpty();
      bool validSelection = treeView->selectionModel()->currentIndex().isValid();
@@ -467,13 +384,8 @@ void DataCollector::updateTools()
      if (viewSelected and validSelection) {
          QModelIndex index = treeView->selectionModel()->currentIndex();
          QAbstractItemModel *model = treeView->model();
-         bool isAttribute = model->data(model->index(index.row(),2,index.parent())).toBool();
-         bool hasMembers = !model->data(model->index(index.row(),5,index.parent())).toStringList().isEmpty();
-         bool required = model->data(model->index(index.row(),6,index.parent())).toBool();
-         actionAddChild->setEnabled(!isAttribute and hasMembers);
-         actionRemoveElement->setEnabled(!required);
+         actionRemoveElement->setEnabled(!model->data(model->index(index.row(),6,index.parent())).toBool());
      } else {
-         actionAddChild->setEnabled(false);
          actionRemoveElement->setEnabled(false);
      }
 }
@@ -521,6 +433,7 @@ void DataCollector::setHiddenItems(QVector<QString> theHiddenItems)
 void DataCollector::setRequestSchemaPath(QString path)
 {
     requestSchemaPath = path;
+    setupData();
 }
 
 void DataCollector::setElementDom(QString theElementDom)
@@ -582,10 +495,23 @@ void DataCollector::buttonOkClicked()
 void DataCollector::treeViewDataChanged()
 {
     if (avoidUpdateFlag)
-       return;
+        return;
     if (actionEditDom->isChecked())
-       return;
+        return;
 
+    QModelIndex index = treeView->selectionModel()->currentIndex();
+    if (index.column()==8) {
+        QAbstractItemModel *model = treeView->model();
+        QDomDocument *doc = new QDomDocument(); 
+        QDomElement addedElement = doc->createElement(model->data(index).toString());
+        avoidUpdateFlag=true;
+        DomToTree(addedElement,model->data(model->index(index.row(),3,index.parent())).toString(),model->index(index.row(),0,index.parent()));
+        model->setData(index,QVariant(""),Qt::EditRole);
+        avoidUpdateFlag=false;
+        updateDomStatus();
+        return; 
+    }
+    
     updateDomStatus();
     updateTools();
 } 
@@ -619,7 +545,7 @@ void DataCollector::TreeToDom(QDomDocument *doc,QDomElement iDomElement,QModelIn
             if (!iValue.isEmpty())
                 iDomElement.setAttribute(iName,iValue);
         } else {
-            if(!iValue.isEmpty()){
+            if (!iValue.isEmpty()){
                 QDomElement iTag = doc->createElement(iName);
                 QDomText textNode = doc->createTextNode(iValue);
                 iTag.appendChild(textNode);
@@ -698,7 +624,8 @@ void DataCollector::setRequestSchema()
     QByteArray resultString;
     bool cachedSchema = false;
 
-    QFile file(QDir::tempPath()+"/vascular_network-"+rootName+".xsd");
+    QFileInfo fi(requestSchemaPath);
+    QFile file(QDir::tempPath()+"/"+fi.fileName()+"."+rootName+".dat");
     if (file.open(QIODevice::ReadOnly)) {
             resultString.append(QString::fromLatin1(file.readAll()));    
             file.close();
@@ -712,7 +639,7 @@ void DataCollector::setRequestSchema()
        query->addVariable("rootParent",rootParent);
        query->evaluateQuery();
        resultString.append(query->getQueryResult());
-       QFile ofile(QDir::tempPath()+"/vascular_network-"+rootName+".xsd");
+       QFile ofile(QDir::tempPath()+"/"+fi.fileName()+"."+rootName+".dat");
        if (ofile.open(QIODevice::WriteOnly)) {
            ofile.write(resultString);
            ofile.close();
@@ -738,12 +665,12 @@ bool DataCollector::validateDom(QString DomString)
         valid = true;
     QString stylebase="QLabel {border-radius:3px;padding-left:2px;border:0px solid #515151;";
     const QString styleSheet = QString(stylebase + "background: %1;}").arg(valid ? "#51b151" : "#b15151");
-    domStatusLabel->setStyleSheet(styleSheet);
     if(valid){
-        domStatusLabel->setText("Data is valid");
+        detailStatusLabel->hide();
     } else {
-        domStatusLabel->setText(messageHandler.statusMessage());
-
+        detailStatusLabel->setStyleSheet(styleSheet);
+        detailStatusLabel->setText(messageHandler.statusMessage());
+        detailStatusLabel->show();
     }
     return valid;
 } 

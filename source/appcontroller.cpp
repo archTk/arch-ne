@@ -63,6 +63,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(dockClosedSig()), this, SLOT(dockClosed()));
     connect(mainWindow, SIGNAL(editingEl2Ws(QPoint)), workspace, SLOT(setHighlightingEl(QPoint)));
     connect(mainWindow, SIGNAL(homeViewPressed()), workspace, SLOT(homeView()));
+    connect(mainWindow, SIGNAL(graphToBeCustomized(QString)), this, SLOT(customizeGraph(QString)));
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
     connect(mainWindow, SIGNAL(meshToBeGenerated(QString)), this, SLOT(generateMesh(QString)));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
@@ -174,14 +175,14 @@ void AppController::generateMesh(const QString &fileName)
     QVector<int> edges = workspace->getEdgesIds();
 
     InputOutput* inputOutput = new InputOutput();
-    connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(graphHasBeenSaved(QString)));
+    connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goMeshing(QString)));
 
     inputOutput->saveGraph(fileName, workspace->getGraph(), workspace->getGraphProperties(), nodes, edges);
 
     emit restoreCurs();
 }
 
-void AppController::graphHasBeenSaved(const QString &fileName)
+void AppController::goMeshing(const QString &fileName)
 {
     InputOutput* inputOutput = new InputOutput();
 
@@ -191,12 +192,42 @@ void AppController::graphHasBeenSaved(const QString &fileName)
 
 void AppController::bcPressed()
 {
-    appout << "bcPressed" << endl;
+    QPoint elementRequest(3, 0);
+    QString XMLString("<boundarycondition/>");
+
+    QVector<QString> hiddenItems;
+    hiddenItems.clear();
+
+    QVector<QString> readOnlyItems;
+    readOnlyItems.clear();
+
+    QString XMLSchema(":XMLschema/boundary_conditions.xsd");
+
+    collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
 }
 
 void AppController::spPressed()
 {
-    appout << "spPressed" << endl;
+    QPoint elementRequest(4, 0);
+    QString XMLString("<parameter/>");
+
+    QVector<QString> hiddenItems;
+    hiddenItems.clear();
+
+    QVector<QString> readOnlyItems;
+    readOnlyItems.clear();
+
+    QString XMLSchema(":XMLschema/boundary_conditions.xsd");
+
+    collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
+}
+
+void AppController::customizeGraph(const QString &fileName)
+{
+    InputOutput* inputOutput = new InputOutput();
+
+    inputOutput->customizeGraph(fileName);
+    connect(inputOutput, SIGNAL(customizedGraphReady(QString)), this, SLOT(graphHasBeenCustomized(QString)));
 }
 
 void AppController::meshHasBeenGenerated(const QString &fileName)
@@ -206,6 +237,10 @@ void AppController::meshHasBeenGenerated(const QString &fileName)
     emit updateSignal();
 }
 
+void AppController::graphHasBeenCustomized(const QString &fileName)
+{
+
+}
 
 void AppController::saveNetwork(const QString& fileName)
 {
@@ -250,17 +285,6 @@ int AppController::uniqueDataRequestKey()
 
 void AppController::dataRequest(QPoint elementRequest)
 {
-    if (requestMap.values().contains(elementRequest)) {
-        mainWindow->setPageInTab(dataCollectorList.value(requestMap.key(elementRequest)));
-        mainWindow->showDock();
-        return;
-    }
-
-    int requestKey = uniqueDataRequestKey();
-    requestMap.insert(requestKey, elementRequest);
-    QString cookie;
-    cookie.setNum(requestKey);
-
     QString XMLString;
 
     if (elementRequest.x() == 1) {  // Element is a node.
@@ -291,7 +315,26 @@ void AppController::dataRequest(QPoint elementRequest)
     QVector<QString> readOnlyItems;
     readOnlyItems << "node1_id" << "node2_id";
 
+    QString XMLSchema(":XMLschema/schema.xsd");
+
+    collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
+}
+
+void AppController::collectData(QPoint elementRequest, QString XMLString, QVector<QString> hiddenItems, QVector<QString> readOnlyItems, QString XMLSchema)
+{
+    if (requestMap.values().contains(elementRequest)) {
+        mainWindow->setPageInTab(dataCollectorList.value(requestMap.key(elementRequest)));
+        mainWindow->showDock();
+        return;
+    }
+
+    int requestKey = uniqueDataRequestKey();
+    requestMap.insert(requestKey, elementRequest);
+    QString cookie;
+    cookie.setNum(requestKey);
+
     DataCollector* dataCollector = new DataCollector(cookie, XMLString, hiddenItems, readOnlyItems);
+    dataCollector->setRequestSchemaPath(XMLSchema);
     connect(dataCollector, SIGNAL(applyClicked(QString,QString)), this, SLOT(dataConfirmed(QString,QString)));
     connect(dataCollector, SIGNAL(okButtonClicked(QString,QString)), this, SLOT(dataConfirAndClose(QString,QString)));
     connect(dataCollector, SIGNAL(deleteItself()), dataCollector, SLOT(close()));
@@ -319,7 +362,7 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         if (!attrName.isNull()) {
             workspace->setNodeName(temp.y(), attrName);
         }
-    } else {                // Element is an edge.
+    } else if (temp.x() == 2) {                // Element is an edge.
         workspace->setEdgeProperties(temp.y(), elementData);
         QDomNodeList edgeList = doc.elementsByTagName("edge");
         QDomNode edgeNode = edgeList.at(0);
@@ -328,6 +371,10 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         if (!attrName.isNull()) {
             workspace->setEdgeName(temp.y(), attrName);
         }
+    } else if (temp.x() == 3) { // Boundary Conditions.
+        appout << "BC" << endl;
+    } else if (temp.x() == 4) { // Simulation Parameters.
+        appout << "SP" << endl;
     }
 }
 

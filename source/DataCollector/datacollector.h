@@ -54,12 +54,9 @@ public slots:
     void cancelClicked();
     void showDomToggled();
     void removeElement();
-    void addChild();
     void updateTools();
     void treeViewDataChanged();
-    void itemActivated(QModelIndex index);
-    void okCombo();
-    void cancelCombo();
+    void viewClicked(QModelIndex index);
 
 signals:
     void applyClicked(QString cookie,QString XMLString);  
@@ -67,6 +64,7 @@ signals:
     void deleteItself();
 
 private:
+    void setupData();
     void setRequestSchema();
     bool validateDom(QString DomString);
     void TreeToDom(QDomDocument *doc,QDomElement iDomElement, QModelIndex index);
@@ -77,7 +75,6 @@ private:
     QStringList fixElementInfo(QStringList info);
     QStringList getEnumeration(QString iType);
     void updateDomStatus();
-    void setupData();
     void loadStack(int stackId);
     void setQueryStrings();
     void updateLeftMembers(QModelIndex index);

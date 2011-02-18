@@ -56,6 +56,7 @@ signals:
     void bcPressed();
     void blockNodesPressed();
     void defaultMeshPressed();
+    void graphToBeCustomized(const QString& fileName);
     void homeViewPressed();
     void infoPressed();
     void loadGraphFromLayout();
@@ -86,6 +87,7 @@ protected:
 
 private slots:
     void about();
+    void customizePressed();
     void documentWasModified();
     void newNetwork();
     void openNetwork();
@@ -144,6 +146,7 @@ private:
     QAction* addSegmentAct;
     QAction* bcAct;
     QAction* blockNodesAct;
+    QAction* customizeAct;
     QAction* defaultMeshAct;
     QAction* exitAct;
     QAction* homeViewAct;

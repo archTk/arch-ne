@@ -2,39 +2,13 @@
 <ui version="4.0">
 <class>DataCollector</class>
 <widget class="QWidget" name="DataCollector">
-<property name="styleSheet">
-<string notr="true">
-QWidget#DataCollector {margin:0;padding:0;border: 0px solid #ffffff;}
-QToolButton { 
-     border: 0px solid #515151;
-     border-radius: 3px;
-     background-color: #515151;
-     margin-left: 5px;
-}
-QToolButton:hover {background-color: #919191;}
-QToolButton:pressed {background-color: #fafafa;}
-QToolButton:checked {background-color: #bababa;}
-QSplitter::handle:vertical{height: 1px;border:0px solid #515151;}
-QSplitter {border:0px solid transparent;}
-QFrame#domStatusFrame,QFrame#middleToolbarFrame {
-     background-color: #313131;
-     margin:0px;padding:0px;border:0px solid transparent;height:40px;
-}
-QPlainTextEdit {color:#000000;border 0px solid transparent;margin:0;padding:0;background-color:#ffffbf}
-QTreeView#treeView{border:0px solid #ffffff,background-color:#ffa000;}
-QToolBar {min-height:33px;border: 0px solid #515151;margin-left:5px;}
-QLabel {border-radius: 3px;border:0px solid #515151}
-QPushButton {border-radius:5px;min-width:80px;border:1px solid #515151;}
-QComboBox {font:10px;backgroun-color:#ffffff;margin-left:30px;margin-right:10px}
-</string>
-</property>
 	<layout class="QVBoxLayout" name="vboxLayout">
 		<property name="margin"><number>0</number></property>
 		<property name="spacing"><number>0</number></property>
    		<item>
     			<widget class="QSplitter" name="splitter">
-                                <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
-     				<property name="orientation"><enum>Qt::Vertical</enum></property>
+                        <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+     			<property name="orientation"><enum>Qt::Vertical</enum></property>
 				<widget class="QTreeView" name="treeView">
 				<property name="alternatingRowColors"><bool>true</bool></property>
 				<property name="selectionBehavior"><enum>QAbstractItemView::SelectItems</enum></property>
@@ -43,43 +17,22 @@ QComboBox {font:10px;backgroun-color:#ffffff;margin-left:30px;margin-right:10px}
 				<property name="animated"><bool>false</bool></property>
 				<property name="allColumnsShowFocus"><bool>true</bool></property>
 				</widget>
-				<widget class="QFrame" name="middleToolbarFrame">
-                                <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
-				<property name="maximumHeight"><number>40</number></property>
-				<property name="minimumHeight"><number>40</number></property>
-                        	<layout class="QHBoxLayout" name="midToolbarLayout">
-				<property name="spacing"><number>10</number></property>
-				<property name="margin"><number>0</number></property>
-				<item>
-					<widget class="QToolBar" name="treeToolBar">
-					<addaction name="actionAddChild"/>
-					<addaction name="actionRemoveElement"/>
-					<addaction name="actionUndo"/>
-					<addaction name="actionRedo"/>
-					<addaction name="actionReset"/>
-					</widget>
-				</item>
-				<item>
-					<widget class="QComboBox" name="mainComboBox" >
-					<property name="maximumHeight"><number>32</number></property>
-					</widget>
-				</item>
-				<item>
-					<widget class="QToolBar" name="comboToolBar">
-					<property name="maximumWidth" ><number>100</number></property>
-					<addaction name="actionOkCombo"/>
-					<addaction name="actionCancelCombo"/>
-					</widget>
-				</item>
-                                </layout>
-                                </widget>
 				<widget class="QPlainTextEdit" name="workingDomText">
                                 <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
 				</widget>
 			</widget>
    		</item>
 		<item>
-			<widget class="QFrame" name="domStatusFrame">
+                       	<widget class="QLabel" name="detailStatusLabel">
+			<property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+			<property name="maximumHeight"><number>30</number></property>
+			<property name="minimumHeight"><number>30</number></property>
+			<property name="text"><string/></property>
+			<property name="wordWrap"><bool>true</bool></property>
+			</widget>
+		</item>
+		<item>
+			<widget class="QFrame" name="toolbarFrame">
 				<property name="maximumHeight"><number>40</number></property>
 				<property name="minimumHeight"><number>40</number></property>
                                 <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
@@ -88,15 +41,11 @@ QComboBox {font:10px;backgroun-color:#ffffff;margin-left:30px;margin-right:10px}
 			<property name="spacing"><number>10</number></property>
 			<item>
 			<widget class="QToolBar" name="lowerToolBar">
-			<property name="maximumWidth" ><number>90</number></property>
 			<addaction name="actionShowDom"/>
 			<addaction name="actionEditDom"/>
-			</widget>
-                        </item>
-			<item>
-			<widget class="QLabel" name="domStatusLabel">
-			<property name="text"><string/></property>
-			<property name="wordWrap"><bool>true</bool></property>
+			<addaction name="actionUndo"/>
+			<addaction name="actionRedo"/>
+			<addaction name="actionReset"/>
 			</widget>
                         </item>
                         </layout>
@@ -143,7 +92,7 @@ QComboBox {font:10px;backgroun-color:#ffffff;margin-left:30px;margin-right:10px}
 	</layout>
   <action name="actionEditDom">
    <property name="checkable"><bool>true</bool></property>
-   <property name="icon"><iconset><normaloff>:icons/show_dom.png</normaloff>:icons/show_dom.png</iconset></property>
+   <property name="icon"><iconset><normaloff>:icons/editDom.png</normaloff>:icons/editDom.png</iconset></property>
    <property name="text"><string>Edit Dom</string></property>
    <property name="toolTip"><string>Edit Dom</string></property>
    <property name="statusTip"><string>Edit Dom</string></property>

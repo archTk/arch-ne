@@ -62,14 +62,20 @@ void MainWindow::insertDataCollectorToDock(DataCollector* theDataCollector, QPoi
 
     if (elementRequest.x() == 1) {
         element = "node";
-    } else {
+    } else if (elementRequest.x() == 2) {
         element = "edge";
+    } else if (elementRequest.x() == 3) {
+        element = "BC";
+    } else if (elementRequest.x() == 4) {
+        element = "SP";
     }
 
-    element.append(" ");
-    QString idString;
-    idString.setNum(elementRequest.y());
-    element.append(idString);
+    if (elementRequest.x() == 1 || elementRequest.y() == 2) {
+        element.append(" ");
+        QString idString;
+        idString.setNum(elementRequest.y());
+        element.append(idString);
+    }
 
     dataCollectorList.insert(theDataCollector, elementRequest);
 
@@ -192,6 +198,10 @@ void MainWindow::createActions()
     spAct = new QAction(QIcon(":/images/SP.png"), tr("Set Simulation Parameters"), this);
     spAct->setStatusTip(tr("Set Simulation Parameters"));
     connect(spAct, SIGNAL(triggered()), this, SIGNAL(spPressed()));
+
+    customizeAct = new QAction(QIcon(":/images/custom.png"), tr("Personalize graph information"), this);
+    customizeAct->setStatusTip(tr("Personalize graph information"));
+    connect(customizeAct, SIGNAL(triggered()), this, SLOT(customizePressed()));
     /////
 
     addSegmentAct = new QAction(QIcon(":/images/addSegment.png"), tr("&Add Segment"), this);
@@ -280,7 +290,6 @@ void MainWindow::createActions()
 
     preferencesAct = new QAction(tr("preferences..."), this);
     preferencesAct->setShortcuts(QKeySequence::Preferences);
-    //preferencesAct->setShortcut(tr("Ctrl+,"));
     preferencesAct->setStatusTip(tr("Set application preferences"));
     connect(preferencesAct, SIGNAL(triggered()), this, SIGNAL(setPrefPressed()));
 }
@@ -329,6 +338,7 @@ void MainWindow::createMenus()
     operationMenu->addAction(meshAct);
     operationMenu->addAction(defaultMeshAct);
     operationMenu->addAction(infoAct);
+    operationMenu->addAction(customizeAct);
 
     menuBar()->addSeparator();
 
@@ -397,11 +407,13 @@ void MainWindow::createToolBars()
     operationToolBar->addAction(splitSegmentAct);
     operationToolBar->addAction(superEdgeAct);
     operationToolBar->addAction(selectElementsAct);
+    operationToolBar->addSeparator();
     operationToolBar->addAction(meshAct);
     operationToolBar->addAction(defaultMeshAct);
     operationToolBar->addAction(infoAct);
     operationToolBar->addAction(bcAct);
     operationToolBar->addAction(spAct);
+    operationToolBar->addAction(customizeAct);
 }
 
 void MainWindow::createStatusBar()
@@ -427,8 +439,6 @@ void MainWindow::readSettings()
     QPoint pos = settings.value("pos", QPoint(0, 0)).toPoint();
     QSize size = settings.value("size", QSize(800, 600)).toSize();
     int opToolBarPos = settings.value("operationToolBarPosition", int(1)).toInt();
-
-//    QFlags<Qt::ToolBarArea> opToolBarPos(opToolBarPosInt);
 
     resize(size);
     move(pos);
@@ -548,6 +558,11 @@ void MainWindow::importMesh()
 void MainWindow::meshPressed()
 {
     emit meshToBeGenerated(curFile);
+}
+
+void MainWindow::customizePressed()
+{
+    emit graphToBeCustomized(curFile);
 }
 
 bool MainWindow::save()

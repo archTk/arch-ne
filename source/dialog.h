@@ -23,7 +23,6 @@
 #include <QLineEdit>
 #include <QDialog>
 
-//class Dialog : public QDialog, private Ui::Dialog
 class Dialog : public QDialog
 {
     Q_OBJECT
