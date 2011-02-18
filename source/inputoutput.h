@@ -48,8 +48,6 @@ public:
 
     void customizeGraph(const QString& fileName);
 
-    void setPreferences();
-
 signals:
     void curFileName(QString theName);
     void graphSaved(QString theName);

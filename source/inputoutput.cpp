@@ -23,7 +23,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "dialog.h"
 #include "graph.h"
 #include "graphlayout.h"
 #include "graphproperties.h"
@@ -399,13 +398,6 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
 void InputOutput::customizeGraph(const QString &fileName)
 {
 
-}
-
-void InputOutput::setPreferences()
-{
-    Dialog propDialog;
-
-    propDialog.exec();
 }
 
 void InputOutput::saveNetwork(const QString& fileName, Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties,

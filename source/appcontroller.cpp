@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "appcontroller.h"
+#include "dialog.h"
 #include "mainwindow.h"
 #include "workspace.h"
 #include "editorarea.h"
@@ -262,8 +263,9 @@ void AppController::saveNetwork(const QString& fileName)
 
 void AppController::setPreferences()
 {
-    InputOutput* inputOutput = new InputOutput();
-    inputOutput->setPreferences();
+    Dialog propDialog;
+
+    propDialog.exec();
 }
 
 void AppController::clear()
