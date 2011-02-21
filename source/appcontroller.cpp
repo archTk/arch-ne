@@ -23,6 +23,7 @@
 #include "editorarea.h"
 #include "inputoutput.h"
 #include "DataCollector/datacollector.h"
+#include "resultsview.h"
 
 #include <QDialog>
 #include <QMessageBox>
@@ -342,15 +343,27 @@ void AppController::setPreferences()
 
 void AppController::showResults(QPoint elementRequest)
 {
-    QString temp;
+    // TODO: load the appropriate result image coherently with elementRequest.
 
-    if (elementRequest.x() == 1) {          // Element is a node.
-        temp = "nodeResults";
-    } else if (elementRequest.x() == 2) {   // Element is an edge.
-        temp = "edgeResults";
-    }
+    //QWidget* pic = new QWidget();
+    //pic->setStyleSheet("background-image:Users/boss/Desktop/mele.jpg");
+    //pic->setGeometry(QRect(10,10,11,11));
+    QPixmap image;
+    image.load(":/images/save.png");
 
-    appout << temp << endl;
+    //QLabel pic;
+    //pic.setPixmap(image);
+
+    ResultsView* resultsView = new ResultsView(&image);
+
+    //QLabel label("<img src=':Users/boss/Desktop/mele.jpg'/>");
+    //label.show();
+
+    //QLabel mele;
+    //mele.loadFromData(":Users/boss/Desktop/mele.jpg");
+
+    mainWindow->insertImageResultsToDock(resultsView, elementRequest);
+    mainWindow->showDock();
 }
 
 void AppController::clear()

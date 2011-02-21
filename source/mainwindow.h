@@ -22,7 +22,10 @@
 #include <QMainWindow>
 #include <QMap>
 
+class ResultsView;
+
 class QAction;
+class QLabel;
 class QMenu;
 class QFile;
 class QActionGroup;
@@ -47,6 +50,10 @@ public:
     void removeAllDataCollectorFromDock();
     void removeDataCollectorFromDock();
     void setPageInTab(DataCollector* theDataCollector);
+
+    void insertImageResultsToDock(ResultsView* theResultsView, QPoint elementRequest);
+    //void removeResultsFromDock();
+    //void setResultsPageInTab(QWidget* theImageResults);
 
     void hideDock();
     void showDock();
@@ -182,6 +189,7 @@ private:
     QAction* zoomOutAct;
 
     QMap<QWidget*, QPoint> dataCollectorList;
+    QMap<QWidget*, QPoint> imageResultsList;
 };
 
 #endif // MAINWINDOW_H

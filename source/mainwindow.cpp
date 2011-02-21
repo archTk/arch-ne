@@ -25,6 +25,7 @@
 #include "workspace.h"
 #include "DataCollector/datacollector.h"
 #include "dock.h"
+#include "resultsview.h"
 
 #include <QTextStream>
 using namespace std;
@@ -70,11 +71,12 @@ void MainWindow::insertDataCollectorToDock(DataCollector* theDataCollector, QPoi
         element = "SP";
     }
 
-    if (elementRequest.x() == 1 || elementRequest.y() == 2) {
-        element.append(" ");
+    if (elementRequest.x() == 1 || elementRequest.x() == 2) {
         QString idString;
         idString.setNum(elementRequest.y());
+        element.append(" ");
         element.append(idString);
+        mainout << element << endl;
     }
 
     dataCollectorList.insert(theDataCollector, elementRequest);
@@ -106,6 +108,29 @@ void MainWindow::setPageInTab(DataCollector* theDataCollector)
 {
     tabs->setCurrentWidget(theDataCollector);
     emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
+}
+
+void MainWindow::insertImageResultsToDock(ResultsView* theResultsView, QPoint elementRequest)
+{
+    QString element;
+
+    if (elementRequest.x() == 1) {
+        element = "node ";
+    } else if (elementRequest.x() == 2) {
+        element = "edge ";
+    }
+
+    QString idString;
+    idString.setNum(elementRequest.y());
+    element += idString + " RESULTS";
+    mainout << element << endl;
+
+    //imageResultsList.insert(pic, elementRequest);
+
+    tabs->insertTab(0, theResultsView, element);
+    tabs->setCurrentWidget(theResultsView);
+    //emit showingResults2Ws(elementRequest);
+    dock->setWidget(tabs);
 }
 
 void MainWindow::tabsContentChanged()
@@ -143,7 +168,8 @@ void MainWindow::hideDock()
 
 void MainWindow::showDock()
 {
-    dock->resize(850,800);
+    //dock->resize(850,800);
+    dock->setMinimumSize(100, 100);
     dock->show();
 }
 
