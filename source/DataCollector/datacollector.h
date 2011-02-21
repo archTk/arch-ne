@@ -71,7 +71,7 @@ private:
     void DomToTree(QDomElement iDomElement,QString iParentType,QModelIndex index,bool required=false);
     void removeRow(QModelIndex index);
     int insertChild(bool isAttribute,bool required,QModelIndex index,QString rowFirstCol,QString type,QStringList members,QString value="");
-    QList<QStringList> getElementInfo(QString elementName,QString parentName);
+    QList<QStringList> getElementInfo(QString elementName,QString parentType);
     QStringList fixElementInfo(QStringList info);
     QStringList getEnumeration(QString iType);
     void updateDomStatus();
@@ -89,8 +89,7 @@ private:
 
     QString workingDom;   
     QString rootName;   
-    QString rootSchemaType;   
-    QString rootParent;   
+    QString rootType;   
     QString getElementInfoXqString;
     QString getEnumerationXqString;
     QXmlSchema requestSchema;

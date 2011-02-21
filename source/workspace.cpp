@@ -21,6 +21,7 @@
 #include "graphlayout.h"
 #include "graphproperties.h"
 #include "graphmesh.h"
+#include "networkproperties.h"
 #include "unraveller.h"
 #include "workspace.h"
 
@@ -44,6 +45,7 @@ Workspace::Workspace(QObject *parent) :
     graphLayout = new GraphLayout;
     graphProperties = new GraphProperties;
     graphMesh = new GraphMesh;
+    networkProperties = new NetworkProperties;
 
     connect(graph, SIGNAL(nodeDeleted(int)), graphLayout, SLOT(deleteNodeFromGraph(int)));
     connect(graph, SIGNAL(nodeDeleted(int)), graphProperties, SLOT(deleteNodeFromGraph(int)));
@@ -1529,6 +1531,36 @@ void Workspace::setEdgeProperties(int edgeId, QString edgeProp)
     graphProperties->setEdgeProperties(edgeId, edgeProp);
 }
 
+void Workspace::setBCXML(QString theBCXML)
+{
+    networkProperties->setBCXML(theBCXML);
+}
+
+QString Workspace::getBCXML()
+{
+    return networkProperties->getBCXML();
+}
+
+void Workspace::setSPXML(QString theSPXML)
+{
+    networkProperties->setSPXML(theSPXML);
+}
+
+QString Workspace::getSPXML()
+{
+    return networkProperties->getSPXML();
+}
+
+void Workspace::setCaseInfoXML(QString theCaseInfoXML)
+{
+    networkProperties->setCaseInfoXML(theCaseInfoXML);
+}
+
+QString Workspace::getCaseInfoXML()
+{
+    return networkProperties->getCaseInfoXML();
+}
+
 void Workspace::setZoomFactor(float theZoomFactor)
 {
     zoomFactor = theZoomFactor;
@@ -1698,6 +1730,7 @@ void Workspace::clear()
     graphLayout->clear();
     graphProperties->clear();
     graphMesh->clear();
+    networkProperties->clear();
 
     supportNodes.clear();
     supportEdges.clear();

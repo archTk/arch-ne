@@ -95,6 +95,8 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     treeView->setColumnHidden(5,true);
     treeView->setColumnHidden(6,true);
     treeView->setColumnHidden(7,true);
+    treeView->header()->moveSection(8,0);
+    treeView->header()->moveSection(9,0);
 
     connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(treeViewDataChanged()));
     connect(treeView->selectionModel(),SIGNAL(selectionChanged(const QItemSelection &,const QItemSelection &)),this, SLOT(updateTools()));
@@ -111,17 +113,28 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
 
 void DataCollector::viewClicked(QModelIndex index)
 {
-    if(index.column()==9 and actionRemoveElement->isEnabled())
+    if (index.column()==9 and actionRemoveElement->isEnabled()){
         removeRow(index);
+        return;
+    }
     QAbstractItemModel *model = treeView->model();
     QStringList leftMembers = model->data(model->index(index.row(),5,index.parent())).toStringList();
-    if(index.column()==8 and leftMembers.size()==1){
+    if (index.column()==8 and leftMembers.size()>1){
+        treeView->edit(treeView->selectionModel()->currentIndex());
+        return;
+    }
+    if (index.column()==8 and leftMembers.size()==1){
         QDomDocument *doc = new QDomDocument(); 
         QDomElement addedElement = doc->createElement(leftMembers.at(0));
         avoidUpdateFlag=true;
         DomToTree(addedElement,model->data(model->index(index.row(),3,index.parent())).toString(),model->index(index.row(),0,index.parent()));
         avoidUpdateFlag=false;
         updateDomStatus();
+        return;
+    }
+    if (index.column()==1 and !model->data(model->index(index.row(),7,index.parent())).toBool()){
+        treeView->edit(treeView->selectionModel()->currentIndex());
+        return;
     }
 }
 
@@ -132,8 +145,19 @@ void DataCollector::setupData()
     domDoc.setContent(undoStack.at(0));    
 
     rootName = domDoc.firstChild().nodeName();
-    rootSchemaType = rootName + "Type";
-    rootParent = rootName + "sType";
+    QFile sf(requestSchemaPath);
+    sf.open(QIODevice::ReadOnly);
+    QXmlQuery query;
+    query.bindVariable("inputDocument", &sf);
+    query.bindVariable("rootName", QVariant(rootName));
+    query.setQuery("declare variable $inputDocument external;\ndeclare variable $rootName external;\nlet $type := data(doc($inputDocument)//xs:complexType//xs:element[@name = $rootName]/@type)\nreturn string($type)");
+    if (!query.isValid())
+        return;
+    QString result;
+    if (!query.evaluateTo(&result))
+        return;
+    sf.close();
+    rootType = result.trimmed();
     setRequestSchema();
     currentStack=0;
     loadStack(0);
@@ -167,8 +191,8 @@ void DataCollector::loadStack(int stackId)
     QDomDocument domDoc;
     domDoc.setContent(undoStack.at(stackId));    
     QDomElement rootElement = domDoc.documentElement();
-    DomToTree(rootElement,rootParent,treeView->rootIndex(),true);
-    treeView->setColumnWidth(0,200);
+    DomToTree(rootElement,"no_parent",treeView->rootIndex(),true);
+    treeView->setColumnWidth(0,250);
     treeView->setColumnWidth(8,100);
     treeView->setColumnWidth(9,25);
     treeView->setExpanded(model->index(0,0,treeView->rootIndex()),true);
@@ -229,7 +253,7 @@ QStringList DataCollector::getEnumeration(QString iType)
     return resultList;
 }
 
-QList<QStringList> DataCollector::getElementInfo(QString elementName, QString parentName)
+QList<QStringList> DataCollector::getElementInfo(QString elementName,QString parentType)
 {
     QFile docFile(requestSchemaPath);
     docFile.open(QIODevice::ReadOnly);
@@ -237,7 +261,8 @@ QList<QStringList> DataCollector::getElementInfo(QString elementName, QString pa
     QXmlQuery query;
     query.bindVariable("inputDocument", &docFile);
     query.bindVariable("rootName", QVariant(elementName));
-    query.bindVariable("rootParent", QVariant(parentName));
+    query.bindVariable("rootParent", QVariant(parentType));
+    query.bindVariable("givenType", QVariant(rootType));
     query.setQuery(getElementInfoXqString);
     if (!query.isValid())
         return QList<QStringList>();
@@ -616,7 +641,7 @@ void DataCollector::DomToTree(QDomElement iDomElement,QString iParentType,QModel
     for(int i=0;i<iDomElement.childNodes().size();++i){
         if(currentChildren.at(i)!="#")
             DomToTree(iDomElement.childNodes().item(i).toElement(),iInfo.at(0).at(0),model->index(iRow,0,index)); 
-    }   
+    }  
 }
 
 void DataCollector::setRequestSchema()
@@ -630,13 +655,13 @@ void DataCollector::setRequestSchema()
             resultString.append(QString::fromLatin1(file.readAll()));    
             file.close();
             cachedSchema = true;
-    }   
+    }
     if(!cachedSchema){
        QueryExecuter *query = new QueryExecuter; 
        query->setQueryFile(":xml/getSubSchema.xq");
        query->setDocFile(requestSchemaPath);
        query->addVariable("rootName",rootName);
-       query->addVariable("rootParent",rootParent);
+       query->addVariable("rootType",rootType);
        query->evaluateQuery();
        resultString.append(query->getQueryResult());
        QFile ofile(QDir::tempPath()+"/"+fi.fileName()+"."+rootName+".dat");

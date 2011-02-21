@@ -225,7 +225,7 @@ void InputOutput::loadMesh(GraphMesh *graphMesh)
     }
 }
 
-void InputOutput::saveGraph(const QString &fileName, Graph *graph, GraphProperties *graphProperties, QVector<int> nodes, QVector<int> edges)
+void InputOutput::saveGraph(const QString &fileName, GraphProperties *graphProperties, QVector<int> nodes, QVector<int> edges)
 {
     QString graphName(fileName);
     graphName.append("_graph.xml");
@@ -290,33 +290,24 @@ void InputOutput::generateMesh(const QString &fileName)
 {
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
-    QString scriptPath = settings.value("scriptPath", QString()).toString();
+    QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 
     if (pythonPath.isEmpty()) {
-        QMessageBox messBox(0);
-        messBox.setWindowTitle(tr("WARNING!"));
-        messBox.setText(tr("Python path has not been set.\n"
-                           "Please set it in Preferences..."));
-        messBox.addButton(QMessageBox::Ok);
-
-        messBox.exec();
+        showWarningMessage(tr("Path to python has not been set.\nPlease set it in Preferences..."));
         return;
     }
 
-    if (scriptPath.isEmpty()) {
-        QMessageBox messBox(0);
-        messBox.setWindowTitle(tr("WARNING!"));
-        messBox.setText(tr("MeshGenerator_Script.py path has not been set.\n"
-                           "Please set it in Preferences..."));
-        messBox.addButton(QMessageBox::Ok);
-
-        messBox.exec();
+    if (pyNSPath.isEmpty()) {
+        showWarningMessage(tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
         return;
     }
 
     meshOut = fileName;
     meshOut.remove("_graph.xml");
     meshOut.append("_mesh.xml");
+
+    QString scriptPath;
+    scriptPath = pyNSPath + "/MeshGenerator_Script.py";
 
     QStringList arguments;
     arguments << scriptPath << "-i" << fileName << "-o" << meshOut << "-v" << "5e-2";
@@ -331,7 +322,7 @@ void InputOutput::generateMesh(const QString &fileName)
 void InputOutput::errorFromExternal(QProcess::ProcessError)
 {
     int err = pyNS->error();
-    IOout << err << endl;
+    IOout << "error from external process: " << err << endl;
 }
 
 void InputOutput::meshingComplete()
@@ -397,10 +388,14 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
 
 void InputOutput::customizeGraph(const QString &fileName)
 {
+    QSettings settings("archTk", "ARCHNetworkEditor");
+    QString pythonPath = settings.value("pythonPath", QString()).toString();
+    QString pyNSPath = settings.value("pyNSPath", QString()).toString();
+
 
 }
 
-void InputOutput::saveNetwork(const QString& fileName, Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties,
+void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties,
                               QVector<int> nodes, QVector<int> edges)
 {
     QString graphName(fileName);
@@ -674,4 +669,14 @@ void InputOutput::loadLayout(QDomDocument theDomDoc, GraphLayout *graphLayout)
 
         edgeLayout = edgeLayout.nextSiblingElement("edge_layout");
     }
+}
+
+void InputOutput::showWarningMessage(QString theMessage)
+{
+    QMessageBox messBox(0);
+    messBox.setWindowTitle(tr("WARNING!"));
+    messBox.setText(theMessage);
+    messBox.addButton(QMessageBox::Ok);
+
+    messBox.exec();
 }

@@ -202,6 +202,10 @@ void MainWindow::createActions()
     customizeAct = new QAction(QIcon(":/images/custom.png"), tr("Personalize graph information"), this);
     customizeAct->setStatusTip(tr("Personalize graph information"));
     connect(customizeAct, SIGNAL(triggered()), this, SLOT(customizePressed()));
+
+    simulateAct = new QAction(QIcon(":/images/custom.png"), tr("Simulate"), this);
+    simulateAct->setStatusTip(tr("Launch the simulation"));
+    connect(simulateAct, SIGNAL(triggered()), this, SLOT(simulatePressed()));
     /////
 
     addSegmentAct = new QAction(QIcon(":/images/addSegment.png"), tr("&Add Segment"), this);
@@ -335,10 +339,14 @@ void MainWindow::createMenus()
     operationMenu->addAction(splitSegmentAct);
     operationMenu->addAction(superEdgeAct);
     operationMenu->addAction(selectElementsAct);
+    operationMenu->addSeparator();
     operationMenu->addAction(meshAct);
     operationMenu->addAction(defaultMeshAct);
     operationMenu->addAction(infoAct);
+    operationMenu->addAction(bcAct);
+    operationMenu->addAction(spAct);
     operationMenu->addAction(customizeAct);
+    operationMenu->addAction(simulateAct);
 
     menuBar()->addSeparator();
 
@@ -414,6 +422,7 @@ void MainWindow::createToolBars()
     operationToolBar->addAction(bcAct);
     operationToolBar->addAction(spAct);
     operationToolBar->addAction(customizeAct);
+    operationToolBar->addAction(simulateAct);
 }
 
 void MainWindow::createStatusBar()
@@ -592,6 +601,11 @@ bool MainWindow::saveAs()
     }
 
     return saveFile(fileName);
+}
+
+void MainWindow::simulatePressed()
+{
+
 }
 
 void MainWindow::about()

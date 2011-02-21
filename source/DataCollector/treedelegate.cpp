@@ -60,6 +60,7 @@ void TreeDelegate::setEditorData(QWidget *editor,const QModelIndex &index) const
         QComboBox *comboBox = static_cast<QComboBox *>(editor);
         int currIndex = comboBox->findText(index.model()->data(index).toString())>=0 ? comboBox->findText(index.model()->data(index).toString()): 0;
         comboBox->setCurrentIndex(currIndex);
+        comboBox->showPopup();
     } else {
         QStyledItemDelegate::setEditorData(editor, index);
     }

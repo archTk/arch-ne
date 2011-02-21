@@ -2,6 +2,11 @@
 <ui version="4.0">
 <class>DataCollector</class>
 <widget class="QWidget" name="DataCollector">
+<property name="styleSheet">
+<string notr="true">
+QPlainTextEdit {color:#000000;border 0px solid transparent;margin:0;padding:0;background-color:#ffffbf}
+</string>
+</property>
 	<layout class="QVBoxLayout" name="vboxLayout">
 		<property name="margin"><number>0</number></property>
 		<property name="spacing"><number>0</number></property>
@@ -13,7 +18,7 @@
 				<property name="alternatingRowColors"><bool>true</bool></property>
 				<property name="selectionBehavior"><enum>QAbstractItemView::SelectItems</enum></property>
 				<property name="horizontalScrollMode"><enum>QAbstractItemView::ScrollPerPixel</enum></property>
-				<property name="indentation"><number>10</number></property>
+				<property name="indentation"><number>20</number></property>
 				<property name="animated"><bool>false</bool></property>
 				<property name="allColumnsShowFocus"><bool>true</bool></property>
 				</widget>

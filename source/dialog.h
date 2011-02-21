@@ -37,7 +37,7 @@ private slots:
     void cancelPressed();
     void okPressed();
     void pythonChoosePressed();
-    void scriptChoosePressed();
+    void pyNSChoosePressed();
 
 private:
     Ui::Dialog *ui;

@@ -27,13 +27,13 @@
 #include <QString>
 #include <QSharedPointer>
 
-
 class ApplicationStatus;
 class InputOutput;
 class Graph;
 class GraphLayout;
 class GraphProperties;
 class GraphMesh;
+class NetworkProperties;
 class Unraveller;
 
 class Workspace : public QObject
@@ -54,8 +54,8 @@ public:
 
     QPointF getNodePosition(int nodeId);
     QString getNodeProperties(int nodeId);
-    QString getNodeName(int nodeId);
 
+    QString getNodeName(int nodeId);
     void setNodeName(int nodeId, QString theName);
 
     void setEdgeName(int edgeId, QString theName);
@@ -72,6 +72,12 @@ public:
 
     void setNodeProperties(int nodeId, QString nodeProp);
     void setEdgeProperties(int edgeId, QString edgeProp);
+    void setBCXML(QString theBCXML);
+    void setSPXML(QString theSPXML);
+    void setCaseInfoXML(QString thecaseInfoXML);
+    QString getBCXML();
+    QString getSPXML();
+    QString getCaseInfoXML();
 
     void setNodePosition(int nodeId, QPointF pos);
 
@@ -103,6 +109,7 @@ public:
     GraphLayout* getGraphLayout();
     GraphProperties* getGraphProperties();
     GraphMesh* getGraphMesh();
+    NetworkProperties* networkProperties;
 
     ApplicationStatus* getCurrentStatus();
 

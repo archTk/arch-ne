@@ -1,36 +1,35 @@
 declare variable $inputDocument external;
 declare variable $rootName external ;
-declare variable $rootParent external ;
+declare variable $rootType external ;
+declare variable $xsdFile := doc($inputDocument) ;
 
-declare function local:getSubElements($parent,$rootFile)
+declare function local:getSubElements($parent)
 {
-let $atts := local:getSubAttributes($parent,$rootFile)
-let $attg := local:getAttributeGroups($parent,$rootFile)
+let $atts := local:getSubAttributes($parent)
+let $attg := local:getAttributeGroups($parent)
 for $x in $parent//xs:element
-   let $y := $rootFile//xs:complexType[@name = data($x/@type)]
-   let $z := $rootFile//xs:simpleType[@name = data($x/@type)]
-   let $w := $rootFile//xs:simpleType[@name = data($z//xs:restriction/@base)]
-   return  $atts | $attg | $z | $y | $w | local:getSubElements($y,$rootFile)
+   let $y := $xsdFile//xs:complexType[@name = data($x/@type)]
+   let $z := $xsdFile//xs:simpleType[@name = data($x/@type)]
+   let $w := $xsdFile//xs:simpleType[@name = data($z//xs:restriction/@base)]
+   return  $atts | $attg | $z | $y | $w | local:getSubElements($y)
 };
 
-declare function local:getAttributeGroups($parent,$rootFile)
+declare function local:getAttributeGroups($parent)
 {
 for $x in $parent//xs:attributeGroup
-   let $y := $rootFile//xs:attributeGroup[@name = data($x/@ref)]
-   return $y | local:getSubAttributes($y,$rootFile)
+   let $y := $xsdFile//xs:attributeGroup[@name = data($x/@ref)]
+   return $y | local:getSubAttributes($y)
 };
 
-declare function local:getSubAttributes($parent,$rootFile)
+declare function local:getSubAttributes($parent)
 {
 for $x in $parent//xs:attribute
-   let $y := $rootFile//xs:simpleType[@name = data($x/@type)]
+   let $y := $xsdFile//xs:simpleType[@name = data($x/@type)]
    return $y 
 };
 
-let $xsdFile := doc($inputDocument)
-let $rootType := data($xsdFile//xs:complexType[@name = $rootParent]//xs:element[@name = $rootName]/@type)
 let $rootElement := $xsdFile//xs:complexType[@name = $rootType] 
-let $subElements := local:getSubElements($rootElement,$xsdFile)
+let $subElements := local:getSubElements($rootElement)
 let $subNames := for $k in $subElements
                                  return data($k/@name)
 let $uniqueNames := distinct-values($subNames)
@@ -46,6 +45,4 @@ return
 {$rootElement}
 {$finalElements}
 </xsd:schema>
-
-
 

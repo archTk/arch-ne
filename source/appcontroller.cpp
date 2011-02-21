@@ -178,7 +178,7 @@ void AppController::generateMesh(const QString &fileName)
     InputOutput* inputOutput = new InputOutput();
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goMeshing(QString)));
 
-    inputOutput->saveGraph(fileName, workspace->getGraph(), workspace->getGraphProperties(), nodes, edges);
+    inputOutput->saveGraph(fileName, workspace->getGraphProperties(), nodes, edges);
 
     emit restoreCurs();
 }
@@ -194,7 +194,12 @@ void AppController::goMeshing(const QString &fileName)
 void AppController::bcPressed()
 {
     QPoint elementRequest(3, 0);
-    QString XMLString("<boundarycondition/>");
+    QString XMLString;
+    XMLString = workspace->getBCXML();
+
+    if (XMLString.isEmpty()) {
+        XMLString = "<boundarycondition/>";
+    }
 
     QVector<QString> hiddenItems;
     hiddenItems.clear();
@@ -210,7 +215,12 @@ void AppController::bcPressed()
 void AppController::spPressed()
 {
     QPoint elementRequest(4, 0);
-    QString XMLString("<parameter/>");
+    QString XMLString;
+    XMLString = workspace->getSPXML();
+
+    if (XMLString.isEmpty()) {
+        XMLString = "<parameter/>";
+    }
 
     QVector<QString> hiddenItems;
     hiddenItems.clear();
@@ -253,7 +263,7 @@ void AppController::saveNetwork(const QString& fileName)
     QVector<int> nodes = workspace->getNodesIds();
     QVector<int> edges = workspace->getEdgesIds();
 
-    inputOutput->saveNetwork(fileName, workspace->getGraph(), workspace->getGraphLayout(), workspace->getGraphProperties(),
+    inputOutput->saveNetwork(fileName, workspace->getGraphLayout(), workspace->getGraphProperties(),
                              nodes, edges);
 
     QString theMessage(tr("Network saved"));
@@ -288,20 +298,23 @@ int AppController::uniqueDataRequestKey()
 void AppController::dataRequest(QPoint elementRequest)
 {
     QString XMLString;
+    QString XMLSchema;
 
-    if (elementRequest.x() == 1) {  // Element is a node.
+    if (elementRequest.x() == 1) {          // Element is a node.
         XMLString = workspace->getNodeProperties(elementRequest.y());
-    } else {                        // Element is an edge.
+        XMLSchema = ":XMLschema/schema.xsd";
+    } else if (elementRequest.x() == 2) {   // Element is an edge.
         XMLString = workspace->getEdgeProperties(elementRequest.y());
+        XMLSchema = ":XMLschema/schema.xsd";
     }
 
     if (XMLString.isEmpty()) {
         QString id;
         id.setNum(elementRequest.y());
 
-        if (elementRequest.x() == 1) {  // Element is a node.
+        if (elementRequest.x() == 1) {          // Element is a node.
             XMLString += "<node id=\"" + id + "\"/>";
-        } else {
+        } else if (elementRequest.x() == 2) {   // Element is an edge.
             QPoint temp = workspace->getNodesOfEdge(elementRequest.y());
             QString node1_id;
             node1_id.setNum(temp.x());
@@ -316,8 +329,6 @@ void AppController::dataRequest(QPoint elementRequest)
 
     QVector<QString> readOnlyItems;
     readOnlyItems << "node1_id" << "node2_id";
-
-    QString XMLSchema(":XMLschema/schema.xsd");
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
 }
@@ -355,7 +366,7 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
     QDomDocument doc("elementModifiedXML");
     doc.setContent(elementData);
 
-    if (temp.x() == 1) {    // Element is a node.
+    if (temp.x() == 1) {        // Element is a node.
         workspace->setNodeProperties(temp.y(), elementData);
         QDomNodeList nodeList = doc.elementsByTagName("node");
         QDomNode nodeNode = nodeList.at(0);
@@ -364,7 +375,7 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         if (!attrName.isNull()) {
             workspace->setNodeName(temp.y(), attrName);
         }
-    } else if (temp.x() == 2) {                // Element is an edge.
+    } else if (temp.x() == 2) { // Element is an edge.
         workspace->setEdgeProperties(temp.y(), elementData);
         QDomNodeList edgeList = doc.elementsByTagName("edge");
         QDomNode edgeNode = edgeList.at(0);
@@ -374,9 +385,11 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
             workspace->setEdgeName(temp.y(), attrName);
         }
     } else if (temp.x() == 3) { // Boundary Conditions.
-        appout << "BC" << endl;
+        workspace->setBCXML(elementData);
     } else if (temp.x() == 4) { // Simulation Parameters.
-        appout << "SP" << endl;
+        workspace->setSPXML(elementData);
+    } else if (temp.x() == 5) { // Patient information.
+        workspace->setCaseInfoXML(elementData);
     }
 }
 

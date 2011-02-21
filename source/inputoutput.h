@@ -40,8 +40,8 @@ public:
 
     void loadMesh(GraphMesh* graphMesh);
 
-    void saveGraph(const QString& fileName, Graph* graph, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
-    void saveNetwork(const QString& fileName, Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
+    void saveGraph(const QString& fileName, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
+    void saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
 
     void generateMesh(const QString& fileName);
     void loadMeshAfterGenerating(const QString& fileName, GraphMesh* graphMesh);
@@ -61,6 +61,7 @@ public slots:
 private:
     void loadGraph(QDomDocument theDomDoc, Graph *graph, GraphProperties *graphProperties);
     void loadLayout(QDomDocument theDomDoc, GraphLayout* graphLayout);
+    void showWarningMessage(QString theMessage);
 
     QProcess* pyNS;
 

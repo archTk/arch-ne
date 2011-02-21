@@ -89,15 +89,16 @@ private slots:
     void about();
     void customizePressed();
     void documentWasModified();
-    void newNetwork();
-    void openNetwork();
+    void elementsBeenHit(QVector<QPoint> hitEls);
     void importNetwork();
     void importMesh();
     void meshPressed();
+    void newNetwork();
+    void openNetwork();
     bool save();
     bool saveAs();
+    void simulatePressed();
     void tabsContentChanged();
-    void elementsBeenHit(QVector<QPoint> hitEls);
 
 public slots:
     void restoreCurs();
@@ -164,6 +165,7 @@ private:
     QAction* selectElementsAct;
     QAction* showGridAct;
     QAction* showLabelsAct;
+    QAction* simulateAct;
     QAction* snapToGridAct;
     QAction* spAct;
     QAction* splitSegmentAct;

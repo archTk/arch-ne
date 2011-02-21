@@ -34,10 +34,10 @@ Dialog::Dialog(QWidget *parent) :
 
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
-    QString scriptPath = settings.value("scriptPath", QString()).toString();
+    QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 
     ui->pythonEdit->setText(pythonPath);
-    ui->meshGenEdit->setText(scriptPath);
+    ui->pyNSEdit->setText(pyNSPath);
 }
 
 void Dialog::cancelPressed()
@@ -49,7 +49,7 @@ void Dialog::okPressed()
 {
     QSettings settings("archTk", "ARCHNetworkEditor");
     settings.setValue("pythonPath", ui->pythonEdit->text());
-    settings.setValue("scriptPath", ui->meshGenEdit->text());
+    settings.setValue("pyNSPath", ui->pyNSEdit->text());
     cancelPressed();
 }
 
@@ -59,8 +59,9 @@ void Dialog::pythonChoosePressed()
     ui->pythonEdit->setText(pythonPath);
 }
 
-void Dialog::scriptChoosePressed()
+void Dialog::pyNSChoosePressed()
 {
-    QString scriptPath = QFileDialog::getOpenFileName(this, tr("Set MeshGenerator_Script.py path"), "/home");
-    ui->meshGenEdit->setText(scriptPath);
+    QString pyNSPath = QFileDialog::getExistingDirectory(this, tr("Set pyNS path"), "/home", QFileDialog::ShowDirsOnly
+                                                    | QFileDialog::DontResolveSymlinks);
+    ui->pyNSEdit->setText(pyNSPath);
 }

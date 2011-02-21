@@ -140,7 +140,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
      }
 
      /*if (role == Qt::BackgroundRole){
-         if (index.column() == 8 or index.column() == 9)
+         if (index.column() == 1 or index.column() == 0)
              return QBrush(QColor("#515151"));
      }*/
 
@@ -163,13 +163,13 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
      if (!index.isValid())
          return 0;
-     if (index.column()==9)
+     if (index.column()==9) // (-)
          return Qt::ItemIsEnabled;
 
-     if (index.column()==8 and !getItem(index)->data(5).toStringList().isEmpty())
+     if (index.column()==8 and !getItem(index)->data(5).toStringList().isEmpty()) //(+)
          return Qt::ItemIsEnabled | Qt::ItemIsEditable;
 
-     if (index.column()!=1)
+     if (index.column()!=1) // (value)
          return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
      if (getItem(index)->data(7).toBool())
@@ -225,6 +225,4 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
 
      return createIndex(parentItem->childNumber(), 0, parentItem);
 }
-
-
 

@@ -61,7 +61,7 @@
     <string>Location:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="meshGenLabel">
+  <widget class="QLabel" name="pyNSLabel">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -76,10 +76,10 @@
     </font>
    </property>
    <property name="text">
-    <string>MeshGenerator_Script</string>
+    <string>pyNS</string>
    </property>
   </widget>
-  <widget class="QLabel" name="mehGenLocation">
+  <widget class="QLabel" name="pyNSLocation">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -102,16 +102,6 @@
     <rect>
      <x>90</x>
      <y>51</y>
-     <width>341</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="meshGenEdit">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>151</y>
      <width>341</width>
      <height>20</height>
     </rect>
@@ -146,7 +136,7 @@
     <string>Choose...</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="scriptChoose">
+  <widget class="QPushButton" name="pyNSChoose">
    <property name="geometry">
     <rect>
      <x>440</x>
@@ -157,6 +147,16 @@
    </property>
    <property name="text">
     <string>Choose...</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="pyNSEdit">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>150</y>
+     <width>341</width>
+     <height>20</height>
+    </rect>
    </property>
   </widget>
  </widget>
@@ -201,28 +201,28 @@
    <slot>pythonChoosePressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>482</x>
-     <y>59</y>
+     <x>490</x>
+     <y>61</y>
     </hint>
     <hint type="destinationlabel">
-     <x>411</x>
-     <y>18</y>
+     <x>274</x>
+     <y>149</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>scriptChoose</sender>
+   <sender>pyNSChoose</sender>
    <signal>clicked()</signal>
    <receiver>Dialog</receiver>
-   <slot>scriptChoosePressed()</slot>
+   <slot>pyNSChoosePressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>482</x>
-     <y>161</y>
+     <x>490</x>
+     <y>162</y>
     </hint>
     <hint type="destinationlabel">
-     <x>389</x>
-     <y>108</y>
+     <x>274</x>
+     <y>149</y>
     </hint>
    </hints>
   </connection>
@@ -231,6 +231,6 @@
   <slot>okPressed()</slot>
   <slot>cancelPressed()</slot>
   <slot>pythonChoosePressed()</slot>
-  <slot>scriptChoosePressed()</slot>
+  <slot>pyNSChoosePressed()</slot>
  </slots>
 </ui>
