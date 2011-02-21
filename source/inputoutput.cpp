@@ -286,7 +286,7 @@ void InputOutput::saveGraph(const QString &fileName, GraphProperties *graphPrope
     emit graphSaved(graphName);
 }
 
-void InputOutput::generateMesh(const QString &fileName)
+/*void InputOutput::generateMesh(const QString &fileName)
 {
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
@@ -317,9 +317,9 @@ void InputOutput::generateMesh(const QString &fileName)
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshingComplete()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     pyNS->start(pythonPath, arguments);
-}
+}*/
 
-void InputOutput::errorFromExternal(QProcess::ProcessError)
+/*void InputOutput::errorFromExternal(QProcess::ProcessError)
 {
     int err = pyNS->error();
     IOout << "error from external process: " << err << endl;
@@ -328,7 +328,7 @@ void InputOutput::errorFromExternal(QProcess::ProcessError)
 void InputOutput::meshingComplete()
 {
     emit meshFileReady(meshOut);
-}
+}*/
 
 void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* graphMesh)
 {
@@ -669,7 +669,7 @@ void InputOutput::loadLayout(QDomDocument theDomDoc, GraphLayout *graphLayout)
     }
 }
 
-void InputOutput::showWarningMessage(QString theMessage)
+/*void InputOutput::showWarningMessage(QString theMessage)
 {
     QMessageBox messBox(0);
     messBox.setWindowTitle(tr("WARNING!"));
@@ -677,4 +677,4 @@ void InputOutput::showWarningMessage(QString theMessage)
     messBox.addButton(QMessageBox::Ok);
 
     messBox.exec();
-}
+}*/

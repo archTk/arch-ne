@@ -183,10 +183,46 @@ void AppController::generateMesh(const QString &fileName)
 
 void AppController::goMeshing(const QString &fileName)
 {
-    InputOutput* inputOutput = new InputOutput();
+    QSettings settings("archTk", "ARCHNetworkEditor");
+    QString pythonPath = settings.value("pythonPath", QString()).toString();
+    QString pyNSPath = settings.value("pyNSPath", QString()).toString();
+
+    if (pythonPath.isEmpty()) {
+        showWarningMessage(tr("Path to python has not been set.\nPlease set it in Preferences..."));
+        return;
+    }
+
+    if (pyNSPath.isEmpty()) {
+        showWarningMessage(tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
+        return;
+    }
+
+    meshOut = fileName;
+    meshOut.remove("_graph.xml");
+    meshOut.append("_mesh.xml");
+
+    QString scriptPath;
+    scriptPath = pyNSPath + "/MeshGenerator_Script.py";
+
+    QStringList arguments;
+    arguments << scriptPath << "-i" << fileName << "-o" << meshOut << "-v" << "5e-2";
+
+    pyNS = new QProcess(this);
+
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshHasBeenGenerated()));
+    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    pyNS->start(pythonPath, arguments);
+
+    /*InputOutput* inputOutput = new InputOutput();
 
     inputOutput->generateMesh(fileName);
-    connect(inputOutput, SIGNAL(meshFileReady(QString)), this, SLOT(meshHasBeenGenerated(QString)));
+    connect(inputOutput, SIGNAL(meshFileReady(QString)), this, SLOT(meshHasBeenGenerated(QString)));*/
+}
+
+void AppController::errorFromExternal(QProcess::ProcessError)
+{
+    int err = pyNS->error();
+    appout << "error from external process: " << err << endl;
 }
 
 void AppController::bcPressed()
@@ -239,10 +275,10 @@ void AppController::customizeGraph(const QString &fileName)
     connect(inputOutput, SIGNAL(customizedGraphReady(QString)), this, SLOT(graphHasBeenCustomized(QString)));
 }
 
-void AppController::meshHasBeenGenerated(const QString &fileName)
+void AppController::meshHasBeenGenerated()
 {
     InputOutput* inputOutput = new InputOutput();
-    inputOutput->loadMeshAfterGenerating(fileName, workspace->getGraphMesh());
+    inputOutput->loadMeshAfterGenerating(meshOut, workspace->getGraphMesh());
     emit updateSignal();
     emit restoreCurs();
 }
@@ -408,4 +444,14 @@ void AppController::dockClosed()
 {
     requestMap.clear();
     dataCollectorList.clear();
+}
+
+void AppController::showWarningMessage(QString theMessage)
+{
+    QMessageBox messBox(0);
+    messBox.setWindowTitle(tr("WARNING!"));
+    messBox.setText(theMessage);
+    messBox.addButton(QMessageBox::Ok);
+
+    messBox.exec();
 }

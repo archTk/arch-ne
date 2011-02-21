@@ -23,6 +23,7 @@
 #include <QPointF>
 #include <QFile>
 #include <QMap>
+#include <QProcess>
 
 class MainWindow;
 class Workspace;
@@ -53,10 +54,12 @@ public slots:
     void customizeGraph(const QString& fileName);
     void goMeshing(const QString& fileName);
 
+    void errorFromExternal(QProcess::ProcessError);
+
     void spPressed();
     void bcPressed();
 
-    void meshHasBeenGenerated(const QString& fileName);
+    void meshHasBeenGenerated();
     void graphHasBeenCustomized(const QString& fileName);
 
     void saveNetwork(const QString& fileName);
@@ -73,14 +76,19 @@ private:
     int uniqueDataRequestKey();
     void collectData(QPoint elementRequest, QString XMLString, QVector<QString> hiddenItems,
                      QVector<QString> readonlyItems, QString XMLSchema);
+    void showWarningMessage(QString theMessage);
 
     MainWindow* mainWindow;
     Workspace* workspace;
     EditorArea* editorArea;
 
+    QProcess* pyNS;
+
     QMap<int, QPoint> requestMap;
     QMap<int, DataCollector*> dataCollectorList;
     int incrementalDataRequest;
+
+    QString meshOut;
 };
 
 #endif // APPCONTROLLER_H

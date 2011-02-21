@@ -19,7 +19,6 @@
 #ifndef INPUTOUTPUT_H
 #define INPUTOUTPUT_H
 
-#include <QProcess>
 #include <QObject>
 #include <QtXml/QDomDocument>
 
@@ -43,7 +42,7 @@ public:
     void saveGraph(const QString& fileName, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
     void saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
 
-    void generateMesh(const QString& fileName);
+    //void generateMesh(const QString& fileName);
     void loadMeshAfterGenerating(const QString& fileName, GraphMesh* graphMesh);
 
     void customizeGraph(const QString& fileName);
@@ -55,17 +54,16 @@ signals:
     void meshFileReady(QString fileName);
 
 public slots:
-    void errorFromExternal(QProcess::ProcessError);
-    void meshingComplete();
+    //void meshingComplete();
 
 private:
     void loadGraph(QDomDocument theDomDoc, Graph *graph, GraphProperties *graphProperties);
     void loadLayout(QDomDocument theDomDoc, GraphLayout* graphLayout);
-    void showWarningMessage(QString theMessage);
+    //void showWarningMessage(QString theMessage);
 
-    QProcess* pyNS;
+    //QProcess* pyNS;
 
-    QString meshOut;
+    //QString meshOut;
 };
 
 #endif // INPUTOUTPUT_H
