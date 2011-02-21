@@ -179,8 +179,6 @@ void AppController::generateMesh(const QString &fileName)
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goMeshing(QString)));
 
     inputOutput->saveGraph(fileName, workspace->getGraphProperties(), nodes, edges);
-
-    emit restoreCurs();
 }
 
 void AppController::goMeshing(const QString &fileName)
@@ -246,6 +244,7 @@ void AppController::meshHasBeenGenerated(const QString &fileName)
     InputOutput* inputOutput = new InputOutput();
     inputOutput->loadMeshAfterGenerating(fileName, workspace->getGraphMesh());
     emit updateSignal();
+    emit restoreCurs();
 }
 
 void AppController::graphHasBeenCustomized(const QString &fileName)

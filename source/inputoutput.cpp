@@ -334,7 +334,7 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
 {
     QFile meshInFile(fileName);
 
-    meshInFile.open( QIODevice::ReadWrite );
+    meshInFile.open( QIODevice::ReadWrite);
 
     QTextStream meshIn(&meshInFile);
 
@@ -391,8 +391,6 @@ void InputOutput::customizeGraph(const QString &fileName)
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
-
-
 }
 
 void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties,
