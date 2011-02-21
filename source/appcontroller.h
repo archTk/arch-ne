@@ -47,29 +47,25 @@ signals:
     void updateSignal();
 
 public slots:
+    void bcPressed();
+    void customizeGraph(const QString& fileName);
+    void dataConfirAndClose(QString cookie, QString elementData);
+    void dataConfirmed(QString cookie ,QString elementData);
+    void dataRequest(QPoint elementRequest);
+    void dockClosed();
+    void errorFromExternal(QProcess::ProcessError);
+    void generateMesh(const QString& fileName);
+    void goMeshing(const QString& fileName);
+    void graphHasBeenCustomized(const QString& fileName);
     void loadGraphFromLayout();
     void loadGraphFromGraph();
     void loadMesh();
-    void generateMesh(const QString& fileName);
-    void customizeGraph(const QString& fileName);
-    void goMeshing(const QString& fileName);
-
-    void errorFromExternal(QProcess::ProcessError);
-
-    void spPressed();
-    void bcPressed();
-
     void meshHasBeenGenerated();
-    void graphHasBeenCustomized(const QString& fileName);
-
+    void patientInfoPressed();
     void saveNetwork(const QString& fileName);
     void setPreferences();
-
-    void dataRequest(QPoint elementRequest);
-    void dataConfirmed(QString cookie ,QString elementData);
-    void dataConfirAndClose(QString cookie, QString elementData);
-
-    void dockClosed();
+    void showResults(QPoint elementRequest);
+    void spPressed();
 
 private:
     void clear();

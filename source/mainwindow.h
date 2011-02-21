@@ -56,6 +56,8 @@ signals:
     void bcPressed();
     void blockNodesPressed();
     void defaultMeshPressed();
+    void dockClosedSig();
+    void editingEl2Ws(QPoint editingElement);
     void graphToBeCustomized(const QString& fileName);
     void homeViewPressed();
     void infoPressed();
@@ -63,8 +65,10 @@ signals:
     void loadGraphFromGraph();
     void meshToBeGenerated(const QString& fileName);
     void meshToBeLoaded();
+    void patientInfoPressed();
     void redoPressed();
     void removeSegmentPressed();
+    void resultsPressed();
     void saveNetwork(const QString& fileName);
     void selectElementsPressed();
     void setPrefPressed();
@@ -79,8 +83,7 @@ signals:
     void unravelNetPressed();
     void zoomInPressed();
     void zoomOutPressed();
-    void editingEl2Ws(QPoint editingElement);
-    void dockClosedSig();
+
 
 protected:
     void closeEvent(QCloseEvent* event);
@@ -157,9 +160,11 @@ private:
     QAction* meshAct;
     QAction* newNetworkAct;
     QAction* openNetworkAct;
+    QAction* patientInfoAct;
     QAction* preferencesAct;
     QAction* redoAct;
     QAction* removeSegmentAct;
+    QAction* resultsAct;
     QAction* saveAct;
     QAction* saveAsAct;
     QAction* selectElementsAct;

@@ -67,8 +67,10 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(graphToBeCustomized(QString)), this, SLOT(customizeGraph(QString)));
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
     connect(mainWindow, SIGNAL(meshToBeGenerated(QString)), this, SLOT(generateMesh(QString)));
+    connect(mainWindow, SIGNAL(patientInfoPressed()), this, SLOT(patientInfoPressed()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
+    connect(mainWindow, SIGNAL(resultsPressed()), workspace, SLOT(resultsRequest()));
     connect(mainWindow, SIGNAL(selectElementsPressed()), workspace, SLOT(selectElements()));
     connect(mainWindow, SIGNAL(setPrefPressed()), this, SLOT(setPreferences()));
     connect(mainWindow, SIGNAL(showGridPressed()), workspace, SLOT(showGrid()));
@@ -90,6 +92,7 @@ void AppController::createConnections()
 
     connect(workspace, SIGNAL(contentsChanged()), mainWindow, SLOT(documentWasModified()));
     connect(workspace, SIGNAL(dataRequest(QPoint)), this, SLOT(dataRequest(QPoint)));
+    connect(workspace, SIGNAL(showResults(QPoint)), this, SLOT(showResults(QPoint)));
     connect(workspace, SIGNAL(updateSignal()), editorArea, SLOT(updateRender()));
 
     connect(editorArea, SIGNAL(mouseBeenPressed(QPointF)), workspace, SLOT(mousePressed(QPointF)));
@@ -267,12 +270,27 @@ void AppController::spPressed()
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
 }
 
-void AppController::customizeGraph(const QString &fileName)
+void AppController::patientInfoPressed()
 {
-    InputOutput* inputOutput = new InputOutput();
+    appout << "AppController::patientInfoPressed()" << endl;
+    /*QPoint elementRequest(5, 0);
+    QString XMLString;
+    XMLString = workspace->getPatientInfoXML();
 
-    inputOutput->customizeGraph(fileName);
-    connect(inputOutput, SIGNAL(customizedGraphReady(QString)), this, SLOT(graphHasBeenCustomized(QString)));
+    if (XMLString.isEmpty()) {
+        XMLString = "<patgientInfo/>";
+    }
+
+    QVector<QString> hiddenItems;
+    hiddenItems.clear();
+
+    QVector<QString> readOnlyItems;
+    readOnlyItems.clear();
+
+    QString XMLSchema(":XMLschema/boundary_conditions.xsd");
+
+    collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
+    */
 }
 
 void AppController::meshHasBeenGenerated()
@@ -281,6 +299,15 @@ void AppController::meshHasBeenGenerated()
     inputOutput->loadMeshAfterGenerating(meshOut, workspace->getGraphMesh());
     emit updateSignal();
     emit restoreCurs();
+}
+
+void AppController::customizeGraph(const QString &fileName)
+{
+    QSettings settings("archTk", "ARCHNetworkEditor");
+    QString pythonPath = settings.value("pythonPath", QString()).toString();
+    QString pyNSPath = settings.value("pyNSPath", QString()).toString();
+
+    appout << "AppController::customizeGraph" << endl;
 }
 
 void AppController::graphHasBeenCustomized(const QString &fileName)
@@ -311,6 +338,19 @@ void AppController::setPreferences()
     Dialog propDialog;
 
     propDialog.exec();
+}
+
+void AppController::showResults(QPoint elementRequest)
+{
+    QString temp;
+
+    if (elementRequest.x() == 1) {          // Element is a node.
+        temp = "nodeResults";
+    } else if (elementRequest.x() == 2) {   // Element is an edge.
+        temp = "edgeResults";
+    }
+
+    appout << temp << endl;
 }
 
 void AppController::clear()
@@ -424,7 +464,7 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
     } else if (temp.x() == 4) { // Simulation Parameters.
         workspace->setSPXML(elementData);
     } else if (temp.x() == 5) { // Patient information.
-        workspace->setCaseInfoXML(elementData);
+        workspace->setPatientInfoXML(elementData);
     }
 }
 

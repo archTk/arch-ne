@@ -191,6 +191,10 @@ void MainWindow::createActions()
     redoAct->setShortcut(tr("Ctrl+shift+Z"));
     connect(redoAct, SIGNAL(triggered()), this, SIGNAL(redoPressed()));
 
+    patientInfoAct = new QAction(QIcon(":/images/patientInfo.png"), tr("Patient Info"), this);
+    patientInfoAct->setStatusTip(tr("Set patient information"));
+    connect(patientInfoAct, SIGNAL(triggered()), this, SIGNAL(patientInfoPressed()));
+
     bcAct = new QAction(QIcon(":/images/BC.png"), tr("Set Boundary Conditions"), this);
     bcAct->setStatusTip(tr("Set Boundary Conditions"));
     connect(bcAct, SIGNAL(triggered()), this, SIGNAL(bcPressed()));
@@ -203,7 +207,7 @@ void MainWindow::createActions()
     customizeAct->setStatusTip(tr("Personalize graph information"));
     connect(customizeAct, SIGNAL(triggered()), this, SLOT(customizePressed()));
 
-    simulateAct = new QAction(QIcon(":/images/custom.png"), tr("Simulate"), this);
+    simulateAct = new QAction(QIcon(":/images/simulation.png"), tr("Simulate"), this);
     simulateAct->setStatusTip(tr("Launch the simulation"));
     connect(simulateAct, SIGNAL(triggered()), this, SLOT(simulatePressed()));
     /////
@@ -230,6 +234,10 @@ void MainWindow::createActions()
     selectElementsAct->setShortcut(tr("Ctrl+shift+M"));
     selectElementsAct->setStatusTip(tr("Select part of the network"));
     connect(selectElementsAct, SIGNAL(triggered()), this, SIGNAL(selectElementsPressed()));
+
+    resultsAct = new QAction(QIcon(":/images/results.png"), tr("Show results"), this);
+    resultsAct->setStatusTip(tr("Show the simulation results"));
+    connect(resultsAct, SIGNAL(triggered()), this, SIGNAL(resultsPressed()));
 
     meshAct = new QAction(QIcon(":/images/mesh.png"), tr("Mesh the network"), this);
     meshAct->setStatusTip(tr("Create the mesh for the network"));
@@ -315,6 +323,7 @@ void MainWindow::createMenus()
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
     editMenu->addSeparator();
+    editMenu->addAction(patientInfoAct);
     editMenu->addAction(bcAct);
     editMenu->addAction(spAct);
     editMenu->addSeparator();
@@ -339,10 +348,11 @@ void MainWindow::createMenus()
     operationMenu->addAction(splitSegmentAct);
     operationMenu->addAction(superEdgeAct);
     operationMenu->addAction(selectElementsAct);
+    operationMenu->addAction(infoAct);
+    operationMenu->addAction(resultsAct);
     operationMenu->addSeparator();
     operationMenu->addAction(meshAct);
     operationMenu->addAction(defaultMeshAct);
-    operationMenu->addAction(infoAct);
     operationMenu->addAction(bcAct);
     operationMenu->addAction(spAct);
     operationMenu->addAction(customizeAct);
@@ -358,6 +368,7 @@ void MainWindow::createMenus()
     splitSegmentAct->setCheckable(true);
     superEdgeAct->setCheckable(true);
     selectElementsAct->setCheckable(true);
+    resultsAct->setCheckable(true);
     infoAct->setCheckable(true);
 
     showLabelsAct->setCheckable(true);
@@ -407,6 +418,7 @@ void MainWindow::createToolBars()
     operationGroup->addAction(translateAct);
     operationGroup->addAction(superEdgeAct);
     operationGroup->addAction(selectElementsAct);
+    operationGroup->addAction(resultsAct);
     operationGroup->setExclusive(true);
 
     operationToolBar->setMovable(true);
@@ -415,10 +427,12 @@ void MainWindow::createToolBars()
     operationToolBar->addAction(splitSegmentAct);
     operationToolBar->addAction(superEdgeAct);
     operationToolBar->addAction(selectElementsAct);
+    operationToolBar->addAction(infoAct);
+    operationToolBar->addAction(resultsAct);
     operationToolBar->addSeparator();
     operationToolBar->addAction(meshAct);
     operationToolBar->addAction(defaultMeshAct);
-    operationToolBar->addAction(infoAct);
+    operationToolBar->addAction(patientInfoAct);
     operationToolBar->addAction(bcAct);
     operationToolBar->addAction(spAct);
     operationToolBar->addAction(customizeAct);
@@ -605,7 +619,7 @@ bool MainWindow::saveAs()
 
 void MainWindow::simulatePressed()
 {
-
+    mainout << "MainWindow::simulatePressed()" << endl;
 }
 
 void MainWindow::about()

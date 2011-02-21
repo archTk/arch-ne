@@ -286,50 +286,6 @@ void InputOutput::saveGraph(const QString &fileName, GraphProperties *graphPrope
     emit graphSaved(graphName);
 }
 
-/*void InputOutput::generateMesh(const QString &fileName)
-{
-    QSettings settings("archTk", "ARCHNetworkEditor");
-    QString pythonPath = settings.value("pythonPath", QString()).toString();
-    QString pyNSPath = settings.value("pyNSPath", QString()).toString();
-
-    if (pythonPath.isEmpty()) {
-        showWarningMessage(tr("Path to python has not been set.\nPlease set it in Preferences..."));
-        return;
-    }
-
-    if (pyNSPath.isEmpty()) {
-        showWarningMessage(tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
-        return;
-    }
-
-    meshOut = fileName;
-    meshOut.remove("_graph.xml");
-    meshOut.append("_mesh.xml");
-
-    QString scriptPath;
-    scriptPath = pyNSPath + "/MeshGenerator_Script.py";
-
-    QStringList arguments;
-    arguments << scriptPath << "-i" << fileName << "-o" << meshOut << "-v" << "5e-2";
-
-    pyNS = new QProcess(this);
-
-    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshingComplete()));
-    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
-    pyNS->start(pythonPath, arguments);
-}*/
-
-/*void InputOutput::errorFromExternal(QProcess::ProcessError)
-{
-    int err = pyNS->error();
-    IOout << "error from external process: " << err << endl;
-}
-
-void InputOutput::meshingComplete()
-{
-    emit meshFileReady(meshOut);
-}*/
-
 void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* graphMesh)
 {
     QFile meshInFile(fileName);
@@ -384,13 +340,6 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
     }
 
     meshInFile.close();
-}
-
-void InputOutput::customizeGraph(const QString &fileName)
-{
-    QSettings settings("archTk", "ARCHNetworkEditor");
-    QString pythonPath = settings.value("pythonPath", QString()).toString();
-    QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 }
 
 void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties,
@@ -668,13 +617,3 @@ void InputOutput::loadLayout(QDomDocument theDomDoc, GraphLayout *graphLayout)
         edgeLayout = edgeLayout.nextSiblingElement("edge_layout");
     }
 }
-
-/*void InputOutput::showWarningMessage(QString theMessage)
-{
-    QMessageBox messBox(0);
-    messBox.setWindowTitle(tr("WARNING!"));
-    messBox.setText(theMessage);
-    messBox.addButton(QMessageBox::Ok);
-
-    messBox.exec();
-}*/

@@ -74,10 +74,10 @@ public:
     void setEdgeProperties(int edgeId, QString edgeProp);
     void setBCXML(QString theBCXML);
     void setSPXML(QString theSPXML);
-    void setCaseInfoXML(QString thecaseInfoXML);
+    void setPatientInfoXML(QString thePatientInfoXML);
     QString getBCXML();
     QString getSPXML();
-    QString getCaseInfoXML();
+    QString getPatientInfoXML();
 
     void setNodePosition(int nodeId, QPointF pos);
 
@@ -118,6 +118,7 @@ signals:
     void updateSignal();
     void contentsChanged();
     void dataRequest(QPoint elementRequest);
+    void showResults(QPoint elementRequest);
 
 public slots:
     void addSegment();
@@ -125,6 +126,7 @@ public slots:
     void blockNodes();
     void homeView();
     void info();
+    void resultsRequest();
 
     void redo();
     void removeSegment();
@@ -157,6 +159,7 @@ protected:
 private:
     int createNode(QPointF pos);
     int createEdge(int nodeAId, int nodeBId);
+    void clearSelectedAndUpdate();
     void deleteNode(int nodeId);
     void deleteEdge(int edgeId);
 
@@ -236,6 +239,7 @@ enum tool {
     selectE,
     information,
     trans,
+    results,
 };
 
 #endif // WORKSPACE_H

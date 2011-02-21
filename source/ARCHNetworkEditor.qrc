@@ -28,6 +28,8 @@
         <file>images/SP.png</file>
         <file>XMLschema/schema.xsd</file>
         <file>XMLschema/boundary_conditions.xsd</file>
+        <file>images/simulation.png</file>
+        <file>images/patientInfo.png</file>
         <file>images/custom.png</file>
     </qresource>
 </RCC>

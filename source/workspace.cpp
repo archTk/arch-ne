@@ -92,16 +92,8 @@ Workspace::Workspace(QObject *parent) :
 
 void Workspace::addSegment()
 {
-    //QSettings settings("archTk", "ARCHNetworkEditor");
-    //QString pythonPath = settings.value("pythonPath", QString()).toString();
-    //QString scriptPath = settings.value("scriptPath", QString()).toString();
-    //wsout << "ecco:" << endl << pythonPath << endl << scriptPath << endl;
-
     selectedTool = addS;
-
-    selectedNodes.clear();
-    selectedEdges.clear();
-    emit updateSignal();
+    clearSelectedAndUpdate();
 }
 
 void Workspace::removeSegment()
@@ -109,38 +101,47 @@ void Workspace::removeSegment()
     selectedTool = removeS;
 
     deleteSelectedEdges();
-    selectedNodes.clear();
-    selectedEdges.clear();
-    emit updateSignal();
+    clearSelectedAndUpdate();
 }
 
 void Workspace::splitSegment()
 {
     selectedTool = splitS;
-    selectedNodes.clear();
-    selectedEdges.clear();
-    emit updateSignal();
+    clearSelectedAndUpdate();
 }
 
 void Workspace::superEdge()
 {
     selectedTool = superE;
-    selectedNodes.clear();
-    selectedEdges.clear();
-    emit updateSignal();
+    clearSelectedAndUpdate();
 }
 
 void Workspace::selectElements()
 {
     selectedTool = selectE;
-    selectedNodes.clear();
-    selectedEdges.clear();
-    emit updateSignal();
+    clearSelectedAndUpdate();
 }
 
 void Workspace::info()
 {
     selectedTool = information;
+    clearSelectedAndUpdate();
+}
+
+void Workspace::resultsRequest()
+{
+    selectedTool = results;
+    clearSelectedAndUpdate();
+}
+
+void Workspace::translate()
+{
+    selectedTool = trans;
+    clearSelectedAndUpdate();
+}
+
+void Workspace::clearSelectedAndUpdate()
+{
     selectedNodes.clear();
     selectedEdges.clear();
     emit updateSignal();
@@ -299,14 +300,6 @@ void Workspace::showLabels()
     emit updateSignal();
 }
 
-void Workspace::translate()
-{
-    selectedTool = trans;
-    selectedNodes.clear();
-    selectedEdges.clear();
-    emit updateSignal();
-}
-
 void Workspace::homeView()
 {
     screenOrigin.setX(0);
@@ -420,6 +413,7 @@ void Workspace::mousePressed(QPointF pos)
             }
             break;
         case information:
+        case results:
             break;
     }
 }
@@ -474,6 +468,7 @@ void Workspace::mouseMoved(QPointF pos)
             case addS:
             case selectE:
             case information:
+            case results:
                 if (hitEl[0].x() == 1) {            // Hit elements are nodes.
                     supportEdges.remove("highlightingEdge");
                     supportNodes.insert("highlightingNode", hitEl[0].y());
@@ -775,6 +770,7 @@ void Workspace::mouseMoved(QPointF pos)
             emit updateSignal();
             break;
          case information:
+         case results:
             if (hitEl[0].x() == 2) {      // Hit elements are edges.
                 supportNodes.remove("highlightingNode");
                 supportEdges.insert("highlightingEdge", hitEl[0].y());
@@ -1009,6 +1005,11 @@ void Workspace::mouseReleased(QPointF pos)
             }
 
             break;
+        case results:
+
+            if (hitEl[0].x() != -1) {
+                emit showResults(hitEl[0]);
+            }
     }
 }
 
@@ -1551,14 +1552,14 @@ QString Workspace::getSPXML()
     return networkProperties->getSPXML();
 }
 
-void Workspace::setCaseInfoXML(QString theCaseInfoXML)
+void Workspace::setPatientInfoXML(QString thePatientInfoXML)
 {
-    networkProperties->setCaseInfoXML(theCaseInfoXML);
+    networkProperties->setPatientInfoXML(thePatientInfoXML);
 }
 
-QString Workspace::getCaseInfoXML()
+QString Workspace::getPatientInfoXML()
 {
-    return networkProperties->getCaseInfoXML();
+    return networkProperties->getPatientInfoXML();
 }
 
 void Workspace::setZoomFactor(float theZoomFactor)
