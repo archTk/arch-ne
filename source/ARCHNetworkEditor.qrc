@@ -31,5 +31,6 @@
         <file>images/simulation.png</file>
         <file>images/patientInfo.png</file>
         <file>images/custom.png</file>
+        <file>images/results.png</file>
     </qresource>
 </RCC>
