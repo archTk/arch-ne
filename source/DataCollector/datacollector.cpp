@@ -142,7 +142,7 @@ void DataCollector::setupData()
 {
     undoStack.append(requestDom);
     QDomDocument domDoc;
-    domDoc.setContent(undoStack.at(0));    
+    domDoc.setContent(undoStack.at(0));
 
     rootName = domDoc.firstChild().nodeName();
     QFile sf(requestSchemaPath);
@@ -184,39 +184,41 @@ void DataCollector::editDomToggled()
 
 void DataCollector::loadStack(int stackId)
 {
-    avoidUpdateFlag = true;
-    autoFill=false;
-    QAbstractItemModel *model = treeView->model();
-    removeRow(model->index(0,0,treeView->rootIndex())); 
-    QDomDocument domDoc;
-    domDoc.setContent(undoStack.at(stackId));    
-    QDomElement rootElement = domDoc.documentElement();
-    DomToTree(rootElement,"no_parent",treeView->rootIndex(),true);
-    treeView->setColumnWidth(0,250);
-    treeView->setColumnWidth(8,100);
-    treeView->setColumnWidth(9,25);
-    treeView->setExpanded(model->index(0,0,treeView->rootIndex()),true);
-    QModelIndex mainIndex = model->index(0,0,treeView->rootIndex()); 
-    for (int i=0;i<model->rowCount(mainIndex);++i){
-        if(model->data(model->index(i,2,mainIndex)).toBool() and requestHiddenItems.indexOf(model->data(model->index(i,0,mainIndex)).toString()) >=0 )
-            treeView->setRowHidden(i,mainIndex,true);
+   avoidUpdateFlag = true;
+   autoFill=false;
+   QAbstractItemModel *model = treeView->model();
+   if(model->index(0,0,treeView->rootIndex()).isValid())
+      removeRow(model->index(0,0,treeView->rootIndex()));
+   QDomDocument domDoc;
+   domDoc.setContent(undoStack.at(stackId));
+   QDomElement rootElement = domDoc.documentElement();
+   DomToTree(rootElement,"no_parent",treeView->rootIndex(),true);
+   treeView->setColumnWidth(0,250);
+   treeView->setColumnWidth(8,100);
+   treeView->setColumnWidth(9,25);
+   treeView->setExpanded(model->index(0,0,treeView->rootIndex()),true);
+   QModelIndex mainIndex = model->index(0,0,treeView->rootIndex());
+   for (int i=0;i<model->rowCount(mainIndex);++i){
+       if(model->data(model->index(i,2,mainIndex)).toBool() and requestHiddenItems.indexOf(model->data(model->index(i,0,mainIndex)).toString()) >=0 )
+           treeView->setRowHidden(i,mainIndex,true);
 
-        if(model->data(model->index(i,2,mainIndex)).toBool() and requestReadOnlyItems.indexOf(model->data(model->index(i,0,mainIndex)).toString()) >=0 )
+       if(model->data(model->index(i,2,mainIndex)).toBool() and requestReadOnlyItems.indexOf(model->data(model->index(i,0,mainIndex)).toString()) >=0 )
             model->setData(model->index(i,7,mainIndex),QVariant(true), Qt::EditRole);
-    }
-    avoidUpdateFlag = false;
-    newStack=false; 
-    updateDomStatus();
-    newStack=true;
-    updateTools();
-    autoFill=true;
+   }
+   avoidUpdateFlag = false;
+   newStack=false;
+   updateDomStatus();
+   newStack=true;
+   updateTools();
+   autoFill=true;
 }
 
 void DataCollector::removeRow(QModelIndex index)
 {
-    QAbstractItemModel *model = treeView->model();
-    model->removeRow(index.row(), index.parent());
-    updateLeftMembers(index.parent());
+    QModelIndex parent = index.parent();
+    if (!treeView->model()->removeRow(index.row(), index.parent()))
+        return;
+    updateLeftMembers(parent);
     updateTools();
 }
 
@@ -369,7 +371,7 @@ int DataCollector::getInsertionRow(QModelIndex index,QString iName)
 void DataCollector::updateLeftMembers(QModelIndex index)
 {
     QAbstractItemModel *model = treeView->model();
-    QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
+   QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
     QStringList splitList;
     for (int i=0;i<list.size();++i)
         splitList.append(list.at(i).split(",")[0]);
@@ -534,12 +536,12 @@ void DataCollector::treeViewDataChanged()
         model->setData(index,QVariant(""),Qt::EditRole);
         avoidUpdateFlag=false;
         updateDomStatus();
-        return; 
+        return;
     }
     
     updateDomStatus();
     updateTools();
-} 
+}
 
 void DataCollector::updateDomStatus()
 {
@@ -556,7 +558,7 @@ void DataCollector::updateDomStatus()
         updateHistory();
     workingDomText->setPlainText(workingDom);
 }
-    
+
 void DataCollector::TreeToDom(QDomDocument *doc,QDomElement iDomElement,QModelIndex index)
 {
     QAbstractItemModel *model = treeView->model();

@@ -11,6 +11,7 @@
        <file>icons/ok.png</file>
        <file>icons/editDom.png</file>
        <file>xml/getSubSchema.xq</file>
+       <file>xml/schema.xsd</file>
        <file>xml/getElementInfo.xq</file>
        <file>xml/getEnumeration.xq</file>
     </qresource>
