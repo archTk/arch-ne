@@ -366,11 +366,6 @@ void AppController::showResults(QPoint elementRequest)
     image.load("/Users/boss/Desktop/aorta_asc_1_pressure.png");
     QPixmap pic = image.scaledToWidth(300, Qt::SmoothTransformation);
 
-    //int requestKey = uniqueDataRequestKey();
-    //requestMap.insert(requestKey, elementRequest);
-    //QString cookie;
-    //cookie.setNum(requestKey);
-
     ResultsView* resultsView = new ResultsView(&pic);
 
     connect(resultsView, SIGNAL(okButtonClicked()), this, SLOT(closeResultsView()));

@@ -80,7 +80,6 @@ void MainWindow::insertDataCollectorToDock(DataCollector* theDataCollector, QPoi
         idString.setNum(elementRequest.y());
         element.append(" ");
         element.append(idString);
-        mainout << element << endl;
     }
 
     dataCollectorList.insert(theDataCollector, elementRequest);
@@ -104,7 +103,6 @@ void MainWindow::insertResultsViewToResultsDock(ResultsView* theResultsView, QPo
     QString idString;
     idString.setNum(elementRequest.y());
     element += idString + " RESULTS";
-    mainout << element << endl;
 
     resultsViewList.insert(theResultsView, elementRequest);
 
@@ -175,12 +173,10 @@ void MainWindow::resultsTabsContentChanged()
 void MainWindow::mouseEnteredInDock()
 {
     emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
-
 }
 
 void MainWindow::mouseEnteredInResultsDock()
 {
-    mainout << "MainWindow::mouseEnteredInDock" << endl;
     emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
 }
 
@@ -829,8 +825,6 @@ void MainWindow::setCurs()
 
 void MainWindow::restoreCurs()
 {
-    //mainout << "restoreCurs in MW" << endl;
-
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
 #endif

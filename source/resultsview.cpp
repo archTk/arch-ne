@@ -18,4 +18,5 @@ ResultsView::~ResultsView()
 void ResultsView::okButtClicked()
 {
     emit okButtonClicked();
+    emit deleteItself();
 }

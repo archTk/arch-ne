@@ -20,6 +20,7 @@ private:
 
 signals:
     void okButtonClicked();
+    void deleteItself();
 
 private slots:
     void okButtClicked();
