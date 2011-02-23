@@ -154,19 +154,28 @@ void MainWindow::setPageInTab(QWidget* theDataCollector)
     emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
 }
 
+void MainWindow::setPageInResultsTab(QWidget *theResultsView)
+{
+    resultsTabs->setCurrentWidget(theResultsView);
+    emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
+}
+
 void MainWindow::tabsContentChanged()
 {
     emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
+    setPageInResultsTab(resultsViewList.key(dataCollectorList.value(tabs->currentWidget())));
 }
 
 void MainWindow::resultsTabsContentChanged()
 {
     emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
+    setPageInTab(dataCollectorList.key(resultsViewList.value(resultsTabs->currentWidget())));
 }
 
 void MainWindow::mouseEnteredInDock()
 {
     emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
+
 }
 
 void MainWindow::mouseEnteredInResultsDock()
