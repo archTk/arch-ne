@@ -58,7 +58,8 @@ public slots:
     void errorFromExternal(QProcess::ProcessError);
     void generateMesh(const QString& fileName);
     void goMeshing(const QString& fileName);
-    void graphHasBeenCustomized(const QString& fileName);
+    void goCustomizing(const QString& fileName);
+    void graphHasBeenCustomized();
     void loadGraphFromLayout();
     void loadGraphFromGraph();
     void loadMesh();
@@ -67,6 +68,8 @@ public slots:
     void saveNetwork(const QString& fileName);
     void setPreferences();
     void showResults(QPoint elementRequest);
+    void simulateGraph(const QString& fileName);
+    void simulationHasBeenPerformed();
     void spPressed();
 
 private:
@@ -74,7 +77,7 @@ private:
     int uniqueDataRequestKey();
     void collectData(QPoint elementRequest, QString XMLString, QVector<QString> hiddenItems,
                      QVector<QString> readonlyItems, QString XMLSchema);
-    void showWarningMessage(QString theMessage);
+    void showMessage(QString theTitle, QString theMessage);
 
     MainWindow* mainWindow;
     Workspace* workspace;
@@ -88,6 +91,7 @@ private:
     int incrementalDataRequest;
 
     QString meshOut;
+    QString simulateOut;
 };
 
 #endif // APPCONTROLLER_H

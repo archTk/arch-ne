@@ -69,6 +69,7 @@ signals:
     void dockClosedSig();
     void editingEl2Ws(QPoint editingElement);
     void graphToBeCustomized(const QString& fileName);
+    void graphToBeSimulated(const QString& fileName);
     void homeViewPressed();
     void infoPressed();
     void loadGraphFromLayout();

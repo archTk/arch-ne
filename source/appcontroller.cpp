@@ -66,6 +66,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(editingEl2Ws(QPoint)), workspace, SLOT(setHighlightingEl(QPoint)));
     connect(mainWindow, SIGNAL(homeViewPressed()), workspace, SLOT(homeView()));
     connect(mainWindow, SIGNAL(graphToBeCustomized(QString)), this, SLOT(customizeGraph(QString)));
+    connect(mainWindow, SIGNAL(graphToBeSimulated(QString)), this, SLOT(simulateGraph(QString)));
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
     connect(mainWindow, SIGNAL(meshToBeGenerated(QString)), this, SLOT(generateMesh(QString)));
     connect(mainWindow, SIGNAL(patientInfoPressed()), this, SLOT(patientInfoPressed()));
@@ -192,12 +193,12 @@ void AppController::goMeshing(const QString &fileName)
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 
     if (pythonPath.isEmpty()) {
-        showWarningMessage(tr("Path to python has not been set.\nPlease set it in Preferences..."));
+        showMessage(tr ("WARNING!"), tr("Path to python has not been set.\nPlease set it in Preferences..."));
         return;
     }
 
     if (pyNSPath.isEmpty()) {
-        showWarningMessage(tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
+        showMessage(tr ("WARNING!"), tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
         return;
     }
 
@@ -216,11 +217,6 @@ void AppController::goMeshing(const QString &fileName)
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshHasBeenGenerated()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     pyNS->start(pythonPath, arguments);
-
-    /*InputOutput* inputOutput = new InputOutput();
-
-    inputOutput->generateMesh(fileName);
-    connect(inputOutput, SIGNAL(meshFileReady(QString)), this, SLOT(meshHasBeenGenerated(QString)));*/
 }
 
 void AppController::errorFromExternal(QProcess::ProcessError)
@@ -273,13 +269,12 @@ void AppController::spPressed()
 
 void AppController::patientInfoPressed()
 {
-    appout << "AppController::patientInfoPressed()" << endl;
-    /*QPoint elementRequest(5, 0);
+    QPoint elementRequest(5, 0);
     QString XMLString;
     XMLString = workspace->getPatientInfoXML();
 
     if (XMLString.isEmpty()) {
-        XMLString = "<patgientInfo/>";
+        XMLString = "<patient_data/>";
     }
 
     QVector<QString> hiddenItems;
@@ -291,7 +286,6 @@ void AppController::patientInfoPressed()
     QString XMLSchema(":XMLschema/boundary_conditions.xsd");
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
-    */
 }
 
 void AppController::meshHasBeenGenerated()
@@ -304,16 +298,102 @@ void AppController::meshHasBeenGenerated()
 
 void AppController::customizeGraph(const QString &fileName)
 {
+    if (!workspace->dataInGraph()) {
+        return;
+    }
+
+    emit setCurs();
+
+    QVector<int> nodes = workspace->getNodesIds();
+    QVector<int> edges = workspace->getEdgesIds();
+
+    InputOutput* inputOutput = new InputOutput();
+    connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goCustomizing(QString)));
+
+    inputOutput->saveGraph(fileName, workspace->getGraphProperties(), nodes, edges);
+}
+
+void AppController::goCustomizing(const QString &fileName)
+{
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 
-    appout << "AppController::customizeGraph" << endl;
+    if (pythonPath.isEmpty()) {
+        showMessage(tr ("WARNING!"), tr("Path to python has not been set.\nPlease set it in Preferences..."));
+        return;
+    }
+
+    if (pyNSPath.isEmpty()) {
+        showMessage(tr ("WARNING!"), tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
+        return;
+    }
+
+    QString scriptPath;
+    scriptPath = pyNSPath + "/ModelAdaptor_Script.py";
+
+    QStringList arguments;
+    arguments << scriptPath << "-i" << fileName << "-c" << workspace->getPatientInfoXML();
+
+    appout << "AppController::goCustomizing check arguments" << endl;
+
+    pyNS = new QProcess(this);
+
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(graphHasBeenCustomized()));
+    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    pyNS->start(pythonPath, arguments);
 }
 
-void AppController::graphHasBeenCustomized(const QString &fileName)
+void AppController::graphHasBeenCustomized()
 {
+    appout << "AppController::graphHasBeenCustomized synchronize with DataCollectot (XML has changed)" << endl;
+    emit restoreCurs();
+    showMessage(tr("CUSTOMIZATION COMPLETE!"), tr("The graph has been customized"));
+}
 
+void AppController::simulateGraph(const QString &fileName)
+{
+    if (!workspace->dataInGraphMesh()) {
+        return;
+    }
+
+    emit setCurs();
+
+    QSettings settings("archTk", "ARCHNetworkEditor");
+    QString pythonPath = settings.value("pythonPath", QString()).toString();
+    QString pyNSPath = settings.value("pyNSPath", QString()).toString();
+
+    if (pythonPath.isEmpty()) {
+        showMessage(tr ("WARNING!"), tr("Path to python has not been set.\nPlease set it in Preferences..."));
+        return;
+    }
+
+    if (pyNSPath.isEmpty()) {
+        showMessage(tr ("WARNING!"), tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
+        return;
+    }
+
+    simulateOut = fileName;
+    simulateOut.remove("_mesh.xml");
+    simulateOut.append("_results.xml");
+
+    QString scriptPath;
+    scriptPath = pyNSPath + "/Solver_Script.py";
+
+    QStringList arguments;
+    arguments << scriptPath << "-m" << meshOut << "-c" << workspace->getPatientInfoXML();
+
+    pyNS = new QProcess(this);
+
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
+    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    pyNS->start(pythonPath, arguments);
+}
+
+void AppController::simulationHasBeenPerformed()
+{
+    emit restoreCurs();
+    showMessage(tr("SIMULATION COMPLETE!"), tr("Simulation has been completed"));
 }
 
 void AppController::saveNetwork(const QString& fileName)
@@ -363,7 +443,7 @@ void AppController::showResults(QPoint elementRequest)
     // TODO: load the appropriate result image coherently with elementRequest.
 
     QPixmap image;
-    image.load("/Users/boss/Desktop/aorta_asc_1_pressure.png");
+    image.load("/Users/boss/bosshogg.jpg");
     QPixmap pic = image.scaledToWidth(300, Qt::SmoothTransformation);
 
     ResultsView* resultsView = new ResultsView(&pic);
@@ -498,10 +578,10 @@ void AppController::dockClosed()
     dataCollectorList.clear();
 }
 
-void AppController::showWarningMessage(QString theMessage)
+void AppController::showMessage(QString theTitle, QString theMessage)
 {
     QMessageBox messBox(0);
-    messBox.setWindowTitle(tr("WARNING!"));
+    messBox.setWindowTitle(theTitle);
     messBox.setText(theMessage);
     messBox.addButton(QMessageBox::Ok);
 

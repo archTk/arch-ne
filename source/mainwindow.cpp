@@ -73,6 +73,8 @@ void MainWindow::insertDataCollectorToDock(DataCollector* theDataCollector, QPoi
         element = "BC";
     } else if (elementRequest.x() == 4) {
         element = "SP";
+    } else if (elementRequest.x() == 5) {
+        element = "Patient Info";
     }
 
     if (elementRequest.x() == 1 || elementRequest.x() == 2) {
@@ -409,9 +411,9 @@ void MainWindow::createMenus()
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
     editMenu->addSeparator();
-    editMenu->addAction(patientInfoAct);
     editMenu->addAction(bcAct);
     editMenu->addAction(spAct);
+    editMenu->addAction(patientInfoAct);
     editMenu->addSeparator();
     editMenu->addAction(preferencesAct);
 
@@ -437,11 +439,11 @@ void MainWindow::createMenus()
     operationMenu->addAction(infoAct);
     operationMenu->addAction(resultsAct);
     operationMenu->addSeparator();
-    operationMenu->addAction(meshAct);
-    operationMenu->addAction(defaultMeshAct);
     operationMenu->addAction(bcAct);
     operationMenu->addAction(spAct);
     operationMenu->addAction(customizeAct);
+    operationMenu->addAction(meshAct);
+    operationMenu->addAction(defaultMeshAct);
     operationMenu->addAction(simulateAct);
 
     menuBar()->addSeparator();
@@ -516,12 +518,12 @@ void MainWindow::createToolBars()
     operationToolBar->addAction(infoAct);
     operationToolBar->addAction(resultsAct);
     operationToolBar->addSeparator();
-    operationToolBar->addAction(meshAct);
-    operationToolBar->addAction(defaultMeshAct);
-    operationToolBar->addAction(patientInfoAct);
     operationToolBar->addAction(bcAct);
     operationToolBar->addAction(spAct);
+    operationToolBar->addAction(patientInfoAct);
     operationToolBar->addAction(customizeAct);
+    operationToolBar->addAction(meshAct);
+    operationToolBar->addAction(defaultMeshAct);
     operationToolBar->addAction(simulateAct);
 }
 
@@ -715,7 +717,7 @@ bool MainWindow::saveAs()
 
 void MainWindow::simulatePressed()
 {
-    mainout << "MainWindow::simulatePressed()" << endl;
+    emit graphToBeSimulated(curFile);
 }
 
 void MainWindow::about()
