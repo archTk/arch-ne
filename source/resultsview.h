@@ -17,6 +17,12 @@ public:
 
 private:
     Ui::ResultsView *ui;
+
+signals:
+    void okButtonClicked();
+
+private slots:
+    void okButtClicked();
 };
 
 #endif // RESULTSVIEW_H

@@ -49,14 +49,17 @@ public:
     void insertDataCollectorToDock(DataCollector* theDataCollector, QPoint  elementRequest);
     void removeAllDataCollectorFromDock();
     void removeDataCollectorFromDock();
-    void setPageInTab(DataCollector* theDataCollector);
+    void setPageInTab(QWidget* theDataCollector);
 
-    void insertImageResultsToDock(ResultsView* theResultsView, QPoint elementRequest);
-    //void removeResultsFromDock();
-    //void setResultsPageInTab(QWidget* theImageResults);
+    void insertResultsViewToResultsDock(ResultsView* theResultsView, QPoint elementRequest);
+    void removeAllResultsViewFromResultsDock();
+    void removeResultsViewFromResultsDock();
+    void setPageInResultsTab(QWidget* theResultsView);
 
     void hideDock();
+    void hideResultsDock();
     void showDock();
+    void showResultsDock();
 
 signals:
     void addSegmentPressed();
@@ -75,6 +78,7 @@ signals:
     void patientInfoPressed();
     void redoPressed();
     void removeSegmentPressed();
+    void resultsDockClosedSig();
     void resultsPressed();
     void saveNetwork(const QString& fileName);
     void selectElementsPressed();
@@ -109,13 +113,16 @@ private slots:
     bool saveAs();
     void simulatePressed();
     void tabsContentChanged();
+    void resultsTabsContentChanged();
 
 public slots:
     void restoreCurs();
     void setCurs();
     void updateMainWindow();
     void mouseEnteredInDock();
+    void mouseEnteredInResultsDock();
     void dockClosed();
+    void resultsDockClosed();
     void setFileName(QString theName);
     void showStatusBarMessage(QString theMessage);
 
@@ -136,7 +143,9 @@ private:
     void writeSettings();
 
     QDockWidget* dock;
+    QDockWidget* resultsDock;
     QTabWidget* tabs;
+    QTabWidget* resultsTabs;
     EditorArea* editorArea;
 
     QString curFile;
@@ -189,7 +198,7 @@ private:
     QAction* zoomOutAct;
 
     QMap<QWidget*, QPoint> dataCollectorList;
-    QMap<QWidget*, QPoint> imageResultsList;
+    QMap<QWidget*, QPoint> resultsViewList;
 };
 
 #endif // MAINWINDOW_H

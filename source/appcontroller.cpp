@@ -341,20 +341,6 @@ void AppController::setPreferences()
     propDialog.exec();
 }
 
-void AppController::showResults(QPoint elementRequest)
-{
-    // TODO: load the appropriate result image coherently with elementRequest.
-
-    QPixmap image;
-    image.load("/Users/boss/Desktop/aorta_asc_1_pressure.png");
-    QPixmap pic = image.scaledToWidth(400, Qt::SmoothTransformation);
-
-    ResultsView* resultsView = new ResultsView(&pic);
-
-    mainWindow->insertImageResultsToDock(resultsView, elementRequest);
-    mainWindow->showDock();
-}
-
 void AppController::clear()
 {
     requestMap.clear();
@@ -370,6 +356,30 @@ int AppController::uniqueDataRequestKey()
         incrementalDataRequest++;
     }
     return incrementalDataRequest;
+}
+
+void AppController::showResults(QPoint elementRequest)
+{
+    // TODO: load the appropriate result image coherently with elementRequest.
+
+    QPixmap image;
+    image.load("/Users/boss/Desktop/aorta_asc_1_pressure.png");
+    QPixmap pic = image.scaledToWidth(300, Qt::SmoothTransformation);
+
+    //int requestKey = uniqueDataRequestKey();
+    //requestMap.insert(requestKey, elementRequest);
+    //QString cookie;
+    //cookie.setNum(requestKey);
+
+    ResultsView* resultsView = new ResultsView(&pic);
+
+    connect(resultsView, SIGNAL(okButtonClicked()), this, SLOT(closeResultsView()));
+    connect(resultsView, SIGNAL(deleteItself()), resultsView, SLOT(close()));
+
+    //resultsViewList.insert(requestKey, dataCollector);
+
+    mainWindow->insertResultsViewToResultsDock(resultsView, elementRequest);
+    mainWindow->showResultsDock();
 }
 
 void AppController::dataRequest(QPoint elementRequest)
@@ -480,6 +490,11 @@ void AppController::dataConfirAndClose(QString cookie, QString elementData)
     dataCollectorList.remove(requestKey);
 
     mainWindow->removeDataCollectorFromDock();
+}
+
+void AppController::closeResultsView()
+{
+    mainWindow->removeResultsViewFromResultsDock();
 }
 
 void AppController::dockClosed()

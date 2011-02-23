@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>102</width>
     <height>380</height>
    </rect>
   </property>
@@ -37,5 +37,26 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ResultsView</receiver>
+   <slot>okButtClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>81</x>
+     <y>353</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>96</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <signal>okButtonClicked()</signal>
+  <slot>okButtClicked()</slot>
+ </slots>
 </ui>

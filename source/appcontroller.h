@@ -29,6 +29,7 @@ class MainWindow;
 class Workspace;
 class EditorArea;
 class DataCollector;
+class ResultsView;
 
 class AppController : public QObject
 {
@@ -49,6 +50,7 @@ signals:
 public slots:
     void bcPressed();
     void customizeGraph(const QString& fileName);
+    void closeResultsView();
     void dataConfirAndClose(QString cookie, QString elementData);
     void dataConfirmed(QString cookie ,QString elementData);
     void dataRequest(QPoint elementRequest);
@@ -82,6 +84,7 @@ private:
 
     QMap<int, QPoint> requestMap;
     QMap<int, DataCollector*> dataCollectorList;
+    //QMap<int, ResultsView*> resultsViewList;
     int incrementalDataRequest;
 
     QString meshOut;

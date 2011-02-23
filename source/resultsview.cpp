@@ -14,3 +14,8 @@ ResultsView::~ResultsView()
 {
     delete ui;
 }
+
+void ResultsView::okButtClicked()
+{
+    emit okButtonClicked();
+}

@@ -193,8 +193,10 @@ void DataCollector::loadStack(int stackId)
    domDoc.setContent(undoStack.at(stackId));
    QDomElement rootElement = domDoc.documentElement();
    DomToTree(rootElement,"no_parent",treeView->rootIndex(),true);
-   treeView->setColumnWidth(0,250);
-   treeView->setColumnWidth(8,100);
+   //treeView->setColumnWidth(0,250);
+   //treeView->setColumnWidth(8,100);
+   treeView->setColumnWidth(0,150);
+   treeView->setColumnWidth(8,25);
    treeView->setColumnWidth(9,25);
    treeView->setExpanded(model->index(0,0,treeView->rootIndex()),true);
    QModelIndex mainIndex = model->index(0,0,treeView->rootIndex());

@@ -25,6 +25,7 @@
 #include "workspace.h"
 #include "DataCollector/datacollector.h"
 #include "dock.h"
+#include "resultsdock.h"
 #include "resultsview.h"
 
 #include <QTextStream>
@@ -39,6 +40,9 @@ MainWindow::MainWindow()
 
     tabs = new QTabWidget;
     connect(tabs, SIGNAL(currentChanged(int)),this, SLOT(tabsContentChanged()));
+
+    resultsTabs = new QTabWidget;
+    connect(resultsTabs, SIGNAL(currentChanged(int)), this, SLOT(resultsTabsContentChanged()));
 
     createActions();
     createMenus();
@@ -87,30 +91,7 @@ void MainWindow::insertDataCollectorToDock(DataCollector* theDataCollector, QPoi
     dock->setWidget(tabs);
 }
 
-void MainWindow::removeAllDataCollectorFromDock()
-{
-    tabs->clear();
-    dataCollectorList.clear();
-    QPoint temp(-1, -1);
-    emit editingEl2Ws(temp);
-}
-
-void MainWindow::removeDataCollectorFromDock()
-{
-    dataCollectorList.remove(tabs->currentWidget());
-    tabs->removeTab(tabs->currentIndex());
-    if (tabs->count() == 0) {
-        hideDock();
-    }
-}
-
-void MainWindow::setPageInTab(DataCollector* theDataCollector)
-{
-    tabs->setCurrentWidget(theDataCollector);
-    emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
-}
-
-void MainWindow::insertImageResultsToDock(ResultsView* theResultsView, QPoint elementRequest)
+void MainWindow::insertResultsViewToResultsDock(ResultsView* theResultsView, QPoint elementRequest)
 {
     QString element;
 
@@ -125,12 +106,52 @@ void MainWindow::insertImageResultsToDock(ResultsView* theResultsView, QPoint el
     element += idString + " RESULTS";
     mainout << element << endl;
 
-    //imageResultsList.insert(pic, elementRequest);
+    resultsViewList.insert(theResultsView, elementRequest);
 
-    tabs->insertTab(0, theResultsView, element);
-    tabs->setCurrentWidget(theResultsView);
-    //emit showingResults2Ws(elementRequest);
-    dock->setWidget(tabs);
+    resultsTabs->insertTab(0, theResultsView, element);
+    resultsTabs->setCurrentWidget(theResultsView);
+    emit editingEl2Ws(elementRequest);
+    resultsDock->setWidget(resultsTabs);
+}
+
+void MainWindow::removeAllDataCollectorFromDock()
+{
+    tabs->clear();
+    dataCollectorList.clear();
+    QPoint temp(-1, -1);
+    emit editingEl2Ws(temp);
+}
+
+void MainWindow::removeAllResultsViewFromResultsDock()
+{
+    resultsTabs->clear();
+    resultsViewList.clear();
+    QPoint temp(-1, -1);
+    emit editingEl2Ws(temp);
+}
+
+void MainWindow::removeDataCollectorFromDock()
+{
+    dataCollectorList.remove(tabs->currentWidget());
+    tabs->removeTab(tabs->currentIndex());
+    if (tabs->count() == 0) {
+        hideDock();
+    }
+}
+
+void MainWindow::removeResultsViewFromResultsDock()
+{
+    resultsViewList.remove(resultsTabs->currentWidget());
+    resultsTabs->removeTab(resultsTabs->currentIndex());
+    if (resultsTabs->count() == 0) {
+        hideResultsDock();
+    }
+}
+
+void MainWindow::setPageInTab(QWidget* theDataCollector)
+{
+    tabs->setCurrentWidget(theDataCollector);
+    emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
 }
 
 void MainWindow::tabsContentChanged()
@@ -138,14 +159,30 @@ void MainWindow::tabsContentChanged()
     emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
 }
 
+void MainWindow::resultsTabsContentChanged()
+{
+    emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
+}
+
 void MainWindow::mouseEnteredInDock()
 {
     emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
 }
 
+void MainWindow::mouseEnteredInResultsDock()
+{
+    mainout << "MainWindow::mouseEnteredInDock" << endl;
+    emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
+}
+
 void MainWindow::dockClosed()
 {
     removeAllDataCollectorFromDock();
+}
+
+void MainWindow::resultsDockClosed()
+{
+    removeAllResultsViewFromResultsDock();
 }
 
 void MainWindow::elementsBeenHit(QVector<QPoint> hitEls)
@@ -158,6 +195,14 @@ void MainWindow::elementsBeenHit(QVector<QPoint> hitEls)
                 tabs->setCurrentWidget(dataColIter.key());
             }
         }
+
+        QMapIterator<QWidget*, QPoint> resultsViewIter(resultsViewList);
+        while (resultsViewIter.hasNext()) {
+            resultsViewIter.next();
+            if (resultsViewIter.value() == hitEls[0]) {
+                resultsTabs->setCurrentWidget(resultsViewIter.key());
+            }
+        }
     }
 }
 
@@ -166,11 +211,21 @@ void MainWindow::hideDock()
     dock->hide();
 }
 
+void MainWindow::hideResultsDock()
+{
+    resultsDock->hide();
+}
+
 void MainWindow::showDock()
 {
-    //dock->resize(850,800);
     dock->setMinimumSize(100, 100);
     dock->show();
+}
+
+void MainWindow::showResultsDock()
+{
+    resultsDock->setMinimumSize(100, 100);
+    resultsDock->show();
 }
 
 void MainWindow::createActions()
@@ -473,12 +528,22 @@ void MainWindow::createStatusBar()
 void MainWindow::createDockWindows()
 {
     dock = new Dock(this);
+    dock->setWindowTitle("Info");
     connect(dock, SIGNAL(mouseEnteredInDock()), this, SLOT(mouseEnteredInDock()));
     connect(dock, SIGNAL(dockClosed()), this, SLOT(dockClosed()));
     connect(dock, SIGNAL(dockClosed()), this, SIGNAL(dockClosedSig()));
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, dock);
     dock->hide();
+
+    resultsDock = new ResultsDock(this);
+    resultsDock->setWindowTitle("Results");
+    connect(resultsDock, SIGNAL(mouseEnteredInResultsDock()), this, SLOT(mouseEnteredInResultsDock()));
+    connect(resultsDock, SIGNAL(resultsDockClosed()), this, SLOT(resultsDockClosed()));
+    connect(resultsDock, SIGNAL(resultsDockClosed()), this, SIGNAL(resultsDockClosedSig()));
+    resultsDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::RightDockWidgetArea, resultsDock);
+    resultsDock->hide();
 }
 
 
