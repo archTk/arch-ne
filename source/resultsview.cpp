@@ -6,7 +6,8 @@ ResultsView::ResultsView(QPixmap* results, QWidget *parent) :
     ui(new Ui::ResultsView)
 {
     ui->setupUi(this);
-    ui->resultslabel->setPixmap(*results);
+    ui->resultsLabel->setPixmap(*results);
+    ui->resultsLabel->setGeometry(0, 0, 400, 0);
 }
 
 ResultsView::~ResultsView()

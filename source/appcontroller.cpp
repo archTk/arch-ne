@@ -345,22 +345,11 @@ void AppController::showResults(QPoint elementRequest)
 {
     // TODO: load the appropriate result image coherently with elementRequest.
 
-    //QWidget* pic = new QWidget();
-    //pic->setStyleSheet("background-image:Users/boss/Desktop/mele.jpg");
-    //pic->setGeometry(QRect(10,10,11,11));
     QPixmap image;
-    image.load(":/images/save.png");
+    image.load("/Users/boss/Desktop/aorta_asc_1_pressure.png");
+    QPixmap pic = image.scaledToWidth(400, Qt::SmoothTransformation);
 
-    //QLabel pic;
-    //pic.setPixmap(image);
-
-    ResultsView* resultsView = new ResultsView(&image);
-
-    //QLabel label("<img src=':Users/boss/Desktop/mele.jpg'/>");
-    //label.show();
-
-    //QLabel mele;
-    //mele.loadFromData(":Users/boss/Desktop/mele.jpg");
+    ResultsView* resultsView = new ResultsView(&pic);
 
     mainWindow->insertImageResultsToDock(resultsView, elementRequest);
     mainWindow->showDock();
