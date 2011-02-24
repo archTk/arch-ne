@@ -27,6 +27,7 @@
 #include "graphlayout.h"
 #include "graphproperties.h"
 #include "graphmesh.h"
+#include "networkproperties.h"
 
 #include <iostream>
 #include <QTextStream>
@@ -223,6 +224,81 @@ void InputOutput::loadMesh(GraphMesh *graphMesh)
         }
         meshElement = meshElement.nextSiblingElement("element");
     }
+}
+
+void InputOutput::importBC(NetworkProperties *networkProperties)
+{
+    QString BCFileName = QFileDialog::getOpenFileName(0, tr("Import Boundary Conditions"),
+                                                    "",
+                                                    tr("XML files (*.xml)"));
+
+    if (BCFileName.isNull()) {
+        return;
+    }
+
+    QFile BCFile(BCFileName);
+    if (!BCFile.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(BCFileName)
+                             .arg(BCFile.errorString()));
+        return;
+    }
+
+    QTextStream BCIn(&BCFile);
+    QString BCXML(BCIn.readAll());
+
+    networkProperties->setBCXML(BCXML);
+}
+
+void InputOutput::importPatientInfo(NetworkProperties *networkProperties)
+{
+    QString PatientInfoFileName = QFileDialog::getOpenFileName(0, tr("Import Patient Info"),
+                                                    "",
+                                                    tr("XML files (*.xml)"));
+
+    if (PatientInfoFileName.isNull()) {
+        return;
+    }
+
+    QFile PatientInfoFile(PatientInfoFileName);
+    if (!PatientInfoFile.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(PatientInfoFileName)
+                             .arg(PatientInfoFile.errorString()));
+        return;
+    }
+
+    QTextStream PatientInfoIn(&PatientInfoFile);
+    QString PatientInfoXML(PatientInfoIn.readAll());
+
+    networkProperties->setPatientInfoXML(PatientInfoXML);
+}
+
+void InputOutput::importSP(NetworkProperties *networkProperties)
+{
+    QString SPFileName = QFileDialog::getOpenFileName(0, tr("Import Simulation Parameters"),
+                                                    "",
+                                                    tr("XML files (*.xml)"));
+
+    if (SPFileName.isNull()) {
+        return;
+    }
+
+    QFile SPFile(SPFileName);
+    if (!SPFile.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(SPFileName)
+                             .arg(SPFile.errorString()));
+        return;
+    }
+
+    QTextStream SPIn(&SPFile);
+    QString SPXML(SPIn.readAll());
+
+    networkProperties->setSPXML(SPXML);
 }
 
 void InputOutput::saveGraph(const QString &fileName, GraphProperties *graphProperties, QVector<int> nodes, QVector<int> edges)

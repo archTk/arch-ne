@@ -26,6 +26,7 @@ class Graph;
 class GraphLayout;
 class GraphProperties;
 class GraphMesh;
+class NetworkProperties;
 class QFile;
 
 class InputOutput : public QObject
@@ -43,6 +44,10 @@ public:
     void saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
 
     void loadMeshAfterGenerating(const QString& fileName, GraphMesh* graphMesh);
+
+    void importBC(NetworkProperties* networkProperties);
+    void importPatientInfo(NetworkProperties* networkProperties);
+    void importSP(NetworkProperties* networkProperties);
 
 signals:
     void curFileName(QString theName);

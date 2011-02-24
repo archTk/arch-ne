@@ -40,6 +40,7 @@ AppController::AppController(QObject *parent) :
     QObject(parent)
 {
     incrementalDataRequest = 0;
+    incrementalResultsRequest = 0;
 
     workspace = new Workspace;
 }
@@ -75,6 +76,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(patientInfoPressed()), this, SLOT(patientInfoPressed()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
+    connect(mainWindow, SIGNAL(resultsDockClosedSig()), this, SLOT(resultsDockClosed()));
     connect(mainWindow, SIGNAL(resultsPressed()), workspace, SLOT(resultsRequest()));
     connect(mainWindow, SIGNAL(selectElementsPressed()), workspace, SLOT(selectElements()));
     connect(mainWindow, SIGNAL(setPrefPressed()), this, SLOT(setPreferences()));
@@ -174,17 +176,26 @@ void AppController::loadMesh()
 
 void AppController::importBC()
 {
-    appout << "AppC::importBC" << endl;
+    InputOutput* inputOutput = new InputOutput();
+    inputOutput->importBC(workspace->getNetworkProperties());
+
+    emit messageToBeDisplayed("Boundary Conditions have been imported");
 }
 
 void AppController::importPatientInfo()
 {
-    appout << "AppC::importPatientInfo" << endl;
+    InputOutput* inputOutput = new InputOutput();
+    inputOutput->importPatientInfo(workspace->getNetworkProperties());
+
+    emit messageToBeDisplayed("Patient Info have been imported");
 }
 
 void AppController::importSP()
 {
-    appout << "AppC::importSP" << endl;
+    InputOutput* inputOutput = new InputOutput();
+    inputOutput->importSP(workspace->getNetworkProperties());
+
+    emit messageToBeDisplayed("Simulation Parameters have been imported");
 }
 
 void AppController::generateMesh(const QString &fileName)
@@ -250,7 +261,7 @@ void AppController::BCPressed()
     XMLString = workspace->getBCXML();
 
     if (XMLString.isEmpty()) {
-        XMLString = "<boundarycondition/>";
+        XMLString = "<boundary_condition/>";
     }
 
     QVector<QString> hiddenItems;
@@ -271,7 +282,7 @@ void AppController::SPPressed()
     XMLString = workspace->getSPXML();
 
     if (XMLString.isEmpty()) {
-        XMLString = "<parameter/>";
+        XMLString = "<simulation_parameters/>";
     }
 
     QVector<QString> hiddenItems;
@@ -366,7 +377,7 @@ void AppController::graphHasBeenCustomized()
 {
     appout << "AppController::graphHasBeenCustomized synchronize with DataCollectot (XML has changed)" << endl;
     emit restoreCurs();
-    showMessage(tr("CUSTOMIZATION COMPLETE!"), tr("The graph has been customized"));
+    emit messageToBeDisplayed(tr("The graph has been customized"));
 }
 
 void AppController::simulateGraph(const QString &fileName)
@@ -376,6 +387,12 @@ void AppController::simulateGraph(const QString &fileName)
     }
 
     emit setCurs();
+
+    QFileInfo fileInfo(fileName);
+    QString workDir = fileInfo.path() + "/";
+    QString outDir = workDir + "Output/";
+    QString imagesDir = workDir + "Images/";
+    QString xmlOut = fileName + "_results.xml";
 
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
@@ -391,15 +408,18 @@ void AppController::simulateGraph(const QString &fileName)
         return;
     }
 
-    simulateOut = fileName;
-    simulateOut.remove("_mesh.xml");
-    simulateOut.append("_results.xml");
-
     QString scriptPath;
     scriptPath = pyNSPath + "/Solver_Script.py";
 
     QStringList arguments;
-    arguments << scriptPath << "-m" << meshOut << "-c" << workspace->getPatientInfoXML();
+    arguments << scriptPath << "-w" << workDir << "-o" << outDir <<  "-i" << imagesDir << "-m" << meshOut
+            << "-t" << xmlOut << "-b" << workspace->getBCXML();
+
+    /*
+    appout << "AppC::simulateGraph" << endl << "scriptPath= " << scriptPath << endl << "workDir= " << workDir
+            << endl << "outDir= " << outDir << endl << "imagesDir= " << imagesDir << endl << "meshOut= " << meshOut
+            << endl << "xmlOut= " << xmlOut << endl << "BC= " << workspace->getBCXML() << endl;
+    */
 
     pyNS = new QProcess(this);
 
@@ -411,7 +431,7 @@ void AppController::simulateGraph(const QString &fileName)
 void AppController::simulationHasBeenPerformed()
 {
     emit restoreCurs();
-    showMessage(tr("SIMULATION COMPLETE!"), tr("Simulation has been completed"));
+    emit messageToBeDisplayed(tr("Simulation has been completed"));
 }
 
 void AppController::saveNetwork(const QString& fileName)
@@ -456,20 +476,41 @@ int AppController::uniqueDataRequestKey()
     return incrementalDataRequest;
 }
 
+int AppController::uniqueResultsRequestKey()
+{
+    while (resultsMap.contains(incrementalResultsRequest)) {
+        incrementalResultsRequest++;
+    }
+    return incrementalResultsRequest;
+}
+
+
 void AppController::showResults(QPoint elementRequest)
 {
+    if (resultsMap.values().contains(elementRequest)) {
+        mainWindow->setPageInResultsTab(resultsViewList.value(resultsMap.key(elementRequest)));
+        mainWindow->showResultsDock();
+        appout << "AppC::showResults in 1st if" << endl;
+        return;
+    }
+
+    int requestKey = uniqueResultsRequestKey();
+    resultsMap.insert(requestKey, elementRequest);
+    QString cookie;
+    cookie.setNum(requestKey);
+
     // TODO: load the appropriate result image coherently with elementRequest.
 
     QPixmap image;
     image.load("/Users/boss/bosshogg.jpg");
     QPixmap pic = image.scaledToWidth(300, Qt::SmoothTransformation);
 
-    ResultsView* resultsView = new ResultsView(&pic);
+    ResultsView* resultsView = new ResultsView(cookie, &pic);
 
-    connect(resultsView, SIGNAL(okButtonClicked()), this, SLOT(closeResultsView()));
+    connect(resultsView, SIGNAL(okButtonClicked(QString)), this, SLOT(closeResultsView(QString)));
     connect(resultsView, SIGNAL(deleteItself()), resultsView, SLOT(close()));
 
-    //resultsViewList.insert(requestKey, dataCollector);
+    resultsViewList.insert(requestKey, resultsView);
 
     mainWindow->insertResultsViewToResultsDock(resultsView, elementRequest);
     mainWindow->showResultsDock();
@@ -518,6 +559,7 @@ void AppController::collectData(QPoint elementRequest, QString XMLString, QVecto
     if (requestMap.values().contains(elementRequest)) {
         mainWindow->setPageInTab(dataCollectorList.value(requestMap.key(elementRequest)));
         mainWindow->showDock();
+        appout << "AppC::collectData in 1st if" << endl;
         return;
     }
 
@@ -585,8 +627,13 @@ void AppController::dataConfirAndClose(QString cookie, QString elementData)
     mainWindow->removeDataCollectorFromDock();
 }
 
-void AppController::closeResultsView()
+void AppController::closeResultsView(QString cookie)
 {
+    int resultsKey = cookie.toInt();
+
+    resultsMap.remove(resultsKey);
+    resultsViewList.remove(resultsKey);
+
     mainWindow->removeResultsViewFromResultsDock();
 }
 
@@ -594,6 +641,12 @@ void AppController::dockClosed()
 {
     requestMap.clear();
     dataCollectorList.clear();
+}
+
+void AppController::resultsDockClosed()
+{
+    resultsMap.clear();
+    resultsViewList.clear();
 }
 
 void AppController::showMessage(QString theTitle, QString theMessage)

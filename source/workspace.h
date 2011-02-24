@@ -109,7 +109,7 @@ public:
     GraphLayout* getGraphLayout();
     GraphProperties* getGraphProperties();
     GraphMesh* getGraphMesh();
-    NetworkProperties* networkProperties;
+    NetworkProperties* getNetworkProperties();
 
     ApplicationStatus* getCurrentStatus();
 
@@ -199,6 +199,7 @@ private:
     GraphLayout* graphLayout;
     GraphProperties* graphProperties;
     GraphMesh* graphMesh;
+    NetworkProperties* networkProperties;
     Unraveller* unraveller;
 
     QVector<ApplicationStatus*> statusVector;

@@ -20,7 +20,7 @@
 <!--BoundaryConditionsGraph type-->
 	<xsd:complexType name="BoundaryConditionsGraphType">
 		<xsd:sequence>
-			<xsd:element name="boundaryconditions" type="boundaryconditionsType"/>
+			<xsd:element name="boundary_conditions" type="boundaryconditionsType"/>
             <xsd:element name="specificdatasets" type="specificdatasetsType"/>
 		</xsd:sequence>
 		<xsd:attribute name="id" type="xsd:integer" use="required"/>
@@ -34,7 +34,7 @@
 <!--each boundarycondition is described by  parameters-->
 	<xsd:complexType name="boundaryconditionsType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="1" name="boundarycondition" type="boundaryconditionType"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="1" name="boundary_condition" type="boundaryconditionType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -144,28 +144,28 @@
 <!--it contains a sequence of patient personal data-->
 	<xsd:complexType name="patientDataType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="1" minOccurs="1" name="dos" type="dateType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="dob" type="dateType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="age" type="simParameterType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="gender" type="genderType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="arm" type="armType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="ftype" type="ftypeType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="height" type="scalarType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="weight" type="scalarType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="bsa" type="simParameterType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="sysp" type="scalarType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="diap" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="dos" type="dateType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="dob" type="dateType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="age" type="simParameterType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="gender" type="genderType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="arm" type="armType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="ftype" type="ftypeType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="height" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="weight" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="bsa" type="simParameterType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="sysp" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="diap" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mean_pressure" type="simParameterType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="cardiac_output" type="simParameterType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="period" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="brachial_flow" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="radial_flow" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="ulnar_flow" type="scalarType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="ht" type="scalarType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="cp" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="ht" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="cp" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="dynamic_viscosity" type="simParameterType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="hyp" type="yesNoType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="diab" type="yesNoType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="hyp" type="yesNoType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="diab" type="yesNoType"/>
 		</xsd:sequence>
 		<xsd:attribute name="id" type="xsd:string" use="required"/>
 	</xsd:complexType>
@@ -187,7 +187,7 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="poisson_ratio" type="xsd:float"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="timestep" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="cycles" type="xsd:int"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="angle" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="angle" type="scalarType"/>
 		</xsd:sequence>
 		<xsd:attribute name="id" type="xsd:string" use="required"/>
 	</xsd:complexType>

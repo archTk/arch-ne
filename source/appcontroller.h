@@ -50,7 +50,7 @@ signals:
 public slots:
     void BCPressed();
     void customizeGraph(const QString& fileName);
-    void closeResultsView();
+    void closeResultsView(QString cookie);
     void dataConfirAndClose(QString cookie, QString elementData);
     void dataConfirmed(QString cookie ,QString elementData);
     void dataRequest(QPoint elementRequest);
@@ -68,6 +68,7 @@ public slots:
     void loadMesh();
     void meshHasBeenGenerated();
     void patientInfoPressed();
+    void resultsDockClosed();
     void saveNetwork(const QString& fileName);
     void setPreferences();
     void showResults(QPoint elementRequest);
@@ -78,6 +79,7 @@ public slots:
 private:
     void clear();
     int uniqueDataRequestKey();
+    int uniqueResultsRequestKey();
     void collectData(QPoint elementRequest, QString XMLString, QVector<QString> hiddenItems,
                      QVector<QString> readonlyItems, QString XMLSchema);
     void showMessage(QString theTitle, QString theMessage);
@@ -89,9 +91,11 @@ private:
     QProcess* pyNS;
 
     QMap<int, QPoint> requestMap;
+    QMap<int, QPoint> resultsMap;
     QMap<int, DataCollector*> dataCollectorList;
-    //QMap<int, ResultsView*> resultsViewList;
+    QMap<int, ResultsView*> resultsViewList;
     int incrementalDataRequest;
+    int incrementalResultsRequest;
 
     QString meshOut;
     QString simulateOut;

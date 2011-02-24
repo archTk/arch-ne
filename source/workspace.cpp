@@ -1517,6 +1517,11 @@ GraphMesh* Workspace::getGraphMesh()
     return graphMesh;
 }
 
+NetworkProperties* Workspace::getNetworkProperties()
+{
+    return networkProperties;
+}
+
 ApplicationStatus* Workspace::getCurrentStatus()
 {
     return statusVector[currentStatus];

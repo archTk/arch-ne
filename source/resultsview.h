@@ -12,18 +12,22 @@ class ResultsView : public QWidget
     Q_OBJECT
 
 public:
-    explicit ResultsView(QPixmap* results, QWidget *parent = 0);
+    explicit ResultsView(QString cookie, QPixmap* results, QWidget *parent = 0);
     ~ResultsView();
 
 private:
     Ui::ResultsView *ui;
+    void setResultsCookie(QString theCookie);
 
 signals:
-    void okButtonClicked();
+    void okButtonClicked(QString cookie);
     void deleteItself();
 
 private slots:
     void okButtClicked();
+
+private:
+    QString resultsCookie;
 };
 
 #endif // RESULTSVIEW_H
