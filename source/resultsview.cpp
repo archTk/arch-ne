@@ -1,13 +1,19 @@
 #include "resultsview.h"
 #include "ui_resultsview.h"
 
-ResultsView::ResultsView(QString cookie, QPixmap* results, QWidget *parent) :
+ResultsView::ResultsView(QString cookie, QPixmap* pressurePic, QPixmap* flowPic, QString PMean,
+                         QString FMean, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ResultsView)
 {
     ui->setupUi(this);
-    ui->resultsLabel->setPixmap(*results);
-    ui->resultsLabel->setGeometry(0, 0, 400, 0);
+    ui->pressureLabel->setPixmap(*pressurePic);
+    ui->pressureLabel->setGeometry(0, 0, 200, 0);
+    ui->PValue->setText(PMean);
+
+    ui->flowLabel->setPixmap(*flowPic);
+    ui->flowLabel->setGeometry(0, 0, 200, 0);
+    ui->FValue->setText(FMean);
 
     setResultsCookie(cookie);
 }

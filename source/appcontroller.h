@@ -98,7 +98,7 @@ private:
     int incrementalResultsRequest;
 
     QString meshOut;
-    QString simulateOut;
+    QString imagesDir;
 };
 
 #endif // APPCONTROLLER_H

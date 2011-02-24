@@ -323,6 +323,7 @@ void AppController::meshHasBeenGenerated()
     inputOutput->loadMeshAfterGenerating(meshOut, workspace->getGraphMesh());
     emit updateSignal();
     emit restoreCurs();
+    emit messageToBeDisplayed(tr("Mesh has been generated"));
 }
 
 void AppController::customizeGraph(const QString &fileName)
@@ -391,7 +392,7 @@ void AppController::simulateGraph(const QString &fileName)
     QFileInfo fileInfo(fileName);
     QString workDir = fileInfo.path() + "/";
     QString outDir = workDir + "Output/";
-    QString imagesDir = workDir + "Images/";
+    imagesDir = workDir + "Images/";
     QString xmlOut = fileName + "_results.xml";
 
     QSettings settings("archTk", "ARCHNetworkEditor");
@@ -490,7 +491,6 @@ void AppController::showResults(QPoint elementRequest)
     if (resultsMap.values().contains(elementRequest)) {
         mainWindow->setPageInResultsTab(resultsViewList.value(resultsMap.key(elementRequest)));
         mainWindow->showResultsDock();
-        appout << "AppC::showResults in 1st if" << endl;
         return;
     }
 
@@ -499,13 +499,30 @@ void AppController::showResults(QPoint elementRequest)
     QString cookie;
     cookie.setNum(requestKey);
 
-    // TODO: load the appropriate result image coherently with elementRequest.
+    /*
+    QString pressureImageName, flowImageName;
 
-    QPixmap image;
-    image.load("/Users/boss/bosshogg.jpg");
-    QPixmap pic = image.scaledToWidth(300, Qt::SmoothTransformation);
+    if (elementRequest.x() == 1 ) {         // Element is a node.
+        pressureImageName += imagesDir + workspace->getNodeName(elementRequest.y()) + "_pressure.png";
+        flowImageName += imagesDir + workspace->getNodeName(elementRequest.y()) + "_flow_png";
+    } else if (elementRequest.x() == 2) {   // Element is an edge.
+        pressureImageName += imagesDir + workspace->getEdgeName(elementRequest.y()) + "_pressure";
+        flowImageName += imagesDir + workspace->getEdgeName(elementRequest.y()) + "_flow_png";
+    }
+    */
 
-    ResultsView* resultsView = new ResultsView(cookie, &pic);
+    QPixmap pressureImage, flowImage;
+    //pressureImage.load(pressureImageName);
+    //flowImage.load(flowImageName);
+    pressureImage.load("/Users/boss/bosshogg.jpg");
+    flowImage.load("/Users/boss/bosshogg.jpg");
+    QPixmap pressurePic = pressureImage.scaledToWidth(200, Qt::SmoothTransformation);
+    QPixmap flowPic= flowImage.scaledToWidth(200, Qt::SmoothTransformation);
+
+    QString PMean = QString("100");
+    QString FMean = QString("150");
+
+    ResultsView* resultsView = new ResultsView(cookie, &pressurePic, &flowPic, PMean, FMean);
 
     connect(resultsView, SIGNAL(okButtonClicked(QString)), this, SLOT(closeResultsView(QString)));
     connect(resultsView, SIGNAL(deleteItself()), resultsView, SLOT(close()));
@@ -559,7 +576,6 @@ void AppController::collectData(QPoint elementRequest, QString XMLString, QVecto
     if (requestMap.values().contains(elementRequest)) {
         mainWindow->setPageInTab(dataCollectorList.value(requestMap.key(elementRequest)));
         mainWindow->showDock();
-        appout << "AppC::collectData in 1st if" << endl;
         return;
     }
 

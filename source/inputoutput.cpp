@@ -131,8 +131,8 @@ bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, Gra
     for (int i = 0; i < nodesIds.size(); i++) {
         int tempX = int(random() / (RAND_MAX + 1.0) * (max + 1 - min) + min);
         int tempY = int(random() / (RAND_MAX + 1.0) * (max + 1 - min) + min);
-        float X = (float)tempX / 10.0 + 100;
-        float Y = (float)tempY / 10.0 + 100;
+        float X = (float)tempX / 10.0 + 200.0;
+        float Y = (float)tempY / 10.0 + 200.0;
         QString attrId;
         attrId.setNum(nodesIds[i]);
         QString attrX;

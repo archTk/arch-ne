@@ -95,8 +95,6 @@ void Unraveller::unravelNet(QPointF screenOrigin)
             xvel = yvel = 0;
         }
 
-        //QPointF velA(xvel, yvel);
-
         vel.insert(nodesIds[k], QPointF(xvel, yvel));
     }
 
