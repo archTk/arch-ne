@@ -59,7 +59,7 @@ void AppController::createConnections()
     editorArea->setWorkspace(workspace);
 
     connect(mainWindow, SIGNAL(addSegmentPressed()), workspace, SLOT(addSegment()));
-    connect(mainWindow, SIGNAL(bcPressed()), this, SLOT(bcPressed()));
+    connect(mainWindow, SIGNAL(BCPressed()), this, SLOT(BCPressed()));
     connect(mainWindow, SIGNAL(blockNodesPressed()), workspace, SLOT(blockNodes()));
     connect(mainWindow, SIGNAL(defaultMeshPressed()), workspace, SLOT(applyDefaultMesh()));
     connect(mainWindow, SIGNAL(dockClosedSig()), this, SLOT(dockClosed()));
@@ -67,6 +67,9 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(homeViewPressed()), workspace, SLOT(homeView()));
     connect(mainWindow, SIGNAL(graphToBeCustomized(QString)), this, SLOT(customizeGraph(QString)));
     connect(mainWindow, SIGNAL(graphToBeSimulated(QString)), this, SLOT(simulateGraph(QString)));
+    connect(mainWindow, SIGNAL(importBCPressed()), this, SLOT(importBC()));
+    connect(mainWindow, SIGNAL(importPatientInfoPressed()), this, SLOT(importPatientInfo()));
+    connect(mainWindow, SIGNAL(importSPPressed()), this, SLOT(importSP()));
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
     connect(mainWindow, SIGNAL(meshToBeGenerated(QString)), this, SLOT(generateMesh(QString)));
     connect(mainWindow, SIGNAL(patientInfoPressed()), this, SLOT(patientInfoPressed()));
@@ -79,7 +82,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(showLabelsPressed()), workspace, SLOT(showLabels()));
     connect(mainWindow, SIGNAL(snapToGridPressed()), workspace, SLOT(snapToGrid()));
     connect(mainWindow, SIGNAL(splitSegmentPressed()), workspace, SLOT(splitSegment()));
-    connect(mainWindow, SIGNAL(spPressed()), this, SLOT(spPressed()));
+    connect(mainWindow, SIGNAL(SPPressed()), this, SLOT(SPPressed()));
     connect(mainWindow, SIGNAL(superEdgePressed()), workspace, SLOT(superEdge()));
     connect(mainWindow, SIGNAL(translatePressed()), workspace, SLOT(translate()));
     connect(mainWindow, SIGNAL(undoPressed()), workspace, SLOT(undo()));
@@ -169,6 +172,21 @@ void AppController::loadMesh()
     emit restoreCurs();
 }
 
+void AppController::importBC()
+{
+    appout << "AppC::importBC" << endl;
+}
+
+void AppController::importPatientInfo()
+{
+    appout << "AppC::importPatientInfo" << endl;
+}
+
+void AppController::importSP()
+{
+    appout << "AppC::importSP" << endl;
+}
+
 void AppController::generateMesh(const QString &fileName)
 {
     if (!workspace->dataInGraph()) {
@@ -225,7 +243,7 @@ void AppController::errorFromExternal(QProcess::ProcessError)
     appout << "error from external process: " << err << endl;
 }
 
-void AppController::bcPressed()
+void AppController::BCPressed()
 {
     QPoint elementRequest(3, 0);
     QString XMLString;
@@ -246,7 +264,7 @@ void AppController::bcPressed()
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
 }
 
-void AppController::spPressed()
+void AppController::SPPressed()
 {
     QPoint elementRequest(4, 0);
     QString XMLString;

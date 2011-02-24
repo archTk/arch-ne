@@ -283,13 +283,13 @@ void MainWindow::createActions()
     patientInfoAct->setStatusTip(tr("Set patient information"));
     connect(patientInfoAct, SIGNAL(triggered()), this, SIGNAL(patientInfoPressed()));
 
-    bcAct = new QAction(QIcon(":/images/BC.png"), tr("Set Boundary Conditions"), this);
-    bcAct->setStatusTip(tr("Set Boundary Conditions"));
-    connect(bcAct, SIGNAL(triggered()), this, SIGNAL(bcPressed()));
+    BCAct = new QAction(QIcon(":/images/BC.png"), tr("Set Boundary Conditions"), this);
+    BCAct->setStatusTip(tr("Set Boundary Conditions"));
+    connect(BCAct, SIGNAL(triggered()), this, SIGNAL(BCPressed()));
 
-    spAct = new QAction(QIcon(":/images/SP.png"), tr("Set Simulation Parameters"), this);
-    spAct->setStatusTip(tr("Set Simulation Parameters"));
-    connect(spAct, SIGNAL(triggered()), this, SIGNAL(spPressed()));
+    SPAct = new QAction(QIcon(":/images/SP.png"), tr("Set Simulation Parameters"), this);
+    SPAct->setStatusTip(tr("Set Simulation Parameters"));
+    connect(SPAct, SIGNAL(triggered()), this, SIGNAL(SPPressed()));
 
     customizeAct = new QAction(QIcon(":/images/custom.png"), tr("Personalize graph information"), this);
     customizeAct->setStatusTip(tr("Personalize graph information"));
@@ -298,6 +298,18 @@ void MainWindow::createActions()
     simulateAct = new QAction(QIcon(":/images/simulation.png"), tr("Simulate"), this);
     simulateAct->setStatusTip(tr("Launch the simulation"));
     connect(simulateAct, SIGNAL(triggered()), this, SLOT(simulatePressed()));
+
+    importBCAct = new QAction(QIcon(":/images/importBC.png"), tr("Import BC"), this);
+    importBCAct->setStatusTip(tr("Import Boundary Conditions"));
+    connect(importBCAct, SIGNAL(triggered()), this, SIGNAL(importBCPressed()));
+
+    importSPAct = new QAction(QIcon(":/images/importSP.png"), tr("Import SP"), this);
+    importSPAct->setStatusTip(tr("Import Simulation Parameters"));
+    connect(importSPAct, SIGNAL(triggered()), this, SIGNAL(importSPPressed()));
+
+    importPatientInfoAct = new QAction(QIcon(":/images/importPatientInfo.png"), tr("Import Patient Info"), this);
+    importPatientInfoAct->setStatusTip(tr("Import Patient Info"));
+    connect(importPatientInfoAct, SIGNAL(triggered()), this, SIGNAL(importPatientInfoPressed()));
     /////
 
     addSegmentAct = new QAction(QIcon(":/images/addSegment.png"), tr("&Add Segment"), this);
@@ -411,9 +423,12 @@ void MainWindow::createMenus()
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
     editMenu->addSeparator();
-    editMenu->addAction(bcAct);
-    editMenu->addAction(spAct);
+    editMenu->addAction(BCAct);
+    editMenu->addAction(importBCAct);
+    editMenu->addAction(SPAct);
+    editMenu->addAction(importSPAct);
     editMenu->addAction(patientInfoAct);
+    editMenu->addAction(importPatientInfoAct);
     editMenu->addSeparator();
     editMenu->addAction(preferencesAct);
 
@@ -439,8 +454,8 @@ void MainWindow::createMenus()
     operationMenu->addAction(infoAct);
     operationMenu->addAction(resultsAct);
     operationMenu->addSeparator();
-    operationMenu->addAction(bcAct);
-    operationMenu->addAction(spAct);
+    operationMenu->addAction(BCAct);
+    operationMenu->addAction(SPAct);
     operationMenu->addAction(customizeAct);
     operationMenu->addAction(meshAct);
     operationMenu->addAction(defaultMeshAct);
@@ -518,13 +533,16 @@ void MainWindow::createToolBars()
     operationToolBar->addAction(infoAct);
     operationToolBar->addAction(resultsAct);
     operationToolBar->addSeparator();
-    operationToolBar->addAction(bcAct);
-    operationToolBar->addAction(spAct);
+    operationToolBar->addAction(BCAct);
+    operationToolBar->addAction(SPAct);
     operationToolBar->addAction(patientInfoAct);
     operationToolBar->addAction(customizeAct);
     operationToolBar->addAction(meshAct);
     operationToolBar->addAction(defaultMeshAct);
     operationToolBar->addAction(simulateAct);
+    operationToolBar->addAction(importBCAct);
+    operationToolBar->addAction(importSPAct);
+    operationToolBar->addAction(importPatientInfoAct);
 }
 
 void MainWindow::createStatusBar()

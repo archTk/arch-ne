@@ -48,7 +48,7 @@ signals:
     void updateSignal();
 
 public slots:
-    void bcPressed();
+    void BCPressed();
     void customizeGraph(const QString& fileName);
     void closeResultsView();
     void dataConfirAndClose(QString cookie, QString elementData);
@@ -60,6 +60,9 @@ public slots:
     void goMeshing(const QString& fileName);
     void goCustomizing(const QString& fileName);
     void graphHasBeenCustomized();
+    void importBC();
+    void importPatientInfo();
+    void importSP();
     void loadGraphFromLayout();
     void loadGraphFromGraph();
     void loadMesh();
@@ -70,7 +73,7 @@ public slots:
     void showResults(QPoint elementRequest);
     void simulateGraph(const QString& fileName);
     void simulationHasBeenPerformed();
-    void spPressed();
+    void SPPressed();
 
 private:
     void clear();

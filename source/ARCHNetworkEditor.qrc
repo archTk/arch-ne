@@ -32,5 +32,8 @@
         <file>images/patientInfo.png</file>
         <file>images/custom.png</file>
         <file>images/results.png</file>
+        <file>images/importBC.png</file>
+        <file>images/importPatientInfo.png</file>
+        <file>images/importSP.png</file>
     </qresource>
 </RCC>

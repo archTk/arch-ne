@@ -63,7 +63,7 @@ public:
 
 signals:
     void addSegmentPressed();
-    void bcPressed();
+    void BCPressed();
     void blockNodesPressed();
     void defaultMeshPressed();
     void dockClosedSig();
@@ -71,6 +71,9 @@ signals:
     void graphToBeCustomized(const QString& fileName);
     void graphToBeSimulated(const QString& fileName);
     void homeViewPressed();
+    void importBCPressed();
+    void importPatientInfoPressed();
+    void importSPPressed();
     void infoPressed();
     void loadGraphFromLayout();
     void loadGraphFromGraph();
@@ -88,7 +91,7 @@ signals:
     void showLabelsPressed();
     void snapToGridPressed();
     void splitSegmentPressed();
-    void spPressed();
+    void SPPressed();
     void superEdgePressed();
     void translatePressed();
     void undoPressed();
@@ -165,14 +168,17 @@ private:
 
     QAction* aboutAct;
     QAction* addSegmentAct;
-    QAction* bcAct;
+    QAction* BCAct;
     QAction* blockNodesAct;
     QAction* customizeAct;
     QAction* defaultMeshAct;
     QAction* exitAct;
     QAction* homeViewAct;
+    QAction* importBCAct;
     QAction* importMeshAct;
     QAction* importNetworkAct;
+    QAction* importPatientInfoAct;
+    QAction* importSPAct;
     QAction* infoAct;
     QAction* meshAct;
     QAction* newNetworkAct;
@@ -189,7 +195,7 @@ private:
     QAction* showLabelsAct;
     QAction* simulateAct;
     QAction* snapToGridAct;
-    QAction* spAct;
+    QAction* SPAct;
     QAction* splitSegmentAct;
     QAction* superEdgeAct;
     QAction* translateAct;
