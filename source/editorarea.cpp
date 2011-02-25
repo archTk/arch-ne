@@ -696,8 +696,9 @@ void EditorArea::paintMeshEls(QPainter& painter)
             QPointF pointPos = (1 - m) * (1 - m) * screenXYFirst + 2 * (1 - m) * m * screenMidPoint + m * m * screenXYSecond;
 
             QPainterPath path;
-            path.arcTo(QRectF(-radius, -radius, width, height), 0, 360);
             QPainterPath text;
+
+            path.arcTo(QRectF(-radius, -radius, width, height), 0, 360);
             text.addText(-radius / 2.0, radius / 2.0, QFont("Arial", fontSize), elementType);
             path.translate(pointPos);
             text.translate(pointPos);
@@ -708,6 +709,14 @@ void EditorArea::paintMeshEls(QPainter& painter)
                 painter.setPen(Qt::yellow);
                 painter.setBrush(Qt::yellow);
                 painter.drawPath(text);
+            } else {
+                qreal dotR = size2screen(1);
+                QPainterPath dotPath;
+                painter.setPen(Qt::black);
+                painter.setBrush(Qt::black);
+                dotPath.arcTo(QRectF(-dotR, -dotR, dotR * 2, dotR * 2), 0, 360);
+                dotPath.translate(pointPos);
+                painter.drawPath(dotPath);
             }
 
             QPainterPath mousePath;
@@ -715,17 +724,10 @@ void EditorArea::paintMeshEls(QPainter& painter)
             mousePath.translate(mouseCurrentPos);
 
             if (path.intersects(mousePath)) {
-                //if (firstTime) {
-                //    firstTime = false;
-                //    hitMesh.clear();
-                //}
 
-                //QPoint temp(4, edgesIds[j]);
-                //hitMesh.append(temp);
-
-                QVector<int> edgeMElementsId = workspace->getEdgeMElementsId(edgesIds[j]);
-                int edgeMelId = edgeMElementsId[h];
-                qcout << "edge= " << edgesIds[j] << " - edge MEls#= " << edgeMElementsId.size() << " - meshElId" << edgeMelId <<endl;
+                //QVector<int> edgeMElementsId = workspace->getEdgeMElementsId(edgesIds[j]);
+                //int edgeMelId = edgeMElementsId[h];
+                //qcout << "edge= " << edgesIds[j] << " - edge MEls#= " << edgeMElementsId.size() << " - meshElId" << edgeMelId <<endl;
                 painter.setPen(Qt::NoPen);
                 painter.setBrush(Qt::darkCyan);
                 painter.drawPath(path);
