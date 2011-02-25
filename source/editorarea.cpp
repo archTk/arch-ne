@@ -606,18 +606,10 @@ void EditorArea::paintMeshEls(QPainter& painter)
     QVector<int> nodesIds = workspace->getNodesIds();
     QVector<int> edgesIds = workspace->getEdgesIds();
     bool showMesh = workspace->getShowMeshStatus();
-    bool firstTime = true;
+    int selectedTool = workspace->getSelectedTool();
 
     qreal radius = size2screen(8);
     float fontSize = size2screen(12);
-
-    /*if (!workspace->getShowMeshStatus()) {
-        radius = size2screen(0);
-        fontSize = size2screen(0);
-    } else {
-        radius = size2screen(8);
-        fontSize = size2screen(12);
-    }*/
 
     qreal width = radius * 2;
     qreal height = radius * 2;
@@ -723,7 +715,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
             mousePath.arcTo(QRectF(-1, -1, 1, 1), 0, 360);
             mousePath.translate(mouseCurrentPos);
 
-            if (path.intersects(mousePath)) {
+            if (path.intersects(mousePath) && selectedTool == 7) {
 
                 //QVector<int> edgeMElementsId = workspace->getEdgeMElementsId(edgesIds[j]);
                 //int edgeMelId = edgeMElementsId[h];
