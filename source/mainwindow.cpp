@@ -385,6 +385,10 @@ void MainWindow::createActions()
     showLabelsAct->setStatusTip(tr("Show labels"));
     connect(showLabelsAct, SIGNAL(triggered()), this, SIGNAL(showLabelsPressed()));
 
+    showMeshAct = new QAction(QIcon(":/images/showMesh.png"), tr("Show mesh"), this);
+    showMeshAct->setStatusTip(tr("Show mesh elements"));
+    connect(showMeshAct, SIGNAL(triggered()), this, SIGNAL(showMeshPressed()));
+
     unravelNetAct = new QAction(QIcon(":/images/unravel.png"), tr("Unravel Network"), this);
     unravelNetAct->setShortcut(tr("Ctrl+U"));
     unravelNetAct->setStatusTip(tr("Unravel the network"));
@@ -442,6 +446,7 @@ void MainWindow::createMenus()
     viewMenu->addAction(showGridAct);
     viewMenu->addAction(snapToGridAct);
     viewMenu->addAction(showLabelsAct);
+    viewMenu->addAction(showMeshAct);
     viewMenu->addAction(unravelNetAct);
     viewMenu->addAction(blockNodesAct);
 
@@ -476,6 +481,8 @@ void MainWindow::createMenus()
 
     showLabelsAct->setCheckable(true);
     showLabelsAct->setChecked(false);
+    showMeshAct->setCheckable(true);
+    showMeshAct->setChecked(false);
 
     selectElementsAct->setChecked(true);
 
@@ -506,6 +513,7 @@ void MainWindow::createToolBars()
     viewToolBar->addAction(showGridAct);
     viewToolBar->addAction(snapToGridAct);
     viewToolBar->addAction(showLabelsAct);
+    viewToolBar->addAction(showMeshAct);
     viewToolBar->addAction(unravelNetAct);
     viewToolBar->addAction(blockNodesAct);
 
@@ -756,6 +764,7 @@ void MainWindow::updateMainWindow()
     bool gridStatus = editorArea->getWorkspace()->getGridStatus();
     bool snapStatus = editorArea->getWorkspace()->getSnapToGridStatus();
     bool labelsStatus = editorArea->getWorkspace()->getShowLabelsStatus();
+    bool meshStatus = editorArea->getWorkspace()->getShowMeshStatus();
     int selectedTool = editorArea->getWorkspace()->getSelectedTool();
 
     if (gridStatus) {
@@ -774,6 +783,12 @@ void MainWindow::updateMainWindow()
         showLabelsAct->setChecked(true);
     } else {
         showLabelsAct->setChecked(false);
+    }
+
+    if (meshStatus) {
+        showMeshAct->setChecked(true);
+    } else {
+        showMeshAct->setChecked(false);
     }
 
     addSegmentAct->setChecked(false);

@@ -82,6 +82,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(setPrefPressed()), this, SLOT(setPreferences()));
     connect(mainWindow, SIGNAL(showGridPressed()), workspace, SLOT(showGrid()));
     connect(mainWindow, SIGNAL(showLabelsPressed()), workspace, SLOT(showLabels()));
+    connect(mainWindow, SIGNAL(showMeshPressed()), workspace, SLOT(showMesh()));
     connect(mainWindow, SIGNAL(snapToGridPressed()), workspace, SLOT(snapToGrid()));
     connect(mainWindow, SIGNAL(splitSegmentPressed()), workspace, SLOT(splitSegment()));
     connect(mainWindow, SIGNAL(SPPressed()), this, SLOT(SPPressed()));

@@ -100,6 +100,7 @@ private:
     QPoint screenOriginEndPos;
 
     QVector<QPoint> hitElements;
+    QVector<QPoint> hitMesh;
 
     QMap<int, QVector<float> > sOnBezier;
     int edgeDiscretization;

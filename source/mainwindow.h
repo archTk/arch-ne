@@ -89,6 +89,7 @@ signals:
     void setPrefPressed();
     void showGridPressed();
     void showLabelsPressed();
+    void showMeshPressed();
     void snapToGridPressed();
     void splitSegmentPressed();
     void SPPressed();
@@ -98,7 +99,6 @@ signals:
     void unravelNetPressed();
     void zoomInPressed();
     void zoomOutPressed();
-
 
 protected:
     void closeEvent(QCloseEvent* event);
@@ -193,6 +193,7 @@ private:
     QAction* selectElementsAct;
     QAction* showGridAct;
     QAction* showLabelsAct;
+    QAction* showMeshAct;
     QAction* simulateAct;
     QAction* snapToGridAct;
     QAction* SPAct;

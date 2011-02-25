@@ -28,7 +28,7 @@
 #include "graphlayout.h"
 #include "graphproperties.h"
 #include "graphmesh.h"
-
+#include "networkproperties.h"
 
 class ApplicationStatus : public QObject
 {
@@ -37,19 +37,18 @@ public:
     explicit ApplicationStatus(QObject* parent = 0);
     ~ApplicationStatus();
 
-    //void setGraph(Graph* theGraph, bool own=true);
-    //void setGraphLayout(GraphLayout* theGraphLayout, bool own=true);
-
     void setGraph(QSharedPointer<Graph> theGraphSharedPt);
     void setGraphLayout(QSharedPointer<GraphLayout> theGraphLayoutSharedPt);
     void setGraphProperties(QSharedPointer<GraphProperties> theGraphPropertiesSharedPt);
     void setGraphMesh(QSharedPointer<GraphMesh> theGraphMeshSharedPt);
+    void setNetworkProperties(QSharedPointer<NetworkProperties> theNetworkPropertiesSharedPt);
     void setScreenOrigin(QPointF theScreenOrigin);
     void setZoom(float theZoomFactor);
     void setGridStatus(bool theGridStatus);
     void setGridSpacing (int theGridSpacing);
     void setSnapToGridStatus(bool theSnapToGridStatus);
     void setShowLabelsStatus(bool theShowLabelsStatus);
+    void setShowMeshStatus(bool theShowMeshStatus);
     void setSelectedNodes(QVector<int> theSelectedNodes);
     void setSelectedEdges(QVector<int> theSelectedEdges);
 
@@ -57,12 +56,14 @@ public:
     QSharedPointer<GraphLayout> getGraphLayout();
     QSharedPointer<GraphProperties> getGraphProperties();
     QSharedPointer<GraphMesh> getGraphMesh();
+    QSharedPointer<NetworkProperties> getNetworkProperties();
     QPointF getScreenOrigin();
     float getZoom();
     bool getGridStatus();
     bool getSnapToGridStatus();
     int getGridSpacing();
     bool getShowLabelsStatus();
+    bool getShowMeshStatus();
     QVector<int> getSelectedNodes();
     QVector<int> getSelectedEdges();
 
@@ -75,12 +76,14 @@ private:
     QSharedPointer<GraphLayout> graphLayout;
     QSharedPointer<GraphProperties> graphProperties;
     QSharedPointer<GraphMesh> graphMesh;
+    QSharedPointer<NetworkProperties> networkProperties;
     QPointF screenOrigin;
     float zoomFactor;
     bool gridStatus;
     int gridSpacing;
     bool snapToGridStatus;
     bool showLabelsStatus;
+    bool showMeshStatus;
     QVector<int> selectedNodes;
     QVector<int> selectedEdges;
 };

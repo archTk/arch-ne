@@ -60,6 +60,11 @@ void ApplicationStatus::setGraphMesh(QSharedPointer<GraphMesh> theGraphMeshShare
     graphMesh = theGraphMeshSharedPt;
 }
 
+void ApplicationStatus::setNetworkProperties(QSharedPointer<NetworkProperties> theNetworkPropertiesSharedPt)
+{
+    networkProperties = theNetworkPropertiesSharedPt;
+}
+
 void ApplicationStatus::setScreenOrigin(QPointF theScreenOrigin)
 {
     screenOrigin = theScreenOrigin;
@@ -88,6 +93,11 @@ void ApplicationStatus::setSnapToGridStatus(bool theSnapToGridStatus)
 void ApplicationStatus::setShowLabelsStatus(bool theShowLabelsStatus)
 {
     showLabelsStatus = theShowLabelsStatus;
+}
+
+void ApplicationStatus::setShowMeshStatus(bool theShowMeshStatus)
+{
+    showMeshStatus = theShowMeshStatus;
 }
 
 void ApplicationStatus::setSelectedNodes(QVector<int> theSelectedNodes)
@@ -120,6 +130,11 @@ QSharedPointer<GraphMesh> ApplicationStatus::getGraphMesh()
     return graphMesh;
 }
 
+QSharedPointer<NetworkProperties> ApplicationStatus::getNetworkProperties()
+{
+    return networkProperties;
+}
+
 QPointF ApplicationStatus::getScreenOrigin()
 {
     return screenOrigin;
@@ -148,6 +163,11 @@ int ApplicationStatus::getGridSpacing()
 bool ApplicationStatus::getShowLabelsStatus()
 {
     return showLabelsStatus;
+}
+
+bool ApplicationStatus::getShowMeshStatus()
+{
+    return showMeshStatus;
 }
 
 QVector<int> ApplicationStatus::getSelectedNodes()

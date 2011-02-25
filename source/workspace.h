@@ -84,6 +84,7 @@ public:
     bool getGridStatus();
     bool getSnapToGridStatus();
     bool getShowLabelsStatus();
+    bool getShowMeshStatus();
     int getGridSpacing();
     int getSelectedTool();
     bool getShowSelectingArea();
@@ -133,6 +134,7 @@ public slots:
     void selectElements();
     void showGrid();
     void showLabels();
+    void showMesh();
     void snapToGrid();
     void splitSegment();
     void superEdge();
@@ -194,6 +196,7 @@ private:
     int gridSpacing;
     bool snapToGridStatus;
     bool showLabelsStatus;
+    bool showMeshStatus;
 
     Graph* graph;
     GraphLayout* graphLayout;

@@ -59,6 +59,8 @@ Workspace::Workspace(QObject *parent) :
     connect(unraveller, SIGNAL(screenOriginChanged(QPointF)), this, SLOT(setScreenOrigin(QPointF)));
 
     gridStatus = true;
+    showLabelsStatus = false;
+    showMeshStatus = true;
     snapToGridStatus = true;
     gridSpacing = 20;
 
@@ -190,6 +192,13 @@ void Workspace::undo()
         (*graphMesh).setEdgesMMeshnodesId(tempEdgesMMeshnodesId);
         (*graphMesh).setEdgesMElementsId(tempEdgesMElementsId);
 
+        QString tempBCXML = (*statusVector[currentStatus - 1]).getNetworkProperties().data()->getBCXML();
+        QString tempPatientInfoXML = (*statusVector[currentStatus - 1]).getNetworkProperties().data()->getPatientInfoXML();
+        QString tempSPXML = (*statusVector[currentStatus - 1]).getNetworkProperties().data()->getSPXML();
+        (*networkProperties).setBCXML(tempBCXML);
+        (*networkProperties).setPatientInfoXML(tempPatientInfoXML);
+        (*networkProperties).setSPXML(tempSPXML);
+
         screenOrigin = (*statusVector[currentStatus - 1]).getScreenOrigin();
         zoomFactor = (*statusVector[currentStatus - 1]).getZoom();
         gridStatus = (*statusVector[currentStatus - 1]).getGridStatus();
@@ -252,6 +261,13 @@ void Workspace::redo()
         (*graphMesh).setEdgesMMeshnodesId(tempEdgesMMeshnodesId);
         (*graphMesh).setEdgesMElementsId(tempEdgesMElementsId);
 
+        QString tempBCXML = (*statusVector[currentStatus]).getNetworkProperties().data()->getBCXML();
+        QString tempPatientInfoXML = (*statusVector[currentStatus]).getNetworkProperties().data()->getPatientInfoXML();
+        QString tempSPXML = (*statusVector[currentStatus]).getNetworkProperties().data()->getSPXML();
+        (*networkProperties).setBCXML(tempBCXML);
+        (*networkProperties).setPatientInfoXML(tempPatientInfoXML);
+        (*networkProperties).setSPXML(tempSPXML);
+
         screenOrigin = (*statusVector[currentStatus]).getScreenOrigin();
         zoomFactor = (*statusVector[currentStatus]).getZoom();
         gridStatus = (*statusVector[currentStatus]).getGridStatus();
@@ -295,6 +311,17 @@ void Workspace::showLabels()
         showLabelsStatus = false;
     } else {
         showLabelsStatus = true;
+    }
+
+    emit updateSignal();
+}
+
+void Workspace::showMesh()
+{
+    if (showMeshStatus) {
+        showMeshStatus = false;
+    } else {
+        showMeshStatus = true;
     }
 
     emit updateSignal();
@@ -1123,12 +1150,19 @@ void Workspace::inizializeHistory()
     (*newGraphMesh).setEdgesMElementsId(graphMesh->getEdgesMElementsId());
     QSharedPointer<GraphMesh> graphMeshSharedPt(newGraphMesh);
 
+    NetworkProperties* newNetworkProperties = new NetworkProperties(this);
+    (*newNetworkProperties).setBCXML(networkProperties->getBCXML());
+    (*newNetworkProperties).setPatientInfoXML(networkProperties->getPatientInfoXML());
+    (*networkProperties).setSPXML(networkProperties->getSPXML());
+    QSharedPointer<NetworkProperties> networkPropertiesSharedPt(newNetworkProperties);
+
     ApplicationStatus* newApplicationStatus = new ApplicationStatus(this);
 
     newApplicationStatus->setGraph(graphSharedPt);
     newApplicationStatus->setGraphLayout(graphLayoutSharedPt);
     newApplicationStatus->setGraphProperties(graphPropertiesSharedPt);
     newApplicationStatus->setGraphMesh(graphMeshSharedPt);
+    newApplicationStatus->setNetworkProperties(networkPropertiesSharedPt);
 
     newApplicationStatus->setScreenOrigin(screenOrigin);
     newApplicationStatus->setZoom(zoomFactor);
@@ -1191,10 +1225,17 @@ void Workspace::insertActInHistory(bool graphChanged)
         (*newGraphMesh).setEdgesMElementsId(graphMesh->getEdgesMElementsId());
         QSharedPointer<GraphMesh> graphMeshSharedPt(newGraphMesh);
 
+        NetworkProperties* newNetworkProperties = new NetworkProperties(this);
+        (*newNetworkProperties).setBCXML(networkProperties->getBCXML());
+        (*newNetworkProperties).setPatientInfoXML(networkProperties->getPatientInfoXML());
+        (*newNetworkProperties).setSPXML(networkProperties->getSPXML());
+        QSharedPointer<NetworkProperties> networkPropertiesSharedPt(newNetworkProperties);
+
         newApplicationStatus->setGraph(graphSharedPt);
         newApplicationStatus->setGraphLayout(graphLayoutSharedPt);
         newApplicationStatus->setGraphProperties(graphPropertiesSharedPt);
         newApplicationStatus->setGraphMesh(graphMeshSharedPt);
+        newApplicationStatus->setNetworkProperties(networkPropertiesSharedPt);
     } else {
         QSharedPointer<Graph> graphSharedPt(statusVector[currentStatus - 1]->getGraph());
         newApplicationStatus->setGraph(graphSharedPt);
@@ -1207,6 +1248,9 @@ void Workspace::insertActInHistory(bool graphChanged)
 
         QSharedPointer<GraphMesh> graphMeshSharedPt(statusVector[currentStatus - 1]->getGraphMesh());
         newApplicationStatus->setGraphMesh(graphMeshSharedPt);
+
+        QSharedPointer<NetworkProperties> networkPropertiesSharedPt(statusVector[currentStatus - 1]->getNetworkProperties());
+        newApplicationStatus->setNetworkProperties(networkPropertiesSharedPt);
     }
 
     newApplicationStatus->setScreenOrigin(screenOrigin);
@@ -1420,6 +1464,11 @@ bool Workspace::getSnapToGridStatus()
 bool Workspace::getShowLabelsStatus()
 {
     return showLabelsStatus;
+}
+
+bool Workspace::getShowMeshStatus()
+{
+    return showMeshStatus;
 }
 
 int Workspace::getGridSpacing()
