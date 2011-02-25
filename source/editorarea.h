@@ -61,6 +61,7 @@ signals:
     void Key_B_Pressed();
     void Key_CTRL_A_Pressed();
     void elementsBeenHit(QVector<QPoint> hitElements);
+    void meshElsBeenHit(QVector<QPoint> hitMeshEls);
 
 protected:
     void paintEvent(QPaintEvent* event);
@@ -100,7 +101,7 @@ private:
     QPoint screenOriginEndPos;
 
     QVector<QPoint> hitElements;
-    QVector<QPoint> hitMesh;
+    QVector<QPoint> hitMeshEls;
 
     QMap<int, QVector<float> > sOnBezier;
     int edgeDiscretization;

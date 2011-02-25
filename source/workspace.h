@@ -152,6 +152,7 @@ public slots:
     void Key_Cancel_Pressed();
     void Key_CTRL_A_Pressed();
     void elementsBeenHit(QVector<QPoint> hitElements);
+    void meshElsBeesHit(QVector<QPoint> theHitMesEls);
     void netToBeUnravelled();
     void unravelNet();
 
@@ -216,6 +217,7 @@ private:
 
     int curvingEdgeId;
     QVector<QPoint> hitEl;
+    QVector<QPoint> hitMeshEls;
 
     int selectedTool;
     float distanceTolerance;

@@ -1035,7 +1035,7 @@ void Workspace::mouseReleased(QPointF pos)
         case results:
 
             if (hitEl[0].x() != -1) {
-                emit showResults(hitEl[0]);
+                emit showResults(hitMeshEls[0]);
             }
     }
 }
@@ -1695,6 +1695,11 @@ void Workspace::Key_CTRL_A_Pressed()
 void Workspace::elementsBeenHit(QVector<QPoint> hitElements)
 {
     hitEl = hitElements;
+}
+
+void Workspace::meshElsBeesHit(QVector<QPoint> theHitMeshEls)
+{
+    hitMeshEls = theHitMeshEls;
 }
 
 void Workspace::netToBeUnravelled()

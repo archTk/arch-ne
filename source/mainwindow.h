@@ -110,6 +110,7 @@ private slots:
     void elementsBeenHit(QVector<QPoint> hitEls);
     void importNetwork();
     void importMesh();
+    void meshElsBeenHit(QVector<QPoint> hitMeshEls);
     void meshPressed();
     void newNetwork();
     void openNetwork();

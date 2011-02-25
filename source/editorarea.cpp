@@ -128,6 +128,8 @@ void EditorArea::paintEvent(QPaintEvent*)
 
     hitElements.clear();
     hitElements.append(QPoint(-1, -1));
+    hitMeshEls.clear();
+    hitMeshEls.append(QPoint(-1, -1));
 
     painter.setPen(QPen(Qt::blue, penWidth, Qt::SolidLine,
                         Qt::RoundCap, Qt::RoundJoin));
@@ -149,6 +151,7 @@ void EditorArea::paintEvent(QPaintEvent*)
     }
 
     emit elementsBeenHit(hitElements);
+    emit meshElsBeenHit(hitMeshEls);
 }
 
 void EditorArea::zoomIn()
@@ -607,6 +610,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
     QVector<int> edgesIds = workspace->getEdgesIds();
     bool showMesh = workspace->getShowMeshStatus();
     int selectedTool = workspace->getSelectedTool();
+    bool firstTime = true;
 
     qreal radius = size2screen(8);
     float fontSize = size2screen(12);
@@ -649,6 +653,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
     for (int j = 0; j < edgesIds.size(); j++) {
         QVector<float> sCoord = workspace->getEdgeMs(edgesIds[j]);
         QVector<QString> edgeMTypes = workspace->getEdgeMTypes(edgesIds[j]);
+        QVector<int> edgeMElementsId = workspace->getEdgeMElementsId(edgesIds[j]);
 
         for (int h = 0; h < sCoord.size(); h++) {
             float s;
@@ -716,9 +721,6 @@ void EditorArea::paintMeshEls(QPainter& painter)
             mousePath.translate(mouseCurrentPos);
 
             if (path.intersects(mousePath) && selectedTool == 7) {
-
-                //QVector<int> edgeMElementsId = workspace->getEdgeMElementsId(edgesIds[j]);
-                //int edgeMelId = edgeMElementsId[h];
                 //qcout << "edge= " << edgesIds[j] << " - edge MEls#= " << edgeMElementsId.size() << " - meshElId" << edgeMelId <<endl;
                 painter.setPen(Qt::NoPen);
                 painter.setBrush(Qt::darkCyan);
@@ -726,6 +728,14 @@ void EditorArea::paintMeshEls(QPainter& painter)
                 painter.setPen(Qt::yellow);
                 painter.setBrush(Qt::yellow);
                 painter.drawPath(text);
+
+                if (firstTime) {
+                    firstTime = false;
+                    hitMeshEls.clear();
+                }
+
+                QPoint temp(2, edgeMElementsId[h]);
+                hitMeshEls.append(temp);
             }
         }
     }

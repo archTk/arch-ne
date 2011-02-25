@@ -96,15 +96,17 @@ void MainWindow::insertResultsViewToResultsDock(ResultsView* theResultsView, QPo
 {
     QString element;
 
-    if (elementRequest.x() == 1) {
+    /*if (elementRequest.x() == 1) {
         element = "node ";
     } else if (elementRequest.x() == 2) {
         element = "edge ";
-    }
+    }*/
+
+    element = "MeshNode ";
 
     QString idString;
     idString.setNum(elementRequest.y());
-    element += idString + " RESULTS";
+    element += idString;
 
     resultsViewList.insert(theResultsView, elementRequest);
 
@@ -202,11 +204,16 @@ void MainWindow::elementsBeenHit(QVector<QPoint> hitEls)
                 tabs->setCurrentWidget(dataColIter.key());
             }
         }
+    }
+}
 
+void MainWindow::meshElsBeenHit(QVector<QPoint> hitMeshEls)
+{
+    if (hitMeshEls[0].x() != -1) {
         QMapIterator<QWidget*, QPoint> resultsViewIter(resultsViewList);
         while (resultsViewIter.hasNext()) {
             resultsViewIter.next();
-            if (resultsViewIter.value() == hitEls[0]) {
+            if (resultsViewIter.value() == hitMeshEls[0]) {
                 resultsTabs->setCurrentWidget(resultsViewIter.key());
             }
         }

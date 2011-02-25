@@ -115,6 +115,8 @@ void AppController::createConnections()
     connect(editorArea, SIGNAL(Key_CTRL_A_Pressed()), workspace, SLOT(Key_CTRL_A_Pressed()));
     connect(editorArea, SIGNAL(elementsBeenHit(QVector<QPoint>)), workspace, SLOT(elementsBeenHit(QVector<QPoint>)));
     connect(editorArea, SIGNAL(elementsBeenHit(QVector<QPoint>)), mainWindow, SLOT(elementsBeenHit(QVector<QPoint>)));
+    connect(editorArea, SIGNAL(meshElsBeenHit(QVector<QPoint>)), workspace, SLOT(meshElsBeesHit(QVector<QPoint>)));
+    connect(editorArea, SIGNAL(meshElsBeenHit(QVector<QPoint>)), mainWindow, SLOT(meshElsBeenHit(QVector<QPoint>)));
 
     connect(this, SIGNAL(messageToBeDisplayed(QString)), mainWindow, SLOT(showStatusBarMessage(QString)));
     connect(this, SIGNAL(setCurs()), mainWindow, SLOT(setCurs()));
@@ -500,13 +502,13 @@ void AppController::showResults(QPoint elementRequest)
     QString cookie;
     cookie.setNum(requestKey);
 
-    /*
     QString pressureImageName, flowImageName;
 
-    if (elementRequest.x() == 1 ) {         // Element is a node.
+    /*
+    if (elementRequest.x() == 1 ) {         // MeshElement corresponds to a node of the graph.
         pressureImageName += imagesDir + workspace->getNodeName(elementRequest.y()) + "_pressure.png";
         flowImageName += imagesDir + workspace->getNodeName(elementRequest.y()) + "_flow_png";
-    } else if (elementRequest.x() == 2) {   // Element is an edge.
+    } else if (elementRequest.x() == 2) {   // MeshElement correspond to a segment of an edge of the graph.
         pressureImageName += imagesDir + workspace->getEdgeName(elementRequest.y()) + "_pressure";
         flowImageName += imagesDir + workspace->getEdgeName(elementRequest.y()) + "_flow_png";
     }
