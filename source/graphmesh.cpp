@@ -220,6 +220,11 @@ QMap<int, QVector<int> > GraphMesh::getEdgesMElementsId()
     return edgesMElementsId;
 }
 
+QVector<int> GraphMesh::getEdgeMElementsId(int edgeId)
+{
+    return edgesMElementsId.value(edgeId);
+}
+
 QString GraphMesh::getNodeMType(int nodeId)
 {
     return nodesMType.value(nodeId);

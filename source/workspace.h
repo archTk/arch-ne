@@ -68,6 +68,7 @@ public:
     QPointF getThirdPointPos(int edgeId);
 
     QVector<QString> getEdgeMTypes(int edgeId);
+    QVector<int> getEdgeMElementsId(int edgeId);
     QString getNodeMType (int nodeId);
 
     void setNodeProperties(int nodeId, QString nodeProp);

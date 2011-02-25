@@ -482,7 +482,7 @@ void MainWindow::createMenus()
     showLabelsAct->setCheckable(true);
     showLabelsAct->setChecked(false);
     showMeshAct->setCheckable(true);
-    showMeshAct->setChecked(false);
+    showMeshAct->setChecked(true);
 
     selectElementsAct->setChecked(true);
 

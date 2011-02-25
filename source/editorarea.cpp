@@ -606,7 +606,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
     QVector<int> nodesIds = workspace->getNodesIds();
     QVector<int> edgesIds = workspace->getEdgesIds();
     bool showMesh = workspace->getShowMeshStatus();
-    bool firstTimeForMesh = true;
+    bool firstTime = true;
 
     qreal radius = size2screen(8);
     float fontSize = size2screen(12);
@@ -711,27 +711,28 @@ void EditorArea::paintMeshEls(QPainter& painter)
             }
 
             QPainterPath mousePath;
-            mousePath.arcTo(QRectF(-5, -5, 10, 10), 0, 360);
+            mousePath.arcTo(QRectF(-1, -1, 1, 1), 0, 360);
             mousePath.translate(mouseCurrentPos);
 
-            /*if (path.intersects(mousePath)) {
-                if (firstTimeForMesh) {
-                    firstTimeForMesh = false;
-                    hitMesh.clear();
-                }
-                QPoint temp(1, nodesIds[i]);
-                hitElements.append(temp);
-            }*/
+            if (path.intersects(mousePath)) {
+                //if (firstTime) {
+                //    firstTime = false;
+                //    hitMesh.clear();
+                //}
 
+                //QPoint temp(4, edgesIds[j]);
+                //hitMesh.append(temp);
 
-            /*painter.translate(pointPos);
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(Qt::darkCyan);
-            painter.drawPie(-radius, -radius, width, height, 0, 360 * 16);
-            painter.setPen(QPen(Qt::yellow, size2screen(4), Qt::SolidLine,
-                                Qt::RoundCap, Qt::RoundJoin));
-            painter.drawText(-radius, -radius * 6 / 5, width, height, Qt::AlignCenter | Qt::AlignHCenter, elementType);
-            painter.translate(-pointPos);*/
+                QVector<int> edgeMElementsId = workspace->getEdgeMElementsId(edgesIds[j]);
+                int edgeMelId = edgeMElementsId[h];
+                qcout << "edge= " << edgesIds[j] << " - edge MEls#= " << edgeMElementsId.size() << " - meshElId" << edgeMelId <<endl;
+                painter.setPen(Qt::NoPen);
+                painter.setBrush(Qt::darkCyan);
+                painter.drawPath(path);
+                painter.setPen(Qt::yellow);
+                painter.setBrush(Qt::yellow);
+                painter.drawPath(text);
+            }
         }
     }
 }

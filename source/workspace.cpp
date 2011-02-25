@@ -1446,6 +1446,11 @@ QVector<QString> Workspace::getEdgeMTypes(int edgeId)
     return graphMesh->getEdgeMTypes(edgeId);
 }
 
+QVector<int> Workspace::getEdgeMElementsId(int edgeId)
+{
+    return graphMesh->getEdgeMElementsId(edgeId);
+}
+
 QString Workspace::getNodeMType(int nodeId)
 {
     return graphMesh->getNodeMType(nodeId);
