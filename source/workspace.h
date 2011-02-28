@@ -120,6 +120,7 @@ signals:
     void updateSignal();
     void contentsChanged();
     void dataRequest(QPoint elementRequest);
+    void noMeshHitEls();
     void showResults(QPoint elementRequest);
 
 public slots:

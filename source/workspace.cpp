@@ -495,7 +495,6 @@ void Workspace::mouseMoved(QPointF pos)
             case addS:
             case selectE:
             case information:
-            case results:
                 if (hitEl[0].x() == 1) {            // Hit elements are nodes.
                     supportEdges.remove("highlightingEdge");
                     supportNodes.insert("highlightingNode", hitEl[0].y());
@@ -538,6 +537,9 @@ void Workspace::mouseMoved(QPointF pos)
                 }
                 emit updateSignal();
                 break;
+            case results:
+                emit noMeshHitEls();
+                emit updateSignal();
             }
         } else {    // mouseButtonPressed
         switch (selectedTool) {

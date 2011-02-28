@@ -162,8 +162,8 @@ void EditorArea::paintEvent(QPaintEvent*)
         }
     }
 
-    if (!hitElements.isEmpty()) {
-        if (!hitElements[0].x() != -1) {
+    if (!hitMeshEls.isEmpty()) {
+        if (!hitMeshEls[0].x() != -1) {
             emit meshElsBeenHit(hitMeshEls);
         }
     }
@@ -791,6 +791,11 @@ void EditorArea::setMeshElToBeHigh(int theMeshElToBeHigh)
 {
     meshElToBeHigh = theMeshElToBeHigh;
     update();
+}
+
+void EditorArea::resetMeshElToBeHigh()
+{
+    meshElToBeHigh = -1;
 }
 
 void EditorArea::paintLabels(QPainter& painter)

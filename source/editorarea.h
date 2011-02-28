@@ -44,6 +44,7 @@ public slots:
     void zoomIn();
     void zoomOut();
     void toBeCleared();
+    void resetMeshElToBeHigh();
 
 private slots:
 

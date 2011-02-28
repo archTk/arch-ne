@@ -102,6 +102,7 @@ void AppController::createConnections()
     connect(workspace, SIGNAL(dataRequest(QPoint)), this, SLOT(dataRequest(QPoint)));
     connect(workspace, SIGNAL(showResults(QPoint)), this, SLOT(showResults(QPoint)));
     connect(workspace, SIGNAL(updateSignal()), editorArea, SLOT(updateRender()));
+    connect(workspace, SIGNAL(noMeshHitEls()), editorArea, SLOT(resetMeshElToBeHigh()));
 
     connect(editorArea, SIGNAL(mouseBeenPressed(QPointF)), workspace, SLOT(mousePressed(QPointF)));
     connect(editorArea, SIGNAL(mouseMoved(QPointF)), workspace, SLOT(mouseMoved(QPointF)));
