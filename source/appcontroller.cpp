@@ -520,13 +520,11 @@ void AppController::showResults(QPoint elementRequest)
     //flowImage.load(flowImageName);
     pressureImage.load("/Users/boss/bosshogg.jpg");
     flowImage.load("/Users/boss/bosshogg.jpg");
-    QPixmap pressurePic = pressureImage.scaledToWidth(50, Qt::SmoothTransformation);
-    QPixmap flowPic= flowImage.scaledToWidth(50, Qt::SmoothTransformation);
 
     QString PMean = QString("100");
     QString FMean = QString("150");
 
-    ResultsView* resultsView = new ResultsView(cookie, &pressurePic, &flowPic, PMean, FMean);
+    ResultsView* resultsView = new ResultsView(cookie, pressureImage, flowImage, PMean, FMean);
 
     connect(resultsView, SIGNAL(okButtonClicked(QString)), this, SLOT(closeResultsView(QString)));
     connect(resultsView, SIGNAL(deleteItself()), resultsView, SLOT(close()));
