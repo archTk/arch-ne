@@ -32,9 +32,11 @@ public:
 
 protected:
     void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
 
 signals:
     void mouseEnteredInDock();
+    void mouseLeftDock();
     void dockClosed();
 
 public slots:

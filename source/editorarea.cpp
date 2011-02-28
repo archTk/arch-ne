@@ -152,10 +152,6 @@ void EditorArea::paintEvent(QPaintEvent*)
         paintLabels(painter);
     }
 
-    if (meshElToBeHigh != -1) {
-        paintMeshElToBeHigh(painter);
-    }
-
     if (!hitElements.isEmpty()) {
         if (!hitElements[0].x() != -1) {
             emit elementsBeenHit(hitElements);
@@ -167,6 +163,10 @@ void EditorArea::paintEvent(QPaintEvent*)
             emit meshElsBeenHit(hitMeshEls);
         }
     }
+
+    if (meshElToBeHigh != -1) {
+        paintMeshElToBeHigh(painter);
+    }
 }
 
 void EditorArea::zoomIn()
@@ -174,7 +174,7 @@ void EditorArea::zoomIn()
     float zoomFactor = workspace->getZoomFactor();
     QPointF screenOrigin = workspace->getScreenOrigin();
 
-    if (zoomFactor == 400.0 ) {
+    if (zoomFactor == 400.0) {
         return;
     }
 
@@ -707,6 +707,9 @@ void EditorArea::paintMeshEls(QPainter& painter)
 
             QPointF pointPos = (1 - m) * (1 - m) * screenXYFirst + 2 * (1 - m) * m * screenMidPoint + m * m * screenXYSecond;
 
+            meshElsPos.insert(edgeMElementsId[h], pointPos);
+            meshElsType.insert(edgeMElementsId[h], elementType);
+
             QPainterPath path;
             QPainterPath text;
 
@@ -750,9 +753,6 @@ void EditorArea::paintMeshEls(QPainter& painter)
 
                 QPoint temp(2, edgeMElementsId[h]);
                 hitMeshEls.append(temp);
-
-                meshElsPos.insert(edgeMElementsId[h], pointPos);
-                meshElsType.insert(edgeMElementsId[h], elementType);
             }
         }
     }

@@ -126,6 +126,7 @@ public slots:
     void updateMainWindow();
     void mouseEnteredInDock();
     void mouseEnteredInResultsDock();
+    void mouseLeftDock();
     void mouseLeftResultsDock();
     void dockClosed();
     void resultsDockClosed();

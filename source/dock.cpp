@@ -39,3 +39,8 @@ void Dock::enterEvent(QEvent *event)
 {
     emit mouseEnteredInDock();
 }
+
+void Dock::leaveEvent(QEvent *event)
+{
+    emit mouseLeftDock();
+}
