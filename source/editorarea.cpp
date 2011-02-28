@@ -768,13 +768,18 @@ void EditorArea::paintMeshElToBeHigh(QPainter &painter)
 
     QPainterPath path;
     QPainterPath text;
+    QPainterPath circle;
 
     path.arcTo(QRectF(-radius, -radius, width, height), 0, 360);
     text.addText(-radius / 2.0, radius / 2.0, QFont("Arial", fontSize), meshElsType.value(meshElToBeHigh));
+    circle.arcTo(QRectF(-radius * 3 / 2, -radius * 3 / 2, width * 3 / 2, height * 3 / 2), 0, 360);
     path.translate(meshElsPos.value(meshElToBeHigh));
     text.translate(meshElsPos.value(meshElToBeHigh));
+    circle.translate(meshElsPos.value(meshElToBeHigh));
 
     painter.setPen(Qt::NoPen);
+    painter.setBrush(Qt::magenta);
+    painter.drawPath(circle);
     painter.setBrush(Qt::darkCyan);
     painter.drawPath(path);
     painter.setPen(Qt::yellow);
