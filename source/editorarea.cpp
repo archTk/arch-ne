@@ -43,6 +43,8 @@ EditorArea::EditorArea(QWidget *parent)
     setFocusPolicy(Qt::ClickFocus);
 
     edgeDiscretization = 31;    // It defines the divisions on the "Bezier" to position the mesh_element.
+
+    meshElToBeHigh = -1;
 }
 
 void EditorArea::setWorkspace(Workspace* theWorkspace)
@@ -150,8 +152,21 @@ void EditorArea::paintEvent(QPaintEvent*)
         paintLabels(painter);
     }
 
-    emit elementsBeenHit(hitElements);
-    emit meshElsBeenHit(hitMeshEls);
+    if (meshElToBeHigh != -1) {
+        paintMeshElToBeHigh(painter);
+    }
+
+    if (!hitElements.isEmpty()) {
+        if (!hitElements[0].x() != -1) {
+            emit elementsBeenHit(hitElements);
+        }
+    }
+
+    if (!hitElements.isEmpty()) {
+        if (!hitElements[0].x() != -1) {
+            emit meshElsBeenHit(hitMeshEls);
+        }
+    }
 }
 
 void EditorArea::zoomIn()
@@ -721,7 +736,6 @@ void EditorArea::paintMeshEls(QPainter& painter)
             mousePath.translate(mouseCurrentPos);
 
             if (path.intersects(mousePath) && selectedTool == 7) {
-                //qcout << "edge= " << edgesIds[j] << " - edge MEls#= " << edgeMElementsId.size() << " - meshElId" << edgeMelId <<endl;
                 painter.setPen(Qt::NoPen);
                 painter.setBrush(Qt::darkCyan);
                 painter.drawPath(path);
@@ -736,9 +750,42 @@ void EditorArea::paintMeshEls(QPainter& painter)
 
                 QPoint temp(2, edgeMElementsId[h]);
                 hitMeshEls.append(temp);
+
+                meshElsPos.insert(edgeMElementsId[h], pointPos);
+                meshElsType.insert(edgeMElementsId[h], elementType);
             }
         }
     }
+}
+
+void EditorArea::paintMeshElToBeHigh(QPainter &painter)
+{
+    qreal radius = size2screen(8);
+    float fontSize = size2screen(12);
+
+    qreal width = radius * 2;
+    qreal height = radius * 2;
+
+    QPainterPath path;
+    QPainterPath text;
+
+    path.arcTo(QRectF(-radius, -radius, width, height), 0, 360);
+    text.addText(-radius / 2.0, radius / 2.0, QFont("Arial", fontSize), meshElsType.value(meshElToBeHigh));
+    path.translate(meshElsPos.value(meshElToBeHigh));
+    text.translate(meshElsPos.value(meshElToBeHigh));
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(Qt::darkCyan);
+    painter.drawPath(path);
+    painter.setPen(Qt::yellow);
+    painter.setBrush(Qt::yellow);
+    painter.drawPath(text);
+}
+
+void EditorArea::setMeshElToBeHigh(int theMeshElToBeHigh)
+{
+    meshElToBeHigh = theMeshElToBeHigh;
+    update();
 }
 
 void EditorArea::paintLabels(QPainter& painter)

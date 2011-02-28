@@ -36,6 +36,7 @@ public:
     void clear();
     Workspace* getWorkspace();
     void setWorkspace(Workspace* theWorkspace);
+    void setMeshElToBeHigh(int theMeshElToBeHigh);
 
 public slots:
     void homeView();
@@ -85,6 +86,7 @@ private:
     void paintSupportEdges4selecting(QPainter& painter);
     void paintSelectingArea(QPainter& painter);
     void paintMeshEls(QPainter& painter);
+    void paintMeshElToBeHigh(QPainter& painter);
     void paintLabels(QPainter& painter);
 
     QPointF graph2screen(QPointF graphCoord);
@@ -105,6 +107,11 @@ private:
 
     QMap<int, QVector<float> > sOnBezier;
     int edgeDiscretization;
+
+    QMap<int, QPointF> meshElsPos;
+    QMap<int, QString> meshElsType;
+
+    int meshElToBeHigh;
 };
 
 #endif // EDITORAREA_H

@@ -34,3 +34,8 @@ void ResultsDock::enterEvent(QEvent *event)
 {
     emit mouseEnteredInResultsDock();
 }
+
+void ResultsDock::leaveEvent(QEvent *)
+{
+    emit mouseLeftResultsDock();
+}

@@ -126,6 +126,7 @@ public slots:
     void updateMainWindow();
     void mouseEnteredInDock();
     void mouseEnteredInResultsDock();
+    void mouseLeftResultsDock();
     void dockClosed();
     void resultsDockClosed();
     void setFileName(QString theName);

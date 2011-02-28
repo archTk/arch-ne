@@ -13,9 +13,11 @@ public:
 
 protected:
     void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
 
 signals:
     void mouseEnteredInResultsDock();
+    void mouseLeftResultsDock();
     void resultsDockClosed();
 
 public slots:

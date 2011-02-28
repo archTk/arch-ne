@@ -165,13 +165,13 @@ void MainWindow::setPageInResultsTab(QWidget *theResultsView)
 void MainWindow::tabsContentChanged()
 {
     emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
-    setPageInResultsTab(resultsViewList.key(dataCollectorList.value(tabs->currentWidget())));
+    setPageInTab(resultsViewList.key(dataCollectorList.value(tabs->currentWidget())));
 }
 
 void MainWindow::resultsTabsContentChanged()
 {
-    emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
-    setPageInTab(dataCollectorList.key(resultsViewList.value(resultsTabs->currentWidget())));
+    editorArea->setMeshElToBeHigh(resultsViewList.value(resultsTabs->currentWidget()).y());
+    setPageInResultsTab(dataCollectorList.key(resultsViewList.value(resultsTabs->currentWidget())));
 }
 
 void MainWindow::mouseEnteredInDock()
@@ -181,7 +181,12 @@ void MainWindow::mouseEnteredInDock()
 
 void MainWindow::mouseEnteredInResultsDock()
 {
-    emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
+    editorArea->setMeshElToBeHigh(resultsViewList.value(resultsTabs->currentWidget()).y());
+}
+
+void MainWindow::mouseLeftResultsDock()
+{
+    editorArea->setMeshElToBeHigh(-1);
 }
 
 void MainWindow::dockClosed()
@@ -579,6 +584,7 @@ void MainWindow::createDockWindows()
     resultsDock = new ResultsDock(this);
     resultsDock->setWindowTitle("Results");
     connect(resultsDock, SIGNAL(mouseEnteredInResultsDock()), this, SLOT(mouseEnteredInResultsDock()));
+    connect(resultsDock, SIGNAL(mouseLeftResultsDock()), this, SLOT(mouseLeftResultsDock()));
     connect(resultsDock, SIGNAL(resultsDockClosed()), this, SLOT(resultsDockClosed()));
     connect(resultsDock, SIGNAL(resultsDockClosed()), this, SIGNAL(resultsDockClosedSig()));
     resultsDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);

@@ -519,8 +519,8 @@ void AppController::showResults(QPoint elementRequest)
     //flowImage.load(flowImageName);
     pressureImage.load("/Users/boss/bosshogg.jpg");
     flowImage.load("/Users/boss/bosshogg.jpg");
-    QPixmap pressurePic = pressureImage.scaledToWidth(200, Qt::SmoothTransformation);
-    QPixmap flowPic= flowImage.scaledToWidth(200, Qt::SmoothTransformation);
+    QPixmap pressurePic = pressureImage.scaledToWidth(50, Qt::SmoothTransformation);
+    QPixmap flowPic= flowImage.scaledToWidth(50, Qt::SmoothTransformation);
 
     QString PMean = QString("100");
     QString FMean = QString("150");
