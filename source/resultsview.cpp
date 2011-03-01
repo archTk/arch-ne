@@ -25,16 +25,17 @@ using namespace std;
 
 QTextStream resultsout(stdout);
 
-ResultsView::ResultsView(QString cookie, QPixmap pressurePic, QPixmap flowPic, QString PMean,
+ResultsView::ResultsView(QString cookie, QPixmap pressurePix, QPixmap flowPix, QString PMean,
                          QString FMean, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ResultsView)
 {
     ui->setupUi(this);
-    pressureImage = pressurePic;
-    flowImage = flowPic;
-    QPixmap shownPImage = pressureImage.scaledToWidth(50, Qt::SmoothTransformation);
-    QPixmap shownFImage= flowImage.scaledToWidth(50, Qt::SmoothTransformation);
+    pressPix = pressurePix;
+    flPix = flowPix;
+    //resultsout << "ResultsView::ResultsView imageDim= " << pressureImage.width() << " x " << pressureImage.height() << endl;
+    QPixmap shownPImage = pressPix.scaledToWidth(50, Qt::SmoothTransformation);
+    QPixmap shownFImage= flPix.scaledToWidth(50, Qt::SmoothTransformation);
     ui->pressureLabel->setPixmap(shownPImage);
     ui->PValue->setText(PMean);
 
@@ -51,14 +52,11 @@ ResultsView::~ResultsView()
 
 void ResultsView::resizeEvent(QResizeEvent *event)
 {
-    if ((ui->pressureLabel->height() + ui->flowLabel->height()) > height() * 0.8 ) {
-        return;
-    }
+    QSize newSize = ui->pressureLabel->size();
+    //QImage newPImage = pressureImage.toImage().scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QPixmap newPixmap = pressPix.scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-    const QPixmap* temp = ui->pressureLabel->pixmap();
-    QPixmap newImage;
-    newImage = (*temp).scaledToWidth(width() * 0.8, Qt::SmoothTransformation);
-    ui->pressureLabel->setPixmap(newImage);
+    ui->pressureLabel->setPixmap(newPixmap);
 }
 
 void ResultsView::okButtClicked()

@@ -50,7 +50,7 @@ private slots:
 
 private:
     QString resultsCookie;
-    QPixmap pressureImage, flowImage;
+    QPixmap pressPix, flPix;
 };
 
 #endif // RESULTSVIEW_H

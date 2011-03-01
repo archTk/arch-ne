@@ -663,6 +663,8 @@ void EditorArea::paintMeshEls(QPainter& painter)
             painter.drawText(-radius, -radius * 6 / 5, width, height, Qt::AlignCenter | Qt::AlignHCenter, elementType);
             painter.translate(-nodePos);
         }
+
+
     }
 
     for (int j = 0; j < edgesIds.size(); j++) {

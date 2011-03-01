@@ -35,5 +35,6 @@
         <file>images/importBC.png</file>
         <file>images/importPatientInfo.png</file>
         <file>images/importSP.png</file>
+        <file>images/showMesh.png</file>
     </qresource>
 </RCC>
