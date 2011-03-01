@@ -31,11 +31,14 @@ ResultsView::ResultsView(QString cookie, QPixmap pressurePix, QPixmap flowPix, Q
     ui(new Ui::ResultsView)
 {
     ui->setupUi(this);
+
+    connect(ui->splitter, SIGNAL(splitterMoved(int, int)), this, SLOT(resizeLabels()));
+
     pressPix = pressurePix;
     flPix = flowPix;
-    //resultsout << "ResultsView::ResultsView imageDim= " << pressureImage.width() << " x " << pressureImage.height() << endl;
     QPixmap shownPImage = pressPix.scaledToWidth(50, Qt::SmoothTransformation);
-    QPixmap shownFImage= flPix.scaledToWidth(50, Qt::SmoothTransformation);
+    QPixmap shownFImage= flowPix.scaledToWidth(50, Qt::SmoothTransformation);
+
     ui->pressureLabel->setPixmap(shownPImage);
     ui->PValue->setText(PMean);
 
@@ -52,11 +55,22 @@ ResultsView::~ResultsView()
 
 void ResultsView::resizeEvent(QResizeEvent *event)
 {
-    QSize newSize = ui->pressureLabel->size();
-    //QImage newPImage = pressureImage.toImage().scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    QPixmap newPixmap = pressPix.scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    resizeLabels();
+}
 
-    ui->pressureLabel->setPixmap(newPixmap);
+void ResultsView::resizeLabels()
+{
+    QSize newPSize = ui->pressureLabel->size();
+    QPixmap newPPixmap;
+    newPPixmap = pressPix.scaled(newPSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    ui->pressureLabel->setPixmap(newPPixmap);
+
+    QSize newFSize = ui->flowLabel->size();
+    QPixmap newFPixmap;
+    newFPixmap = flPix.scaled(newFSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    ui->flowLabel->setPixmap(newFPixmap);
+
+    //resizeLabels();
 }
 
 void ResultsView::okButtClicked()

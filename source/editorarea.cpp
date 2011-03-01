@@ -637,7 +637,6 @@ void EditorArea::paintMeshEls(QPainter& painter)
     painter.setFont(QFont("Arial", fontSize));
     for (int i = 0; i < nodesIds.size(); i++) {
         QString nodeMTypeString = workspace->getNodeMType(nodesIds[i]);
-        qcout << "nodeMtypeString= " << nodeMTypeString << endl;
         QString elementType;
         elementType.clear();
         if (!nodeMTypeString.isEmpty()) {

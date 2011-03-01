@@ -594,7 +594,7 @@ void MainWindow::createDockWindows()
     connect(resultsDock, SIGNAL(resultsDockClosed()), this, SLOT(resultsDockClosed()));
     connect(resultsDock, SIGNAL(resultsDockClosed()), this, SIGNAL(resultsDockClosedSig()));
     resultsDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    addDockWidget(Qt::RightDockWidgetArea, resultsDock);
+    addDockWidget(Qt::LeftDockWidgetArea, resultsDock);
     resultsDock->hide();
 }
 

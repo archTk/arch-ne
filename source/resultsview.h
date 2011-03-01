@@ -47,6 +47,7 @@ signals:
 
 private slots:
     void okButtClicked();
+    void resizeLabels();
 
 private:
     QString resultsCookie;
