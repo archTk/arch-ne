@@ -626,6 +626,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
     bool showMesh = workspace->getShowMeshStatus();
     int selectedTool = workspace->getSelectedTool();
     bool firstTime = true;
+    bool firstTimeNode = true;
 
     qreal radius = size2screen(8);
     float fontSize = size2screen(12);
@@ -654,17 +655,55 @@ void EditorArea::paintMeshEls(QPainter& painter)
 
         if (!nodeMTypeString.isNull()) {
             QPointF nodePos = graph2screen(workspace->getNodePosition(nodesIds[i]));
-            painter.translate(nodePos);
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(Qt::darkMagenta);
-            painter.drawPie(-radius, -radius, width, height, 0, 360 * 16);
-            painter.setPen(QPen(Qt::yellow, size2screen(4), Qt::SolidLine,
-                                Qt::RoundCap, Qt::RoundJoin));
-            painter.drawText(-radius, -radius * 6 / 5, width, height, Qt::AlignCenter | Qt::AlignHCenter, elementType);
-            painter.translate(-nodePos);
+            int nodeMElementId = workspace->getNodeMElementId(nodesIds[i]);
+
+            QPainterPath path;
+            QPainterPath text;
+
+            path.arcTo(QRectF(-radius, -radius, width, height), 0, 360);
+            text.addText(-radius / 2.0, radius / 2.0, QFont("Arial", fontSize), elementType);
+            qcout << "elementType= " << elementType << endl;
+            path.translate(nodePos);
+            text.translate(nodePos);
+
+            if (showMesh) {
+                painter.setPen(Qt::NoPen);
+                painter.setBrush(Qt::darkCyan);
+                painter.drawPath(path);
+                painter.setPen(Qt::yellow);
+                painter.setBrush(Qt::yellow);
+                painter.drawPath(text);
+            } else {
+                qreal dotR = size2screen(2);
+                QPainterPath dotPath;
+                painter.setPen(Qt::gray);
+                painter.setBrush(Qt::gray);
+                dotPath.arcTo(QRectF(-dotR, -dotR, dotR * 2, dotR * 2), 0, 360);
+                dotPath.translate(nodePos);
+                painter.drawPath(dotPath);
+            }
+
+            QPainterPath mousePath;
+            mousePath.arcTo(QRectF(-1, -1, 1, 1), 0, 360);
+            mousePath.translate(mouseCurrentPos);
+
+            if (path.intersects(mousePath) && selectedTool == 7) {
+                painter.setPen(Qt::NoPen);
+                painter.setBrush(Qt::darkCyan);
+                painter.drawPath(path);
+                painter.setPen(Qt::yellow);
+                painter.setBrush(Qt::yellow);
+                painter.drawPath(text);
+
+                if (firstTimeNode) {
+                    firstTimeNode = false;
+                    hitMeshEls.clear();
+                }
+
+                QPoint temp(1, nodeMElementId);
+                hitMeshEls.append(temp);
+            }
         }
-
-
     }
 
     for (int j = 0; j < edgesIds.size(); j++) {

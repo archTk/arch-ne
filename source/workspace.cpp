@@ -176,7 +176,7 @@ void Workspace::undo()
         QMap<int, QString> tempNodesMType = (*statusVector[currentStatus - 1]).getGraphMesh().data()->getNodesMType();
         QMap<int, QString> tempNodesMParameters = (*statusVector[currentStatus - 1]).getGraphMesh().data()->getNodesMParameters();
         QMap<int, QVector<int> > tempNodesMMeshnodesId = (*statusVector[currentStatus - 1]).getGraphMesh().data()->getNodesMMeshnodesId();
-        QMap<int, QString> tempNodesMElementId = (*statusVector[currentStatus - 1]).getGraphMesh().data()->getNodesMElementId();
+        QMap<int, int> tempNodesMElementId = (*statusVector[currentStatus - 1]).getGraphMesh().data()->getNodesMElementId();
         QMap<int, QVector<float> > tempEdgesMS = (*statusVector[currentStatus - 1]).getGraphMesh().data()->getEdgesMS();
         QMap<int, QVector<QString> > tempEdgesMTypes = (*statusVector[currentStatus - 1]).getGraphMesh().data()->getEdgesMTypes();
         QMap<int, QVector<QString> > tempEdgesMParameters = (*statusVector[currentStatus - 1]).getGraphMesh().data()->getEdgesMParameters();
@@ -245,7 +245,7 @@ void Workspace::redo()
         QMap<int, QString> tempNodesMType = (*statusVector[currentStatus]).getGraphMesh().data()->getNodesMType();
         QMap<int, QString> tempNodesMParameters = (*statusVector[currentStatus]).getGraphMesh().data()->getNodesMParameters();
         QMap<int, QVector<int> > tempNodesMMeshnodesId = (*statusVector[currentStatus]).getGraphMesh().data()->getNodesMMeshnodesId();
-        QMap<int, QString> tempNodesMElementId = (*statusVector[currentStatus]).getGraphMesh().data()->getNodesMElementId();
+        QMap<int, int> tempNodesMElementId = (*statusVector[currentStatus]).getGraphMesh().data()->getNodesMElementId();
         QMap<int, QVector<float> > tempEdgesMS = (*statusVector[currentStatus]).getGraphMesh().data()->getEdgesMS();
         QMap<int, QVector<QString> > tempEdgesMTypes = (*statusVector[currentStatus]).getGraphMesh().data()->getEdgesMTypes();
         QMap<int, QVector<QString> > tempEdgesMParameters = (*statusVector[currentStatus]).getGraphMesh().data()->getEdgesMParameters();
@@ -1456,6 +1456,11 @@ QVector<int> Workspace::getEdgeMElementsId(int edgeId)
 QString Workspace::getNodeMType(int nodeId)
 {
     return graphMesh->getNodeMType(nodeId);
+}
+
+int Workspace::getNodeMElementId(int nodeId)
+{
+    return graphMesh->getNodeMElementId(nodeId);
 }
 
 bool Workspace::getGridStatus()

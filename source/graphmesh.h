@@ -43,7 +43,7 @@ public:
     QMap<int, QString> getNodesMType();
     QMap<int, QString> getNodesMParameters();
     QMap<int, QVector<int> > getNodesMMeshnodesId();
-    QMap<int, QString> getNodesMElementId();
+    QMap<int, int> getNodesMElementId();
 
     QMap<int, QVector<float> > getEdgesMS();
     QMap<int, QVector<QString> > getEdgesMTypes();
@@ -54,7 +54,7 @@ public:
     QString getNodeMType(int nodeId);
     QString getNodeMParameters(int nodeId);
     QVector<int> getNodeMMeshnodesId(int nodeId);
-    QString getNodesMElementId(int nodeId);
+    int getNodeMElementId(int nodeId);
 
     QVector<float> getEdgeMs(int edgeId);
     QVector<QString> getEdgeMTypes(int edgeId);
@@ -65,7 +65,7 @@ public:
     void setNodesMType(QMap<int, QString> theNodesMType);
     void setNodesMParameters(QMap<int, QString> theNodesMParameters);
     void setNodesMMeshnodesId(QMap<int, QVector<int> > theNodesMeshnodesId);
-    void setNodesMElementId(QMap<int, QString> theNodesMElementId);
+    void setNodesMElementId(QMap<int, int> theNodesMElementId);
 
     void setEdgesMS(QMap<int, QVector<float> > theEdgesMS);
     void setEdgesMTypes(QMap<int, QVector<QString> > theEdgesMTypes);
@@ -90,7 +90,7 @@ private:
     QMap<int, QString> nodesMType;
     QMap<int, QString> nodesMParameters;
     QMap<int, QVector<int> > nodesMMeshnodesId; // There may be 3 meshnodes in a node (e.g. anastomosis).
-    QMap<int, QString> nodesMElementId;
+    QMap<int, int> nodesMElementId;
 
     QMap<int, QVector<float> > edgesMS;         // Initial s-coord for the meshElements of the graph-edge.
     QMap<int, QVector<QString> > edgesMTypes;   // Type of the meshElements of the graph-edge.

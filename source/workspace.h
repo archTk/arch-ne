@@ -70,6 +70,7 @@ public:
     QVector<QString> getEdgeMTypes(int edgeId);
     QVector<int> getEdgeMElementsId(int edgeId);
     QString getNodeMType (int nodeId);
+    int getNodeMElementId(int nodeId);
 
     void setNodeProperties(int nodeId, QString nodeProp);
     void setEdgeProperties(int edgeId, QString edgeProp);

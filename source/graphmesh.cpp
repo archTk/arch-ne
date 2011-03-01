@@ -56,11 +56,11 @@ void GraphMesh::createNodeFromXML(QString attrNodeId, QString attrId, QString at
         nodesMParameters.insert(nodeId, param);
         QVector<int> meshnodes;
         nodesMMeshnodesId.insert(nodeId, meshnodes);
-        QString elem;
-        nodesMElementId.insert(nodeId, elem);
+        int nodeMeshId = attrId.toInt();
+        nodesMElementId.insert(nodeId, nodeMeshId);
     }
 
-    nodesMElementId[nodeId].append(attrId);
+    //nodesMElementId[nodeId].append(attrId);
     nodesMType[nodeId].append(attrType);
     int meshnode1 = attrMeshnode1.toInt();
     int meshnode2 = attrMeshnode2.toInt();
@@ -190,9 +190,14 @@ QMap<int, QVector<int> > GraphMesh::getNodesMMeshnodesId()
     return nodesMMeshnodesId;
 }
 
-QMap<int, QString> GraphMesh::getNodesMElementId()
+QMap<int, int> GraphMesh::getNodesMElementId()
 {
     return nodesMElementId;
+}
+
+int GraphMesh::getNodeMElementId(int nodeId)
+{
+    return nodesMElementId.value(nodeId);
 }
 
 QMap<int, QVector<float> > GraphMesh::getEdgesMS()
@@ -257,7 +262,7 @@ void GraphMesh::setNodesMMeshnodesId(QMap<int, QVector<int> > theNodesMMeshnodes
     nodesMMeshnodesId = theNodesMMeshnodesId;
 }
 
-void GraphMesh::setNodesMElementId(QMap<int, QString> theNodesMElementId)
+void GraphMesh::setNodesMElementId(QMap<int, int> theNodesMElementId)
 {
     nodesMElementId = theNodesMElementId;
 }
