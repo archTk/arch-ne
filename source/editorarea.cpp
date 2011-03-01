@@ -637,10 +637,11 @@ void EditorArea::paintMeshEls(QPainter& painter)
     painter.setFont(QFont("Arial", fontSize));
     for (int i = 0; i < nodesIds.size(); i++) {
         QString nodeMTypeString = workspace->getNodeMType(nodesIds[i]);
+        qcout << "nodeMtypeString= " << nodeMTypeString << endl;
         QString elementType;
         elementType.clear();
         if (!nodeMTypeString.isEmpty()) {
-            if (nodeMTypeString == "anastomosis") {
+            if (nodeMTypeString == "0D_Anastomosis") {
                 elementType = "a";
             } else if (nodeMTypeString == "bifurcation") {
                 elementType = "b";
@@ -660,15 +661,14 @@ void EditorArea::paintMeshEls(QPainter& painter)
             QPainterPath path;
             QPainterPath text;
 
-            path.arcTo(QRectF(-radius, -radius, width, height), 0, 360);
+            path.arcTo(QRectF(-radius*1.2, -radius*1.2, width*1.2, height*1.2), 0, 360);
             text.addText(-radius / 2.0, radius / 2.0, QFont("Arial", fontSize), elementType);
-            qcout << "elementType= " << elementType << endl;
             path.translate(nodePos);
             text.translate(nodePos);
 
             if (showMesh) {
                 painter.setPen(Qt::NoPen);
-                painter.setBrush(Qt::darkCyan);
+                painter.setBrush(Qt::darkYellow);
                 painter.drawPath(path);
                 painter.setPen(Qt::yellow);
                 painter.setBrush(Qt::yellow);

@@ -198,7 +198,7 @@ void InputOutput::loadMesh(GraphMesh *graphMesh)
         QString attrType = meshElement.attribute("type");
         QString attrMeshnode1 = meshElement.attribute("meshnode1_id");
         QString attrMeshnode2 = meshElement.attribute("meshnode2_id");
-        QString attrMeshnode3 = meshElement.attribute("mehnode3_id");
+        QString attrMeshnode3 = meshElement.attribute("meshnode3_id");
         QString attrEdgeId;
         attrEdgeId.clear();
 

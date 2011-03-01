@@ -233,8 +233,6 @@ QVector<int> GraphMesh::getEdgeMElementsId(int edgeId)
 QString GraphMesh::getNodeMType(int nodeId)
 {
     return nodesMType.value(nodeId);
-    //QString test = "p";
-    //return test;
 }
 
 QVector<float> GraphMesh::getEdgeMs(int edgeId)
