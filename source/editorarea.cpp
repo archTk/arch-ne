@@ -641,7 +641,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
         elementType.clear();
         if (!nodeMTypeString.isEmpty()) {
             if (nodeMTypeString == "0D_Anastomosis") {
-                elementType = "a";
+                elementType = "A";
             } else if (nodeMTypeString == "bifurcation") {
                 elementType = "b";
             } else if (nodeMTypeString == "inflow") {
@@ -725,6 +725,10 @@ void EditorArea::paintMeshEls(QPainter& painter)
             float deltaS = s - float(t - 1) / edgeDiscretization;
 
             float m = float(t) / edgeDiscretization + deltaS;
+
+            if (m > 1.0) {
+                m = 0.99;
+            }
 
             QString elementType;
             elementType.clear();

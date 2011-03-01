@@ -58,6 +58,11 @@ void ResultsView::resizeEvent(QResizeEvent *event)
     resizeLabels();
 }
 
+void ResultsView::showEvent(QShowEvent *event)
+{
+    resizeLabels();
+}
+
 void ResultsView::resizeLabels()
 {
     QSize newPSize = ui->pressureLabel->size();
