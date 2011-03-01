@@ -518,8 +518,8 @@ void AppController::showResults(QPoint elementRequest)
     QPixmap pressureImage, flowImage;
     //pressureImage.load(pressureImageName);
     //flowImage.load(flowImageName);
-    pressureImage.load("/Users/boss/Desktop/aorta_asc_1_pressure.png");
-    flowImage.load("/Users/boss/Desktop/aorta_asc_1_flow.png");
+    pressureImage.load(":images/aorta_asc_1_pressure.png");
+    flowImage.load(":images/aorta_asc_1_flow.png");
 
     QString PMean = QString("100");
     QString FMean = QString("150");

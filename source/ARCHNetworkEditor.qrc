@@ -36,5 +36,7 @@
         <file>images/importPatientInfo.png</file>
         <file>images/importSP.png</file>
         <file>images/showMesh.png</file>
+        <file>images/aorta_asc_1_flow.png</file>
+        <file>images/aorta_asc_1_pressure.png</file>
     </qresource>
 </RCC>
