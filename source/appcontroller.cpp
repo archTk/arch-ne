@@ -116,7 +116,7 @@ void AppController::createConnections()
     connect(editorArea, SIGNAL(Key_CTRL_A_Pressed()), workspace, SLOT(Key_CTRL_A_Pressed()));
     connect(editorArea, SIGNAL(elementsBeenHit(QVector<QPoint>)), workspace, SLOT(elementsBeenHit(QVector<QPoint>)));
     connect(editorArea, SIGNAL(elementsBeenHit(QVector<QPoint>)), mainWindow, SLOT(elementsBeenHit(QVector<QPoint>)));
-    connect(editorArea, SIGNAL(meshElsBeenHit(QVector<QPoint>)), workspace, SLOT(meshElsBeesHit(QVector<QPoint>)));
+    connect(editorArea, SIGNAL(meshElsBeenHit(QVector<QPoint>)), workspace, SLOT(meshElsBeenHit(QVector<QPoint>)));
     connect(editorArea, SIGNAL(meshElsBeenHit(QVector<QPoint>)), mainWindow, SLOT(meshElsBeenHit(QVector<QPoint>)));
 
     connect(this, SIGNAL(messageToBeDisplayed(QString)), mainWindow, SLOT(showStatusBarMessage(QString)));

@@ -112,7 +112,7 @@ void MainWindow::insertResultsViewToResultsDock(ResultsView* theResultsView, QPo
 
     resultsTabs->insertTab(0, theResultsView, element);
     resultsTabs->setCurrentWidget(theResultsView);
-    emit editingEl2Ws(elementRequest);
+    //emit editingEl2Ws(elementRequest);
     resultsDock->setWidget(resultsTabs);
 }
 

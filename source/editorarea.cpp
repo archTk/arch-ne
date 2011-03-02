@@ -657,6 +657,9 @@ void EditorArea::paintMeshEls(QPainter& painter)
             QPointF nodePos = graph2screen(workspace->getNodePosition(nodesIds[i]));
             int nodeMElementId = workspace->getNodeMElementId(nodesIds[i]);
 
+            meshElsPos.insert(nodeMElementId, nodePos);
+            meshElsType.insert(nodeMElementId, elementType);
+
             QPainterPath path;
             QPainterPath text;
 

@@ -1704,7 +1704,7 @@ void Workspace::elementsBeenHit(QVector<QPoint> hitElements)
     hitEl = hitElements;
 }
 
-void Workspace::meshElsBeesHit(QVector<QPoint> theHitMeshEls)
+void Workspace::meshElsBeenHit(QVector<QPoint> theHitMeshEls)
 {
     hitMeshEls = theHitMeshEls;
 }
