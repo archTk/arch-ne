@@ -137,6 +137,7 @@ void EditorArea::paintEvent(QPaintEvent*)
                         Qt::RoundCap, Qt::RoundJoin));
     painter.setBrush(Qt::NoBrush);
     paintEdges(painter);    // paintEdges before paintNodes to give priority to nodes in  -emit elementBeenHit-.
+                            // paintEdges also populates "QMap<int, QVector<float> > sOnBezier".
 
     //painter.setPen(Qt::NoPen);    -- Done in paintNodes.
     painter.setBrush(Qt::red);
@@ -227,6 +228,7 @@ void EditorArea::clear()
     meshElsPos.clear();
     meshElsType.clear();
     meshId2GraphId.clear();
+    meshElToBeHigh = -1;
     workspace->clear();
 }
 
@@ -731,11 +733,11 @@ void EditorArea::paintMeshEls(QPainter& painter)
             }
             float deltaS = s - float(t - 1) / edgeDiscretization;
 
-            float m = float(t) / edgeDiscretization + deltaS;
+            float m = float(t - 1) / edgeDiscretization + deltaS;
 
-            if (m > 1.0) {
-                m = 0.99;
-            }
+            //if (m > 1.0) {
+            //    m = 0.99;
+            //}
 
             QString elementType;
             elementType.clear();

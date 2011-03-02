@@ -165,7 +165,6 @@ void MainWindow::setPageInResultsTab(QWidget *theResultsView)
 void MainWindow::tabsContentChanged()
 {
     emit editingEl2Ws(dataCollectorList.value(tabs->currentWidget()));
-    //setPageInTab(resultsViewList.key(dataCollectorList.value(tabs->currentWidget())));
 }
 
 void MainWindow::resultsTabsContentChanged()
@@ -640,15 +639,15 @@ bool MainWindow::maybeSave()
 
 void MainWindow::loadNetwork()
 {
-    removeAllDataCollectorFromDock();
-    hideDock();
+    clear();
+    initNewCase();
     emit loadGraphFromLayout();
 }
 
 void MainWindow::loadNetWithoutLayout()
 {
-    removeAllDataCollectorFromDock();
-    hideDock();
+    clear();
+    initNewCase();
     emit loadGraphFromGraph();
 }
 
@@ -687,13 +686,8 @@ QString MainWindow::strippedName(const QString& fullFileName)
 void MainWindow::newNetwork()
 {
     if (maybeSave()) {
-        editorArea->clear();
         setCurrentFile("");
-
-        removeAllDataCollectorFromDock();
-        removeAllResultsViewFromResultsDock();
-        hideDock();
-        hideResultsDock();
+        clear();
         initNewCase();
     }
 }
@@ -862,6 +856,17 @@ void MainWindow::initNewCase()
     QString theTransformations("<transformations>\n"
                                "</transformations>\n");
     editorArea->getWorkspace()->getGraphProperties()->setTransformations(theTransformations);
+}
+
+void MainWindow::clear()
+{
+    removeAllDataCollectorFromDock();
+    removeAllResultsViewFromResultsDock();
+    hideDock();
+    hideResultsDock();
+    dataCollectorList.clear();
+    resultsViewList.clear();
+    editorArea->clear();
 }
 
 void MainWindow::showStatusBarMessage(QString theMessage)

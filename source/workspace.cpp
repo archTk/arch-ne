@@ -1811,6 +1811,7 @@ void Workspace::clear()
     supportNodes4selecting.clear();
     supportEdges4selecting.clear();
     hitEl.clear();
+    hitMeshEls.clear();
 
     gridStatus = true;
     snapToGridStatus = true;

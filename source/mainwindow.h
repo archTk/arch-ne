@@ -61,6 +61,8 @@ public:
     void showDock();
     void showResultsDock();
 
+    void clear();
+
 signals:
     void addSegmentPressed();
     void BCPressed();
