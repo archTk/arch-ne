@@ -37,6 +37,7 @@ public:
     Workspace* getWorkspace();
     void setWorkspace(Workspace* theWorkspace);
     void setMeshElToBeHigh(int theMeshElToBeHigh);
+    QPoint getGraphEl(int meshId);
 
 public slots:
     void homeView();
@@ -111,6 +112,7 @@ private:
 
     QMap<int, QPointF> meshElsPos;
     QMap<int, QString> meshElsType;
+    QMap<int, QPoint> meshId2GraphId;
 
     int meshElToBeHigh;
 };

@@ -224,6 +224,9 @@ void EditorArea::updateRender()
 
 void EditorArea::clear()
 {
+    meshElsPos.clear();
+    meshElsType.clear();
+    meshId2GraphId.clear();
     workspace->clear();
 }
 
@@ -659,6 +662,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
 
             meshElsPos.insert(nodeMElementId, nodePos);
             meshElsType.insert(nodeMElementId, elementType);
+            meshId2GraphId.insert(nodeMElementId, QPoint(1, nodesIds[i]));
 
             QPainterPath path;
             QPainterPath text;
@@ -756,6 +760,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
 
             meshElsPos.insert(edgeMElementsId[h], pointPos);
             meshElsType.insert(edgeMElementsId[h], elementType);
+            meshId2GraphId.insert(edgeMElementsId[h], QPoint(2, edgesIds[j]));
 
             QPainterPath path;
             QPainterPath text;
@@ -843,6 +848,11 @@ void EditorArea::setMeshElToBeHigh(int theMeshElToBeHigh)
 void EditorArea::resetMeshElToBeHigh()
 {
     meshElToBeHigh = -1;
+}
+
+QPoint EditorArea::getGraphEl(int meshId)
+{
+    return meshId2GraphId.value(meshId);
 }
 
 void EditorArea::paintLabels(QPainter& painter)

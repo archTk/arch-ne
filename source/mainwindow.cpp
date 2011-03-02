@@ -171,7 +171,7 @@ void MainWindow::tabsContentChanged()
 void MainWindow::resultsTabsContentChanged()
 {
     editorArea->setMeshElToBeHigh(resultsViewList.value(resultsTabs->currentWidget()).y());
-    //setPageInResultsTab(dataCollectorList.key(resultsViewList.value(resultsTabs->currentWidget())));
+    setPageInTab(dataCollectorList.key(editorArea->getGraphEl(resultsViewList.value(resultsTabs->currentWidget()).y())));
 }
 
 void MainWindow::mouseEnteredInDock()
@@ -182,6 +182,7 @@ void MainWindow::mouseEnteredInDock()
 void MainWindow::mouseEnteredInResultsDock()
 {
     editorArea->setMeshElToBeHigh(resultsViewList.value(resultsTabs->currentWidget()).y());
+    setPageInTab(dataCollectorList.key(editorArea->getGraphEl(resultsViewList.value(resultsTabs->currentWidget()).y())));
 }
 
 void MainWindow::mouseLeftDock()
@@ -192,6 +193,7 @@ void MainWindow::mouseLeftDock()
 void MainWindow::mouseLeftResultsDock()
 {
     editorArea->setMeshElToBeHigh(-1);
+    emit editingEl2Ws(QPoint(-1, -1));
 }
 
 void MainWindow::dockClosed()
