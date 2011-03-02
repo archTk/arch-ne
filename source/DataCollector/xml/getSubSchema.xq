@@ -11,7 +11,7 @@ for $x in $parent//xs:element
    let $y := $xsdFile//xs:complexType[@name = data($x/@type)]
    let $z := $xsdFile//xs:simpleType[@name = data($x/@type)]
    let $w := $xsdFile//xs:simpleType[@name = data($z//xs:restriction/@base)]
-   return  $atts | $attg | $z | $y | $w | local:getSubElements($y)
+   return  $atts | $attg | $z | $y | $w | local:getSubAttributes($y) | local:getSubElements($y)
 };
 
 declare function local:getAttributeGroups($parent)

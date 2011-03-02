@@ -12,8 +12,8 @@ public:
     void closeEvent(QCloseEvent *event);
 
 protected:
-    void enterEvent(QEvent *);
-    void leaveEvent(QEvent *);
+    void enterEvent(QEvent * event);
+    void leaveEvent(QEvent * event);
 
 signals:
     void mouseEnteredInResultsDock();

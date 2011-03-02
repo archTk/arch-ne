@@ -42,10 +42,17 @@ QWidget *TreeDelegate::createEditor(QWidget *parent,const QStyleOptionViewItem &
             list.prepend("..."); 
         QComboBox *editor = new QComboBox(parent);
         editor->insertItems(0,list);
+        connect(editor, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
         return editor;
     } else {
         return QStyledItemDelegate::createEditor(parent, option, index);
     }
+}
+
+void TreeDelegate::emitCommitData()
+{
+    emit commitData(qobject_cast<QWidget *>(sender()));
+    emit closeEditor(qobject_cast<QWidget *>(sender()));
 }
 
 void TreeDelegate::setEditorData(QWidget *editor,const QModelIndex &index) const

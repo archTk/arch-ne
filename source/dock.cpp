@@ -37,10 +37,12 @@ void Dock::closeEvent(QCloseEvent* event)
 
 void Dock::enterEvent(QEvent *event)
 {
+    event->ignore();
     emit mouseEnteredInDock();
 }
 
 void Dock::leaveEvent(QEvent *event)
 {
+    event->ignore();
     emit mouseLeftDock();
 }

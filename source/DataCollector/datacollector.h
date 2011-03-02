@@ -53,11 +53,9 @@ public slots:
     void redoClicked();
     void cancelClicked();
     void showDomToggled();
-    void removeElement();
     void updateTools();
     void treeViewDataChanged();
     void viewClicked(QModelIndex index);
-
 signals:
     void applyClicked(QString cookie,QString XMLString);  
     void okButtonClicked(QString cookie,QString XMLString);  

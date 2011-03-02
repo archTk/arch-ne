@@ -691,7 +691,9 @@ void MainWindow::newNetwork()
         setCurrentFile("");
 
         removeAllDataCollectorFromDock();
+        removeAllResultsViewFromResultsDock();
         hideDock();
+        hideResultsDock();
         initNewCase();
     }
 }

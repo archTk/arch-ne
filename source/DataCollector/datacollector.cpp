@@ -87,7 +87,8 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     setReadOnlyItems(readOnlyItems);
 
     TreeModel *model = new TreeModel();
-    treeView->setItemDelegate(new TreeDelegate);
+    TreeDelegate *delegate = new TreeDelegate();
+    treeView->setItemDelegate(delegate);
     treeView->setModel(model);
     treeView->setColumnHidden(2,true);
     treeView->setColumnHidden(3,true);
@@ -193,8 +194,6 @@ void DataCollector::loadStack(int stackId)
    domDoc.setContent(undoStack.at(stackId));
    QDomElement rootElement = domDoc.documentElement();
    DomToTree(rootElement,"no_parent",treeView->rootIndex(),true);
-   //treeView->setColumnWidth(0,250);
-   //treeView->setColumnWidth(8,100);
    treeView->setColumnWidth(0,150);
    treeView->setColumnWidth(8,25);
    treeView->setColumnWidth(9,25);
@@ -298,12 +297,6 @@ QStringList DataCollector::fixElementInfo(QStringList info)
         fixedMembers.append(tmp);
     }
     return fixedMembers;
-}
-
-void DataCollector::removeElement()
-{
-    QModelIndex index = treeView->selectionModel()->currentIndex();
-    removeRow(index);
 }
 
 int DataCollector::insertChild(bool isAttribute,bool required,QModelIndex index,QString rowFirstCol,QString type,QStringList members,QString value)

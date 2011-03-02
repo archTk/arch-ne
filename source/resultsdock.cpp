@@ -32,10 +32,12 @@ void ResultsDock::closeEvent(QCloseEvent* event)
 
 void ResultsDock::enterEvent(QEvent *event)
 {
+    event->ignore();
     emit mouseEnteredInResultsDock();
 }
 
-void ResultsDock::leaveEvent(QEvent *)
+void ResultsDock::leaveEvent(QEvent *event)
 {
+    event->ignore();
     emit mouseLeftResultsDock();
 }
