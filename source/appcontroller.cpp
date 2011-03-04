@@ -225,13 +225,7 @@ void AppController::goMeshing(const QString &fileName)
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 
-    if (pythonPath.isEmpty()) {
-        showMessage(tr ("WARNING!"), tr("Path to python has not been set.\nPlease set it in Preferences..."));
-        return;
-    }
-
-    if (pyNSPath.isEmpty()) {
-        showMessage(tr ("WARNING!"), tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
+    if (!checkPaths(pythonPath, pyNSPath)) {
         return;
     }
 
@@ -260,6 +254,13 @@ void AppController::errorFromExternal(QProcess::ProcessError)
 
 void AppController::BCPressed()
 {
+    /*QString curFile = mainWindow->getFileName();
+    if (curFile.isEmpty()) {
+        showMessage("WARNING!", "The file has been saved.\n"
+                                "Please save it first");
+        return;
+    }*/
+
     QPoint elementRequest(3, 0);
     QString XMLString;
     XMLString = workspace->getBCXML();
@@ -277,6 +278,9 @@ void AppController::BCPressed()
     QString XMLSchema(":XMLschema/boundary_conditions.xsd");
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
+
+    /*InputOutput* inputOutput = new InputOutput();
+    inputOutput->saveBC(curFile, workspace->getBCXML());*/
 }
 
 void AppController::SPPressed()
@@ -284,6 +288,7 @@ void AppController::SPPressed()
     QPoint elementRequest(4, 0);
     QString XMLString;
     XMLString = workspace->getSPXML();
+    //XMLString = workspace->getBCXML();
 
     if (XMLString.isEmpty()) {
         XMLString = "<simulation_parameters/>";
@@ -349,25 +354,24 @@ void AppController::customizeGraph(const QString &fileName)
 
 void AppController::goCustomizing(const QString &fileName)
 {
+     appout << "AppC::goCustom fileName= " << fileName << endl;
+
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 
-    if (pythonPath.isEmpty()) {
-        showMessage(tr ("WARNING!"), tr("Path to python has not been set.\nPlease set it in Preferences..."));
-        return;
-    }
-
-    if (pyNSPath.isEmpty()) {
-        showMessage(tr ("WARNING!"), tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
+    if (!checkPaths(pythonPath, pyNSPath)) {
         return;
     }
 
     QString scriptPath;
     scriptPath = pyNSPath + "/ModelAdaptor_Script.py";
+    QFileInfo fileInfo(fileName);
+    QString workDir = fileInfo.path() + "/";
+    QString xmlNet = fileInfo.fileName();
 
     QStringList arguments;
-    arguments << scriptPath << "-i" << fileName << "-c" << workspace->getPatientInfoXML();
+    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << xmlNet << "--xmlBound" << workDir + "boundary_conditions.xml";
 
     appout << "AppController::goCustomizing check arguments" << endl;
 
@@ -403,13 +407,7 @@ void AppController::simulateGraph(const QString &fileName)
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 
-    if (pythonPath.isEmpty()) {
-        showMessage(tr ("WARNING!"), tr("Path to python has not been set.\nPlease set it in Preferences..."));
-        return;
-    }
-
-    if (pyNSPath.isEmpty()) {
-        showMessage(tr ("WARNING!"), tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
+    if (checkPaths(pythonPath, pyNSPath)) {
         return;
     }
 
@@ -675,4 +673,21 @@ void AppController::showMessage(QString theTitle, QString theMessage)
     messBox.addButton(QMessageBox::Ok);
 
     messBox.exec();
+}
+
+bool AppController::checkPaths(QString pythonPath, QString pyNSPath)
+{
+    if (pythonPath.isEmpty()) {
+        emit restoreCurs();
+        showMessage(tr ("WARNING!"), tr("Path to python has not been set.\nPlease set it in Preferences..."));
+        return false;
+    }
+
+    if (pyNSPath.isEmpty()) {
+        emit restoreCurs();
+        showMessage(tr ("WARNING!"), tr("Path to pyNS has not been set.\nPlease set it in Preferences..."));
+        return false;
+    }
+
+    return true;
 }

@@ -37,7 +37,7 @@ void NetworkProperties::setBCXML(QString theBCXML)
 
 QString NetworkProperties::getBCXML()
 {
-    return BCXML;
+    return (BCXML + SPXML + patientInfoXML);
 }
 
 void NetworkProperties::setSPXML(QString theSPXML)

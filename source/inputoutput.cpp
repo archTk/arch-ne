@@ -592,6 +592,26 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
     emit curFileName(fileName);
 }
 
+void InputOutput::saveBC(const QString &fileName, QString BCXML)
+{
+    QFileInfo fileInfo(fileName);
+    QString workDir = fileInfo.filePath() + "/";
+    QString f = fileInfo.fileName();
+    QString BC = workDir + "BC" + f;
+
+    QFile BCFile(BC);
+    if (!BCFile.open(QFile::WriteOnly | QFile::Text)) {
+        QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                             tr("Cannot write file %1:\n%2.")
+                             .arg(BC)
+                             .arg(BCFile.errorString()));
+        return;
+    }
+
+    QTextStream BCOut(&BCFile);
+    BCOut << BCXML;
+}
+
 void InputOutput::loadGraph(QDomDocument theDomDoc, Graph *graph, GraphProperties *graphProperties)
 {
     QDomNodeList caseInfoList = theDomDoc.elementsByTagName("case");

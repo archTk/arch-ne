@@ -735,10 +735,6 @@ void EditorArea::paintMeshEls(QPainter& painter)
 
             float m = float(t - 1) / edgeDiscretization + deltaS;
 
-            //if (m > 1.0) {
-            //    m = 0.99;
-            //}
-
             QString elementType;
             elementType.clear();
             if (!edgeMTypes[h].isEmpty()) {

@@ -99,6 +99,8 @@ private:
 
     QString meshOut;
     QString imagesDir;
+
+    bool checkPaths(QString pythonPath, QString pyNSPath);
 };
 
 #endif // APPCONTROLLER_H

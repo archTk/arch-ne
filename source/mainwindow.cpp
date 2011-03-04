@@ -858,6 +858,11 @@ void MainWindow::initNewCase()
     editorArea->getWorkspace()->getGraphProperties()->setTransformations(theTransformations);
 }
 
+QString MainWindow::getFileName()
+{
+    return curFile;
+}
+
 void MainWindow::clear()
 {
     removeAllDataCollectorFromDock();

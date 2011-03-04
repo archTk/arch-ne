@@ -43,6 +43,9 @@ public:
     void saveGraph(const QString& fileName, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
     void saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
 
+    void saveBC(const QString& fileName, QString BCXML);
+
+
     void loadMeshAfterGenerating(const QString& fileName, GraphMesh* graphMesh);
 
     void importBC(NetworkProperties* networkProperties);

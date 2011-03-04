@@ -61,6 +61,8 @@ public:
     void showDock();
     void showResultsDock();
 
+    QString getFileName();
+
     void clear();
 
 signals:
