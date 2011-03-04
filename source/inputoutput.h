@@ -49,8 +49,8 @@ public:
     void loadMeshAfterGenerating(const QString& fileName, GraphMesh* graphMesh);
 
     void importBC(NetworkProperties* networkProperties);
-    void importPatientInfo(NetworkProperties* networkProperties);
-    void importSP(NetworkProperties* networkProperties);
+    //void importPatientInfo(NetworkProperties* networkProperties);
+    //void importSP(NetworkProperties* networkProperties);
 
 signals:
     void curFileName(QString theName);

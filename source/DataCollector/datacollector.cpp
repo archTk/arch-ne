@@ -653,6 +653,16 @@ void DataCollector::setRequestSchema()
             file.close();
             cachedSchema = true;
     }
+
+    //<TEMP>
+      QString isfound = cachedSchema ? "Found":"Not Found";
+      QMessageBox confirmationBox;
+      confirmationBox.setText("Cached Schema Path = "+QDir::tempPath()+"/"+fi.fileName()+"."+rootName+".dat");
+      confirmationBox.setInformativeText("Cached schema "+isfound);
+      confirmationBox.exec();
+      cachedSchema = false;
+    //</TEMP>
+
     if(!cachedSchema){
        QueryExecuter *query = new QueryExecuter; 
        query->setQueryFile(":xml/getSubSchema.xq");

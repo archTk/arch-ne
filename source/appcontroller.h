@@ -61,20 +61,20 @@ public slots:
     void goCustomizing(const QString& fileName);
     void graphHasBeenCustomized();
     void importBC();
-    void importPatientInfo();
-    void importSP();
+    //void importPatientInfo();
+    //void importSP();
     void loadGraphFromLayout();
     void loadGraphFromGraph();
     void loadMesh();
     void meshHasBeenGenerated();
-    void patientInfoPressed();
+    //void patientInfoPressed();
     void resultsDockClosed();
     void saveNetwork(const QString& fileName);
     void setPreferences();
     void showResults(QPoint elementRequest);
     void simulateGraph(const QString& fileName);
     void simulationHasBeenPerformed();
-    void SPPressed();
+    //void SPPressed();
 
 private:
     void clear();

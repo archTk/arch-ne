@@ -26,8 +26,8 @@ NetworkProperties::NetworkProperties(QObject *parent) :
 void NetworkProperties::clear()
 {
     BCXML.clear();
-    SPXML.clear();
-    patientInfoXML.clear();
+    //SPXML.clear();
+    //patientInfoXML.clear();
 }
 
 void NetworkProperties::setBCXML(QString theBCXML)
@@ -37,25 +37,25 @@ void NetworkProperties::setBCXML(QString theBCXML)
 
 QString NetworkProperties::getBCXML()
 {
-    return (BCXML + SPXML + patientInfoXML);
+    return (BCXML);
 }
 
-void NetworkProperties::setSPXML(QString theSPXML)
+/*void NetworkProperties::setSPXML(QString theSPXML)
 {
     SPXML = theSPXML;
-}
+}*/
 
-QString NetworkProperties::getSPXML()
+/*QString NetworkProperties::getSPXML()
 {
     return SPXML;
-}
+}*/
 
-void NetworkProperties::setPatientInfoXML(QString thePatientInfoXML)
+/*void NetworkProperties::setPatientInfoXML(QString thePatientInfoXML)
 {
     patientInfoXML = thePatientInfoXML;
-}
+}*/
 
-QString NetworkProperties::getPatientInfoXML()
+/*QString NetworkProperties::getPatientInfoXML()
 {
     return patientInfoXML;
-}
+}*/

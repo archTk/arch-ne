@@ -253,7 +253,7 @@ void InputOutput::importBC(NetworkProperties *networkProperties)
     networkProperties->setBCXML(BCXML);
 }
 
-void InputOutput::importPatientInfo(NetworkProperties *networkProperties)
+/*void InputOutput::importPatientInfo(NetworkProperties *networkProperties)
 {
     QString PatientInfoFileName = QFileDialog::getOpenFileName(0, tr("Import Patient Info"),
                                                     "",
@@ -276,9 +276,9 @@ void InputOutput::importPatientInfo(NetworkProperties *networkProperties)
     QString PatientInfoXML(PatientInfoIn.readAll());
 
     networkProperties->setPatientInfoXML(PatientInfoXML);
-}
+}*/
 
-void InputOutput::importSP(NetworkProperties *networkProperties)
+/*void InputOutput::importSP(NetworkProperties *networkProperties)
 {
     QString SPFileName = QFileDialog::getOpenFileName(0, tr("Import Simulation Parameters"),
                                                     "",
@@ -301,7 +301,7 @@ void InputOutput::importSP(NetworkProperties *networkProperties)
     QString SPXML(SPIn.readAll());
 
     networkProperties->setSPXML(SPXML);
-}
+}*/
 
 void InputOutput::saveGraph(const QString &fileName, GraphProperties *graphProperties, QVector<int> nodes, QVector<int> edges)
 {

@@ -184,13 +184,13 @@ private:
     QAction* importBCAct;
     QAction* importMeshAct;
     QAction* importNetworkAct;
-    QAction* importPatientInfoAct;
-    QAction* importSPAct;
+    //QAction* importPatientInfoAct;
+    //QAction* importSPAct;
     QAction* infoAct;
     QAction* meshAct;
     QAction* newNetworkAct;
     QAction* openNetworkAct;
-    QAction* patientInfoAct;
+    //QAction* patientInfoAct;
     QAction* preferencesAct;
     QAction* redoAct;
     QAction* removeSegmentAct;
@@ -203,7 +203,7 @@ private:
     QAction* showMeshAct;
     QAction* simulateAct;
     QAction* snapToGridAct;
-    QAction* SPAct;
+    //QAction* SPAct;
     QAction* splitSegmentAct;
     QAction* superEdgeAct;
     QAction* translateAct;

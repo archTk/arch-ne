@@ -69,11 +69,11 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(graphToBeCustomized(QString)), this, SLOT(customizeGraph(QString)));
     connect(mainWindow, SIGNAL(graphToBeSimulated(QString)), this, SLOT(simulateGraph(QString)));
     connect(mainWindow, SIGNAL(importBCPressed()), this, SLOT(importBC()));
-    connect(mainWindow, SIGNAL(importPatientInfoPressed()), this, SLOT(importPatientInfo()));
-    connect(mainWindow, SIGNAL(importSPPressed()), this, SLOT(importSP()));
+    //connect(mainWindow, SIGNAL(importPatientInfoPressed()), this, SLOT(importPatientInfo()));
+    //connect(mainWindow, SIGNAL(importSPPressed()), this, SLOT(importSP()));
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
     connect(mainWindow, SIGNAL(meshToBeGenerated(QString)), this, SLOT(generateMesh(QString)));
-    connect(mainWindow, SIGNAL(patientInfoPressed()), this, SLOT(patientInfoPressed()));
+    //connect(mainWindow, SIGNAL(patientInfoPressed()), this, SLOT(patientInfoPressed()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
     connect(mainWindow, SIGNAL(resultsDockClosedSig()), this, SLOT(resultsDockClosed()));
@@ -85,7 +85,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(showMeshPressed()), workspace, SLOT(showMesh()));
     connect(mainWindow, SIGNAL(snapToGridPressed()), workspace, SLOT(snapToGrid()));
     connect(mainWindow, SIGNAL(splitSegmentPressed()), workspace, SLOT(splitSegment()));
-    connect(mainWindow, SIGNAL(SPPressed()), this, SLOT(SPPressed()));
+    //connect(mainWindow, SIGNAL(SPPressed()), this, SLOT(SPPressed()));
     connect(mainWindow, SIGNAL(superEdgePressed()), workspace, SLOT(superEdge()));
     connect(mainWindow, SIGNAL(translatePressed()), workspace, SLOT(translate()));
     connect(mainWindow, SIGNAL(undoPressed()), workspace, SLOT(undo()));
@@ -186,21 +186,21 @@ void AppController::importBC()
     emit messageToBeDisplayed("Boundary Conditions have been imported");
 }
 
-void AppController::importPatientInfo()
+/*void AppController::importPatientInfo()
 {
     InputOutput* inputOutput = new InputOutput();
     inputOutput->importPatientInfo(workspace->getNetworkProperties());
 
     emit messageToBeDisplayed("Patient Info have been imported");
-}
+}*/
 
-void AppController::importSP()
+/*void AppController::importSP()
 {
     InputOutput* inputOutput = new InputOutput();
     inputOutput->importSP(workspace->getNetworkProperties());
 
     emit messageToBeDisplayed("Simulation Parameters have been imported");
-}
+}*/
 
 void AppController::generateMesh(const QString &fileName)
 {
@@ -283,7 +283,7 @@ void AppController::BCPressed()
     inputOutput->saveBC(curFile, workspace->getBCXML());*/
 }
 
-void AppController::SPPressed()
+/*void AppController::SPPressed()
 {
     QPoint elementRequest(4, 0);
     QString XMLString;
@@ -303,9 +303,9 @@ void AppController::SPPressed()
     QString XMLSchema(":XMLschema/boundary_conditions.xsd");
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
-}
+}*/
 
-void AppController::patientInfoPressed()
+/*void AppController::patientInfoPressed()
 {
     QPoint elementRequest(5, 0);
     QString XMLString;
@@ -324,7 +324,7 @@ void AppController::patientInfoPressed()
     QString XMLSchema(":XMLschema/boundary_conditions.xsd");
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
-}
+}*/
 
 void AppController::meshHasBeenGenerated()
 {
@@ -464,9 +464,8 @@ void AppController::setPreferences()
 
 void AppController::clear()
 {
+    mainWindow->clear();
     requestMap.clear();
-    mainWindow->removeAllDataCollectorFromDock();
-    mainWindow->hideDock();
     dataCollectorList.clear();
     incrementalDataRequest = 0;
 }
@@ -486,7 +485,6 @@ int AppController::uniqueResultsRequestKey()
     }
     return incrementalResultsRequest;
 }
-
 
 void AppController::showResults(QPoint elementRequest)
 {
@@ -624,11 +622,11 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         }
     } else if (temp.x() == 3) { // Boundary Conditions.
         workspace->setBCXML(elementData);
-    } else if (temp.x() == 4) { // Simulation Parameters.
+    } /*else if (temp.x() == 4) { // Simulation Parameters.
         workspace->setSPXML(elementData);
     } else if (temp.x() == 5) { // Patient information.
         workspace->setPatientInfoXML(elementData);
-    }
+    }*/
 }
 
 void AppController::dataConfirAndClose(QString cookie, QString elementData)

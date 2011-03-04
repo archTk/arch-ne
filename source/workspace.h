@@ -75,11 +75,11 @@ public:
     void setNodeProperties(int nodeId, QString nodeProp);
     void setEdgeProperties(int edgeId, QString edgeProp);
     void setBCXML(QString theBCXML);
-    void setSPXML(QString theSPXML);
-    void setPatientInfoXML(QString thePatientInfoXML);
+    //void setSPXML(QString theSPXML);
+    //void setPatientInfoXML(QString thePatientInfoXML);
     QString getBCXML();
-    QString getSPXML();
-    QString getPatientInfoXML();
+    //QString getSPXML();
+    //QString getPatientInfoXML();
 
     void setNodePosition(int nodeId, QPointF pos);
 

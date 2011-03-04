@@ -29,12 +29,12 @@ public:
 
     void clear();
     void setBCXML(QString theBCXML);
-    void setSPXML(QString theSPXML);
-    void setPatientInfoXML(QString thePatientInfoXML);
+    //void setSPXML(QString theSPXML);
+    //void setPatientInfoXML(QString thePatientInfoXML);
 
     QString getBCXML();
-    QString getSPXML();
-    QString getPatientInfoXML();
+    //QString getSPXML();
+    //QString getPatientInfoXML();
 
 signals:
 
@@ -42,8 +42,8 @@ public slots:
 
 private:
     QString BCXML;
-    QString SPXML;
-    QString patientInfoXML;
+    //QString SPXML;
+    //QString patientInfoXML;
 
 };
 

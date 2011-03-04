@@ -193,11 +193,11 @@ void Workspace::undo()
         (*graphMesh).setEdgesMElementsId(tempEdgesMElementsId);
 
         QString tempBCXML = (*statusVector[currentStatus - 1]).getNetworkProperties().data()->getBCXML();
-        QString tempPatientInfoXML = (*statusVector[currentStatus - 1]).getNetworkProperties().data()->getPatientInfoXML();
-        QString tempSPXML = (*statusVector[currentStatus - 1]).getNetworkProperties().data()->getSPXML();
+        //QString tempPatientInfoXML = (*statusVector[currentStatus - 1]).getNetworkProperties().data()->getPatientInfoXML();
+        //QString tempSPXML = (*statusVector[currentStatus - 1]).getNetworkProperties().data()->getSPXML();
         (*networkProperties).setBCXML(tempBCXML);
-        (*networkProperties).setPatientInfoXML(tempPatientInfoXML);
-        (*networkProperties).setSPXML(tempSPXML);
+        //(*networkProperties).setPatientInfoXML(tempPatientInfoXML);
+        //(*networkProperties).setSPXML(tempSPXML);
 
         screenOrigin = (*statusVector[currentStatus - 1]).getScreenOrigin();
         zoomFactor = (*statusVector[currentStatus - 1]).getZoom();
@@ -262,11 +262,11 @@ void Workspace::redo()
         (*graphMesh).setEdgesMElementsId(tempEdgesMElementsId);
 
         QString tempBCXML = (*statusVector[currentStatus]).getNetworkProperties().data()->getBCXML();
-        QString tempPatientInfoXML = (*statusVector[currentStatus]).getNetworkProperties().data()->getPatientInfoXML();
-        QString tempSPXML = (*statusVector[currentStatus]).getNetworkProperties().data()->getSPXML();
+        //QString tempPatientInfoXML = (*statusVector[currentStatus]).getNetworkProperties().data()->getPatientInfoXML();
+        //QString tempSPXML = (*statusVector[currentStatus]).getNetworkProperties().data()->getSPXML();
         (*networkProperties).setBCXML(tempBCXML);
-        (*networkProperties).setPatientInfoXML(tempPatientInfoXML);
-        (*networkProperties).setSPXML(tempSPXML);
+        //(*networkProperties).setPatientInfoXML(tempPatientInfoXML);
+        //(*networkProperties).setSPXML(tempSPXML);
 
         screenOrigin = (*statusVector[currentStatus]).getScreenOrigin();
         zoomFactor = (*statusVector[currentStatus]).getZoom();
@@ -1154,8 +1154,8 @@ void Workspace::inizializeHistory()
 
     NetworkProperties* newNetworkProperties = new NetworkProperties(this);
     (*newNetworkProperties).setBCXML(networkProperties->getBCXML());
-    (*newNetworkProperties).setPatientInfoXML(networkProperties->getPatientInfoXML());
-    (*networkProperties).setSPXML(networkProperties->getSPXML());
+    //(*newNetworkProperties).setPatientInfoXML(networkProperties->getPatientInfoXML());
+    //(*networkProperties).setSPXML(networkProperties->getSPXML());
     QSharedPointer<NetworkProperties> networkPropertiesSharedPt(newNetworkProperties);
 
     ApplicationStatus* newApplicationStatus = new ApplicationStatus(this);
@@ -1229,8 +1229,8 @@ void Workspace::insertActInHistory(bool graphChanged)
 
         NetworkProperties* newNetworkProperties = new NetworkProperties(this);
         (*newNetworkProperties).setBCXML(networkProperties->getBCXML());
-        (*newNetworkProperties).setPatientInfoXML(networkProperties->getPatientInfoXML());
-        (*newNetworkProperties).setSPXML(networkProperties->getSPXML());
+        //(*newNetworkProperties).setPatientInfoXML(networkProperties->getPatientInfoXML());
+        //(*newNetworkProperties).setSPXML(networkProperties->getSPXML());
         QSharedPointer<NetworkProperties> networkPropertiesSharedPt(newNetworkProperties);
 
         newApplicationStatus->setGraph(graphSharedPt);
@@ -1608,25 +1608,25 @@ QString Workspace::getBCXML()
     return networkProperties->getBCXML();
 }
 
-void Workspace::setSPXML(QString theSPXML)
+/*void Workspace::setSPXML(QString theSPXML)
 {
     networkProperties->setSPXML(theSPXML);
-}
+}*/
 
-QString Workspace::getSPXML()
+/*QString Workspace::getSPXML()
 {
     return networkProperties->getSPXML();
-}
+}*/
 
-void Workspace::setPatientInfoXML(QString thePatientInfoXML)
+/*void Workspace::setPatientInfoXML(QString thePatientInfoXML)
 {
     networkProperties->setPatientInfoXML(thePatientInfoXML);
-}
+}*/
 
-QString Workspace::getPatientInfoXML()
+/*QString Workspace::getPatientInfoXML()
 {
     return networkProperties->getPatientInfoXML();
-}
+}*/
 
 void Workspace::setZoomFactor(float theZoomFactor)
 {
