@@ -76,10 +76,11 @@ public:
     void setEdgeProperties(int edgeId, QString edgeProp);
     void setBCXML(QString theBCXML);
     //void setSPXML(QString theSPXML);
-    //void setPatientInfoXML(QString thePatientInfoXML);
+    void setPatientInfoXML(QString thePatientInfoXML);
     QString getBCXML();
     //QString getSPXML();
-    //QString getPatientInfoXML();
+    QString getPatientInfoXML();
+    QString getIdPat();
 
     void setNodePosition(int nodeId, QPointF pos);
 
@@ -115,6 +116,8 @@ public:
     NetworkProperties* getNetworkProperties();
 
     ApplicationStatus* getCurrentStatus();
+
+    void initNewCase();
 
 signals:
     void restoreCurs();

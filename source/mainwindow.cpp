@@ -61,6 +61,11 @@ EditorArea* MainWindow::getEditorArea()
     return editorArea;
 }
 
+void MainWindow::initNew()
+{
+    emit initNewCase();
+}
+
 void MainWindow::insertDataCollectorToDock(DataCollector* theDataCollector, QPoint elementRequest)
 {
     QString element;
@@ -297,9 +302,9 @@ void MainWindow::createActions()
     redoAct->setShortcut(tr("Ctrl+shift+Z"));
     connect(redoAct, SIGNAL(triggered()), this, SIGNAL(redoPressed()));
 
-    /*patientInfoAct = new QAction(QIcon(":/images/patientInfo.png"), tr("Patient Info"), this);
+    patientInfoAct = new QAction(QIcon(":/images/patientInfo.png"), tr("Patient Info"), this);
     patientInfoAct->setStatusTip(tr("Set patient information"));
-    connect(patientInfoAct, SIGNAL(triggered()), this, SIGNAL(patientInfoPressed()));*/
+    connect(patientInfoAct, SIGNAL(triggered()), this, SIGNAL(patientInfoPressed()));
 
     BCAct = new QAction(QIcon(":/images/BC.png"), tr("Set Boundary Conditions"), this);
     BCAct->setStatusTip(tr("Set Boundary Conditions"));
@@ -449,7 +454,7 @@ void MainWindow::createMenus()
     editMenu->addAction(importBCAct);
     //editMenu->addAction(SPAct);
     //editMenu->addAction(importSPAct);
-    //editMenu->addAction(patientInfoAct);
+    editMenu->addAction(patientInfoAct);
     //editMenu->addAction(importPatientInfoAct);
     editMenu->addSeparator();
     editMenu->addAction(preferencesAct);
@@ -561,7 +566,7 @@ void MainWindow::createToolBars()
     operationToolBar->addSeparator();
     operationToolBar->addAction(BCAct);
     //operationToolBar->addAction(SPAct);
-    //operationToolBar->addAction(patientInfoAct);
+    operationToolBar->addAction(patientInfoAct);
     operationToolBar->addAction(customizeAct);
     operationToolBar->addAction(meshAct);
     operationToolBar->addAction(defaultMeshAct);
@@ -640,14 +645,14 @@ bool MainWindow::maybeSave()
 void MainWindow::loadNetwork()
 {
     clear();
-    initNewCase();
+    emit initNewCase();
     emit loadGraphFromLayout();
 }
 
 void MainWindow::loadNetWithoutLayout()
 {
     clear();
-    initNewCase();
+    emit initNewCase();
     emit loadGraphFromGraph();
 }
 
@@ -688,7 +693,7 @@ void MainWindow::newNetwork()
     if (maybeSave()) {
         setCurrentFile("");
         clear();
-        initNewCase();
+        emit initNewCase();
     }
 }
 
@@ -839,23 +844,6 @@ void MainWindow::updateMainWindow()
         translateAct->setChecked(true);
         break;
     }
-}
-
-void MainWindow::initNewCase()
-{
-    QString theCase("<case>\n"
-                     "  <patient_id>10001</patient_id>\n"
-                     "  <visit>V0 (pre-OP)</visit>\n"
-                     "</case>\n");
-    editorArea->getWorkspace()->getGraphProperties()->setCase(theCase);
-
-    QString theSuperedges("<superedges>\n"
-                          "</superedges>\n");
-    editorArea->getWorkspace()->getGraphProperties()->setSuperedges(theSuperedges);
-
-    QString theTransformations("<transformations>\n"
-                               "</transformations>\n");
-    editorArea->getWorkspace()->getGraphProperties()->setTransformations(theTransformations);
 }
 
 QString MainWindow::getFileName()

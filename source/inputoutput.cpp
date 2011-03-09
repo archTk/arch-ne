@@ -161,6 +161,21 @@ bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, Gra
     return true;
 }
 
+/*QString InputOutput::loadDefaultBC()
+{
+    QFile defBCFile(":XMLschema/defaultBC.xml");
+
+    if (!defBCFile.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                             tr("Cannot read defaultBC.xml"));
+        return QString();
+    }
+
+    QTextStream BCIn(&defBCFile);
+    QString BCXML = BCIn.readAll();
+    return BCXML;
+}*/
+
 void InputOutput::loadMesh(GraphMesh *graphMesh)
 {
     QString meshFileName = QFileDialog::getOpenFileName(0, tr("Import a mesh"),
@@ -418,6 +433,8 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
     }
 
     meshInFile.close();
+
+    IOout << "IO::loadMeshAfterGenerating" << endl;
 }
 
 void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties,
@@ -592,12 +609,12 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
     emit curFileName(fileName);
 }
 
-void InputOutput::saveBC(const QString &fileName, QString BCXML)
+void InputOutput::saveBC(const QString &fileName, QString idpat, QString BCXML)
 {
     QFileInfo fileInfo(fileName);
     QString workDir = fileInfo.filePath() + "/";
     QString f = fileInfo.fileName();
-    QString BC = workDir + "BC" + f;
+    QString BC = workDir + idpat + "_BC_" + f;
 
     QFile BCFile(BC);
     if (!BCFile.open(QFile::WriteOnly | QFile::Text)) {

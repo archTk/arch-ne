@@ -29,6 +29,8 @@
 #include <QTimer>
 #include <QVector>
 #include <QSettings>
+#include <QtXml/QDomElement>
+#include <QtXmlPatterns/QtXmlPatterns>
 
 #include <iostream>
 #include <QTextStream>
@@ -1608,6 +1610,21 @@ QString Workspace::getBCXML()
     return networkProperties->getBCXML();
 }
 
+QString Workspace::getIdPat()
+{
+    QDomDocument caseDoc("case");
+    caseDoc.setContent(graphProperties->getCase());
+
+    QDomNodeList caseList = caseDoc.elementsByTagName("case");
+    QDomNode theCase = caseList.at(0);
+    QDomElement patIdEl = theCase.firstChildElement("patient_id");
+
+    QString patId;
+    patId = patIdEl.text();
+
+    return patId;
+}
+
 /*void Workspace::setSPXML(QString theSPXML)
 {
     networkProperties->setSPXML(theSPXML);
@@ -1618,15 +1635,15 @@ QString Workspace::getBCXML()
     return networkProperties->getSPXML();
 }*/
 
-/*void Workspace::setPatientInfoXML(QString thePatientInfoXML)
+void Workspace::setPatientInfoXML(QString thePatientInfoXML)
 {
     networkProperties->setPatientInfoXML(thePatientInfoXML);
-}*/
+}
 
-/*QString Workspace::getPatientInfoXML()
+QString Workspace::getPatientInfoXML()
 {
     return networkProperties->getPatientInfoXML();
-}*/
+}
 
 void Workspace::setZoomFactor(float theZoomFactor)
 {
@@ -1751,6 +1768,23 @@ void Workspace::setHighlightingEl(QPoint element)
     }
 
     emit updateSignal();
+}
+
+void Workspace::initNewCase()
+{
+    QString theCase("<case>\n"
+                     "  <patient_id></patient_id>\n"
+                     "  <visit></visit>\n"
+                     "</case>\n");
+    graphProperties->setCase(theCase);
+
+    QString theSuperedges("<superedges>\n"
+                          "</superedges>\n");
+    graphProperties->setSuperedges(theSuperedges);
+
+    QString theTransformations("<transformations>\n"
+                               "</transformations>\n");
+    graphProperties->setTransformations(theTransformations);
 }
 
 int Workspace::createNode(QPointF pos)

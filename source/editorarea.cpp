@@ -647,14 +647,12 @@ void EditorArea::paintMeshEls(QPainter& painter)
         if (!nodeMTypeString.isEmpty()) {
             if (nodeMTypeString == "0D_Anastomosis") {
                 elementType = "A";
-            } else if (nodeMTypeString == "bifurcation") {
-                elementType = "b";
-            } else if (nodeMTypeString == "inflow") {
-                elementType = "i";
-            } else if (nodeMTypeString == "outflow") {
-                elementType = "o";
-            } else if (nodeMTypeString == "downstream network") {
-                elementType = "d";
+            } else if (nodeMTypeString == "0D_FiveDofsV2") {
+                elementType = "5";
+            } else if (nodeMTypeString == "0D_EndSegment") {
+                elementType = "E";
+            } else if (nodeMTypeString == "0D_TwoDofsResistance") {
+                elementType = "2";
             }
         }
 

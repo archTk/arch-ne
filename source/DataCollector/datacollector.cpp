@@ -654,14 +654,14 @@ void DataCollector::setRequestSchema()
             cachedSchema = true;
     }
 
-    //<TEMP>
+    /*<TEMP>
       QString isfound = cachedSchema ? "Found":"Not Found";
       QMessageBox confirmationBox;
       confirmationBox.setText("Cached Schema Path = "+QDir::tempPath()+"/"+fi.fileName()+"."+rootName+".dat");
       confirmationBox.setInformativeText("Cached schema "+isfound);
       confirmationBox.exec();
       cachedSchema = false;
-    //</TEMP>
+    //</TEMP>*/
 
     if(!cachedSchema){
        QueryExecuter *query = new QueryExecuter; 

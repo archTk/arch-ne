@@ -38,5 +38,6 @@
         <file>images/showMesh.png</file>
         <file>images/aorta_asc_1_flow.png</file>
         <file>images/aorta_asc_1_pressure.png</file>
+        <file>XMLschema/defaultBC.xml</file>
     </qresource>
 </RCC>

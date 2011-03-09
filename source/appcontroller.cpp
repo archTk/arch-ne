@@ -72,8 +72,9 @@ void AppController::createConnections()
     //connect(mainWindow, SIGNAL(importPatientInfoPressed()), this, SLOT(importPatientInfo()));
     //connect(mainWindow, SIGNAL(importSPPressed()), this, SLOT(importSP()));
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
+    connect(mainWindow, SIGNAL(initNewCase()), this, SLOT(initNewCase()));
     connect(mainWindow, SIGNAL(meshToBeGenerated(QString)), this, SLOT(generateMesh(QString)));
-    //connect(mainWindow, SIGNAL(patientInfoPressed()), this, SLOT(patientInfoPressed()));
+    connect(mainWindow, SIGNAL(patientInfoPressed()), this, SLOT(patientInfoPressed()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
     connect(mainWindow, SIGNAL(resultsDockClosedSig()), this, SLOT(resultsDockClosed()));
@@ -123,6 +124,16 @@ void AppController::createConnections()
     connect(this, SIGNAL(setCurs()), mainWindow, SLOT(setCurs()));
     connect(this, SIGNAL(restoreCurs()), mainWindow, SLOT(restoreCurs()));
     connect(this, SIGNAL(updateSignal()), editorArea, SLOT(updateRender()));
+}
+
+void AppController::initNewCase()
+{
+    //InputOutput* inputOutput = new InputOutput();
+    //QString defaultBCXML = inputOutput->loadDefaultBC();
+    QString defaultBCXML = QString();
+    workspace->setBCXML(defaultBCXML);
+
+    workspace->initNewCase();
 }
 
 void AppController::loadGraphFromLayout()
@@ -217,10 +228,12 @@ void AppController::generateMesh(const QString &fileName)
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goMeshing(QString)));
 
     inputOutput->saveGraph(fileName, workspace->getGraphProperties(), nodes, edges);
+    appout << "AppC::genMesh" << endl;
 }
 
 void AppController::goMeshing(const QString &fileName)
 {
+    appout << "AppC::goMeshing" << endl;
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
@@ -254,13 +267,6 @@ void AppController::errorFromExternal(QProcess::ProcessError)
 
 void AppController::BCPressed()
 {
-    /*QString curFile = mainWindow->getFileName();
-    if (curFile.isEmpty()) {
-        showMessage("WARNING!", "The file has been saved.\n"
-                                "Please save it first");
-        return;
-    }*/
-
     QPoint elementRequest(3, 0);
     QString XMLString;
     XMLString = workspace->getBCXML();
@@ -279,8 +285,8 @@ void AppController::BCPressed()
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
 
-    /*InputOutput* inputOutput = new InputOutput();
-    inputOutput->saveBC(curFile, workspace->getBCXML());*/
+    //InputOutput* inputOutput = new InputOutput();
+    //inputOutput->saveBC(mainWindow->getFileName(), workspace->getBCXML());
 }
 
 /*void AppController::SPPressed()
@@ -305,14 +311,15 @@ void AppController::BCPressed()
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
 }*/
 
-/*void AppController::patientInfoPressed()
+void AppController::patientInfoPressed()
 {
     QPoint elementRequest(5, 0);
     QString XMLString;
     XMLString = workspace->getPatientInfoXML();
 
     if (XMLString.isEmpty()) {
-        XMLString = "<patient_data/>";
+        XMLString = "<case>\n"
+                    "</case>";
     }
 
     QVector<QString> hiddenItems;
@@ -321,15 +328,16 @@ void AppController::BCPressed()
     QVector<QString> readOnlyItems;
     readOnlyItems.clear();
 
-    QString XMLSchema(":XMLschema/boundary_conditions.xsd");
+    QString XMLSchema(":XMLschema/schema.xsd");
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
-}*/
+}
 
 void AppController::meshHasBeenGenerated()
 {
     InputOutput* inputOutput = new InputOutput();
     inputOutput->loadMeshAfterGenerating(meshOut, workspace->getGraphMesh());
+    appout << "AppC::meshHasBeenGenerated" << endl;
     emit updateSignal();
     emit restoreCurs();
     emit messageToBeDisplayed(tr("Mesh has been generated"));
@@ -354,8 +362,6 @@ void AppController::customizeGraph(const QString &fileName)
 
 void AppController::goCustomizing(const QString &fileName)
 {
-     appout << "AppC::goCustom fileName= " << fileName << endl;
-
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
@@ -399,15 +405,22 @@ void AppController::simulateGraph(const QString &fileName)
 
     QFileInfo fileInfo(fileName);
     QString workDir = fileInfo.path() + "/";
-    QString outDir = workDir + "Output/";
+    QString file = fileInfo.fileName();
+
+    QString idPat;
+    idPat = workspace->getIdPat();
     imagesDir = workDir + "Images/";
+
     QString xmlOut = fileName + "_results.xml";
+    QString specificNet = idPat + "_" + file;
+    QString specificBC = idPat + "_BC_" + file;
 
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 
-    if (checkPaths(pythonPath, pyNSPath)) {
+    if (!checkPaths(pythonPath, pyNSPath)) {
+        emit restoreCurs();
         return;
     }
 
@@ -415,14 +428,10 @@ void AppController::simulateGraph(const QString &fileName)
     scriptPath = pyNSPath + "/Solver_Script.py";
 
     QStringList arguments;
-    arguments << scriptPath << "-w" << workDir << "-o" << outDir <<  "-i" << imagesDir << "-m" << meshOut
-            << "-t" << xmlOut << "-b" << workspace->getBCXML();
 
-    /*
-    appout << "AppC::simulateGraph" << endl << "scriptPath= " << scriptPath << endl << "workDir= " << workDir
-            << endl << "outDir= " << outDir << endl << "imagesDir= " << imagesDir << endl << "meshOut= " << meshOut
-            << endl << "xmlOut= " << xmlOut << endl << "BC= " << workspace->getBCXML() << endl;
-    */
+    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << specificNet << "--xmlMesh" << meshOut <<
+            "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
+
 
     pyNS = new QProcess(this);
 
@@ -622,11 +631,13 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         }
     } else if (temp.x() == 3) { // Boundary Conditions.
         workspace->setBCXML(elementData);
-    } /*else if (temp.x() == 4) { // Simulation Parameters.
-        workspace->setSPXML(elementData);
+        QDomNodeList patDataList = doc.elementsByTagName("patient_data");
+        QDomNode patDataNode = patDataList.at(0);
+        QDomElement idpat = patDataNode.firstChildElement("idpat");
+        appout << "AppC::dataConfirmed idpat= " << idpat << endl;
     } else if (temp.x() == 5) { // Patient information.
         workspace->setPatientInfoXML(elementData);
-    }*/
+    }
 }
 
 void AppController::dataConfirAndClose(QString cookie, QString elementData)

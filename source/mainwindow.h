@@ -44,7 +44,7 @@ public:
 
     EditorArea* getEditorArea();
 
-    void initNewCase();
+    void initNew();
 
     void insertDataCollectorToDock(DataCollector* theDataCollector, QPoint  elementRequest);
     void removeAllDataCollectorFromDock();
@@ -79,6 +79,7 @@ signals:
     void importPatientInfoPressed();
     void importSPPressed();
     void infoPressed();
+    void initNewCase();
     void loadGraphFromLayout();
     void loadGraphFromGraph();
     void meshToBeGenerated(const QString& fileName);
@@ -190,7 +191,7 @@ private:
     QAction* meshAct;
     QAction* newNetworkAct;
     QAction* openNetworkAct;
-    //QAction* patientInfoAct;
+    QAction* patientInfoAct;
     QAction* preferencesAct;
     QAction* redoAct;
     QAction* removeSegmentAct;

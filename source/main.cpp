@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     appController.setEditorArea(mainWin.getEditorArea());
     appController.createConnections();
 
-    mainWin.initNewCase();
+    mainWin.initNew();
 
     mainWin.show();
 

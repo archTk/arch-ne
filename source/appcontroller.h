@@ -61,13 +61,14 @@ public slots:
     void goCustomizing(const QString& fileName);
     void graphHasBeenCustomized();
     void importBC();
+    void initNewCase();
     //void importPatientInfo();
     //void importSP();
     void loadGraphFromLayout();
     void loadGraphFromGraph();
     void loadMesh();
     void meshHasBeenGenerated();
-    //void patientInfoPressed();
+    void patientInfoPressed();
     void resultsDockClosed();
     void saveNetwork(const QString& fileName);
     void setPreferences();
