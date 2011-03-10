@@ -215,6 +215,7 @@ void AppController::importBC()
 
 void AppController::generateMesh(const QString &fileName)
 {
+    appout << "AppC::genMesh" << endl;
     if (!workspace->dataInGraph()) {
         return;
     }
@@ -228,7 +229,6 @@ void AppController::generateMesh(const QString &fileName)
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goMeshing(QString)));
 
     inputOutput->saveGraph(fileName, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
-    appout << "AppC::genMesh" << endl;
 }
 
 void AppController::goMeshing(const QString &fileName)
@@ -241,21 +241,23 @@ void AppController::goMeshing(const QString &fileName)
         return;
     }
 
+    QString idPat = workspace->getIdPat();
+
     QFileInfo fileInfo(fileName);
     QString workDir = fileInfo.path() + "/";
-    QString xmlSpecificNet = fileInfo.fileName();
+    QString xmlSpecificNet = idPat + "_" + fileInfo.fileName();
 
-    appout << "Appc::goMeshing fileName= " << fileName << endl;
-
-    meshOut = fileName;
+    meshOut = xmlSpecificNet;
     meshOut.remove("_graph.xml");
     meshOut.append("_mesh.xml");
+
+    appout << "AppC::goMeshing workDir= " << workDir << endl << "specificNet= " << xmlSpecificNet << endl << "meshOut= " << meshOut << endl;
 
     QString scriptPath;
     scriptPath = pyNSPath + "/MeshGenerator_Script.py";
 
     QStringList arguments;
-    arguments << scriptPath << "-i" << fileName << "-o" << meshOut << "--tolValue" << "5e-2";
+    arguments << scriptPath << "--wdir" << workDir << "--xlmNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 
     pyNS = new QProcess(this);
 
@@ -378,11 +380,17 @@ void AppController::goCustomizing(const QString &fileName)
     QString scriptPath;
     scriptPath = pyNSPath + "/ModelAdaptor_Script.py";
     QFileInfo fileInfo(fileName);
-    QString workDir = fileInfo.path() + "/";
+    //QString workDir = fileInfo.path() + "/";
+    QString workDir = fileInfo.path();
     QString xmlNet = fileInfo.fileName();
+    QString BC = xmlNet;
+    BC.prepend("BC_");
+    BC.remove("_graph");
+
+    appout << "param= " << workDir << "  " << xmlNet << "  " << BC << endl;
 
     QStringList arguments;
-    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << xmlNet << "--xmlBound" << workDir + "boundary_conditions.xml";
+    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << xmlNet << "--xmlBound" << BC;
 
     pyNS = new QProcess(this);
 
@@ -634,6 +642,8 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         }
     } else if (temp.x() == 3) { // Boundary Conditions.
         workspace->setBCXML(elementData);
+        InputOutput* inputOutput = new InputOutput();
+        inputOutput->saveBC(mainWindow->getFileName(),elementData);
         //QDomNodeList patDataList = doc.elementsByTagName("patient_data");
         //QDomNode patDataNode = patDataList.at(0);
         //QDomElement idpat = patDataNode.firstChildElement("idpat");

@@ -611,12 +611,14 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
     emit curFileName(fileName);
 }
 
-void InputOutput::saveBC(const QString &fileName, QString idpat, QString BCXML)
+void InputOutput::saveBC(const QString &fileName, QString BCXML)
 {
     QFileInfo fileInfo(fileName);
     QString workDir = fileInfo.filePath() + "/";
     QString f = fileInfo.fileName();
-    QString BC = workDir + idpat + "_BC_" + f;
+    QString BC = workDir + "BC_" + f;
+
+    IOout << "IO::saveBC file= " << BC << endl;
 
     QFile BCFile(BC);
     if (!BCFile.open(QFile::WriteOnly | QFile::Text)) {

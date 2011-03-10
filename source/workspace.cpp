@@ -1773,9 +1773,9 @@ void Workspace::setHighlightingEl(QPoint element)
 void Workspace::initNewCase()
 {
     QString theCase("<case>\n"
-                     "  <patient_id></patient_id>\n"
-                     "  <visit></visit>\n"
-                     "</case>\n");
+                    "  <patient_id></patient_id>"
+                    "  <visit></visit>\n"
+                    "</case>\n");
     networkProperties->setCaseInfoXML(theCase);
 
     QString theSuperedges("<superedges>\n"
