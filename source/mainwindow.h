@@ -69,6 +69,7 @@ signals:
     void addSegmentPressed();
     void BCPressed();
     void blockNodesPressed();
+    void caseInfoPressed();
     void defaultMeshPressed();
     void dockClosedSig();
     void editingEl2Ws(QPoint editingElement);
@@ -76,7 +77,6 @@ signals:
     void graphToBeSimulated(const QString& fileName);
     void homeViewPressed();
     void importBCPressed();
-    void importPatientInfoPressed();
     void importSPPressed();
     void infoPressed();
     void initNewCase();
@@ -84,7 +84,6 @@ signals:
     void loadGraphFromGraph();
     void meshToBeGenerated(const QString& fileName);
     void meshToBeLoaded();
-    void patientInfoPressed();
     void redoPressed();
     void removeSegmentPressed();
     void resultsDockClosedSig();
@@ -178,6 +177,7 @@ private:
     QAction* addSegmentAct;
     QAction* BCAct;
     QAction* blockNodesAct;
+    QAction* caseInfoAct;
     QAction* customizeAct;
     QAction* defaultMeshAct;
     QAction* exitAct;
@@ -191,7 +191,6 @@ private:
     QAction* meshAct;
     QAction* newNetworkAct;
     QAction* openNetworkAct;
-    QAction* patientInfoAct;
     QAction* preferencesAct;
     QAction* redoAct;
     QAction* removeSegmentAct;

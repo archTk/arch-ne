@@ -37,7 +37,7 @@ public:
     void deleteNode(int nodeId);
     void deleteEdge(int edgeId);
 
-    void setCase(QString theCase);
+    //void setCase(QString theCase);
     void setSuperedges(QString theSuperedges);
     void setTransformations(QString theTransformations);
 
@@ -51,7 +51,7 @@ public:
 
     void setEdgesProperties(QMap<int, QString> theEdgesProperties);
 
-    QString getCase();
+    //QString getCase();
     QString getSuperedges();
     QString getTransformations();
 
@@ -77,7 +77,7 @@ private:
     QMap<int, QString> nodesProperties;
     QMap<int, QString> edgesNames;
     QMap<int, QString> edgesProperties;
-    QString caseProp;
+    //QString caseProp;
     QString superedges;
     QString transformations;
 };

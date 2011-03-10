@@ -35,14 +35,14 @@ class InputOutput : public QObject
 public:
     explicit InputOutput(QObject* parent = 0);
 
-    bool loadGraphFromLayout(Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties);
-    bool loadGraphFromGraph(Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties);
+    bool loadGraphFromLayout(Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties);
+    bool loadGraphFromGraph(Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties);
     //QString loadDefaultBC();
 
     void loadMesh(GraphMesh* graphMesh);
 
-    void saveGraph(const QString& fileName, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
-    void saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties, QVector<int> nodes, QVector<int> edges);
+    void saveGraph(const QString& fileName, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
+    void saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
 
     void saveBC(const QString& fileName, QString idpat, QString BCXML);
 
@@ -61,7 +61,7 @@ signals:
 public slots:
 
 private:
-    void loadGraph(QDomDocument theDomDoc, Graph *graph, GraphProperties *graphProperties);
+    void loadGraph(QDomDocument theDomDoc, Graph* graph, GraphProperties* graphProperties, NetworkProperties* networkProperties);
     void loadLayout(QDomDocument theDomDoc, GraphLayout* graphLayout);
 };
 

@@ -62,6 +62,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(addSegmentPressed()), workspace, SLOT(addSegment()));
     connect(mainWindow, SIGNAL(BCPressed()), this, SLOT(BCPressed()));
     connect(mainWindow, SIGNAL(blockNodesPressed()), workspace, SLOT(blockNodes()));
+    connect(mainWindow, SIGNAL(caseInfoPressed()), this, SLOT(caseInfoPressed()));
     connect(mainWindow, SIGNAL(defaultMeshPressed()), workspace, SLOT(applyDefaultMesh()));
     connect(mainWindow, SIGNAL(dockClosedSig()), this, SLOT(dockClosed()));
     connect(mainWindow, SIGNAL(editingEl2Ws(QPoint)), workspace, SLOT(setHighlightingEl(QPoint)));
@@ -74,7 +75,6 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
     connect(mainWindow, SIGNAL(initNewCase()), this, SLOT(initNewCase()));
     connect(mainWindow, SIGNAL(meshToBeGenerated(QString)), this, SLOT(generateMesh(QString)));
-    connect(mainWindow, SIGNAL(patientInfoPressed()), this, SLOT(patientInfoPressed()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
     connect(mainWindow, SIGNAL(resultsDockClosedSig()), this, SLOT(resultsDockClosed()));
@@ -147,7 +147,7 @@ void AppController::loadGraphFromLayout()
 
     workspace->clear();
 
-    inputOutput->loadGraphFromLayout(workspace->getGraph(), workspace->getGraphLayout(), workspace->getGraphProperties());
+    inputOutput->loadGraphFromLayout(workspace->getGraph(), workspace->getGraphLayout(), workspace->getGraphProperties(), workspace->getNetworkProperties());
 
     QString theMessage(tr("Network opened"));
     emit updateSignal();
@@ -166,7 +166,7 @@ void AppController::loadGraphFromGraph()
 
     workspace->clear();
 
-    inputOutput->loadGraphFromGraph(workspace->getGraph(), workspace->getGraphLayout(), workspace->getGraphProperties());
+    inputOutput->loadGraphFromGraph(workspace->getGraph(), workspace->getGraphLayout(), workspace->getGraphProperties(), workspace->getNetworkProperties());
 
     QString theMessage(tr("Network imported"));
     emit updateSignal();
@@ -227,13 +227,12 @@ void AppController::generateMesh(const QString &fileName)
     InputOutput* inputOutput = new InputOutput();
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goMeshing(QString)));
 
-    inputOutput->saveGraph(fileName, workspace->getGraphProperties(), nodes, edges);
+    inputOutput->saveGraph(fileName, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
     appout << "AppC::genMesh" << endl;
 }
 
 void AppController::goMeshing(const QString &fileName)
 {
-    appout << "AppC::goMeshing" << endl;
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
@@ -241,6 +240,12 @@ void AppController::goMeshing(const QString &fileName)
     if (!checkPaths(pythonPath, pyNSPath)) {
         return;
     }
+
+    QFileInfo fileInfo(fileName);
+    QString workDir = fileInfo.path() + "/";
+    QString xmlSpecificNet = fileInfo.fileName();
+
+    appout << "Appc::goMeshing fileName= " << fileName << endl;
 
     meshOut = fileName;
     meshOut.remove("_graph.xml");
@@ -250,7 +255,7 @@ void AppController::goMeshing(const QString &fileName)
     scriptPath = pyNSPath + "/MeshGenerator_Script.py";
 
     QStringList arguments;
-    arguments << scriptPath << "-i" << fileName << "-o" << meshOut << "-v" << "5e-2";
+    arguments << scriptPath << "-i" << fileName << "-o" << meshOut << "--tolValue" << "5e-2";
 
     pyNS = new QProcess(this);
 
@@ -311,11 +316,11 @@ void AppController::BCPressed()
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
 }*/
 
-void AppController::patientInfoPressed()
+void AppController::caseInfoPressed()
 {
     QPoint elementRequest(5, 0);
     QString XMLString;
-    XMLString = workspace->getPatientInfoXML();
+    XMLString = workspace->getCaseInfoXML();
 
     if (XMLString.isEmpty()) {
         XMLString = "<case>\n"
@@ -357,7 +362,7 @@ void AppController::customizeGraph(const QString &fileName)
     InputOutput* inputOutput = new InputOutput();
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goCustomizing(QString)));
 
-    inputOutput->saveGraph(fileName, workspace->getGraphProperties(), nodes, edges);
+    inputOutput->saveGraph(fileName, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
 }
 
 void AppController::goCustomizing(const QString &fileName)
@@ -378,8 +383,6 @@ void AppController::goCustomizing(const QString &fileName)
 
     QStringList arguments;
     arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << xmlNet << "--xmlBound" << workDir + "boundary_conditions.xml";
-
-    appout << "AppController::goCustomizing check arguments" << endl;
 
     pyNS = new QProcess(this);
 
@@ -457,7 +460,7 @@ void AppController::saveNetwork(const QString& fileName)
     QVector<int> edges = workspace->getEdgesIds();
 
     inputOutput->saveNetwork(fileName, workspace->getGraphLayout(), workspace->getGraphProperties(),
-                             nodes, edges);
+                             workspace->getNetworkProperties(), nodes, edges);
 
     QString theMessage(tr("Network saved"));
     emit messageToBeDisplayed(theMessage);
@@ -631,12 +634,12 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         }
     } else if (temp.x() == 3) { // Boundary Conditions.
         workspace->setBCXML(elementData);
-        QDomNodeList patDataList = doc.elementsByTagName("patient_data");
-        QDomNode patDataNode = patDataList.at(0);
-        QDomElement idpat = patDataNode.firstChildElement("idpat");
-        appout << "AppC::dataConfirmed idpat= " << idpat << endl;
+        //QDomNodeList patDataList = doc.elementsByTagName("patient_data");
+        //QDomNode patDataNode = patDataList.at(0);
+        //QDomElement idpat = patDataNode.firstChildElement("idpat");
+        //appout << "AppC::dataConfirmed idpat= " << idpat << endl;
     } else if (temp.x() == 5) { // Patient information.
-        workspace->setPatientInfoXML(elementData);
+        workspace->setCaseInfoXML(elementData);
     }
 }
 

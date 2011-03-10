@@ -42,7 +42,7 @@ void GraphProperties::clear()
     nodesProperties.clear();
     edgesNames.clear();
     edgesProperties.clear();
-    caseProp.clear();
+    //caseProp.clear();
     superedges.clear();
     transformations.clear();
 }
@@ -121,10 +121,10 @@ void GraphProperties::setEdgesProperties(QMap<int, QString> theEdgesProperties)
     edgesProperties = theEdgesProperties;
 }
 
-void GraphProperties::setCase(QString theCase)
-{
-    caseProp = theCase;
-}
+//void GraphProperties::setCase(QString theCase)
+//{
+//    caseProp = theCase;
+//}
 
 void GraphProperties::setSuperedges(QString theSuperedges)
 {
@@ -184,10 +184,10 @@ QString GraphProperties::getEdgeProperties(int edgeId)
     return edgesProperties.value(edgeId);
 }
 
-QString GraphProperties::getCase()
-{
-    return caseProp;
-}
+//QString GraphProperties::getCase()
+//{
+//    return caseProp;
+//}
 
 QString GraphProperties::getSuperedges()
 {

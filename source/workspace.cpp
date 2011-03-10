@@ -166,12 +166,12 @@ void Workspace::undo()
 
         QMap<int, QString> tempNodesProperties = (*statusVector[currentStatus - 1]).getGraphProperties().data()->getNodesProperties();
         QMap<int, QString> tempEdgesProperties = (*statusVector[currentStatus - 1]).getGraphProperties().data()->getEdgesProperties();
-        QString tempCase = (*statusVector[currentStatus - 1]).getGraphProperties().data()->getCase();
+        QString tempCase = (*statusVector[currentStatus - 1]).getNetworkProperties().data()->getCaseInfoXML();
         QString tempSuperedges = (*statusVector[currentStatus - 1]).getGraphProperties().data()->getSuperedges();
         QString tempTrans = (*statusVector[currentStatus - 1]).getGraphProperties().data()->getTransformations();
         (*graphProperties).setNodesProperties(tempNodesProperties);
         (*graphProperties).setEdgesProperties(tempEdgesProperties);
-        (*graphProperties).setCase(tempCase);
+        (*networkProperties).setCaseInfoXML(tempCase);
         (*graphProperties).setSuperedges(tempSuperedges);
         (*graphProperties).setTransformations(tempTrans);
 
@@ -235,12 +235,12 @@ void Workspace::redo()
 
         QMap<int, QString> tempNodesProperties = (*statusVector[currentStatus]).getGraphProperties().data()->getNodesProperties();
         QMap<int, QString> tempEdgesProperties = (*statusVector[currentStatus]).getGraphProperties().data()->getEdgesProperties();
-        QString tempCase = (*statusVector[currentStatus]).getGraphProperties().data()->getCase();
+        QString tempCase = (*statusVector[currentStatus]).getNetworkProperties().data()->getCaseInfoXML();
         QString tempSuperedges = (*statusVector[currentStatus]).getGraphProperties().data()->getSuperedges();
         QString tempTrans = (*statusVector[currentStatus]).getGraphProperties().data()->getTransformations();
         (*graphProperties).setNodesProperties(tempNodesProperties);
         (*graphProperties).setEdgesProperties(tempEdgesProperties);
-        (*graphProperties).setCase(tempCase);
+        (*networkProperties).setCaseInfoXML(tempCase);
         (*graphProperties).setSuperedges(tempSuperedges);
         (*graphProperties).setTransformations(tempTrans);
 
@@ -1136,7 +1136,7 @@ void Workspace::inizializeHistory()
     GraphProperties* newGraphProperties = new GraphProperties(this);
     (*newGraphProperties).setNodesProperties(graphProperties->getNodesProperties());
     (*newGraphProperties).setEdgesProperties(graphProperties->getEdgesProperties());
-    (*newGraphProperties).setCase(graphProperties->getCase());
+    //(*newGraphProperties).setCase(graphProperties->getCase());
     (*newGraphProperties).setSuperedges(graphProperties->getSuperedges());
     (*newGraphProperties).setTransformations(graphProperties->getTransformations());
     QSharedPointer<GraphProperties> graphPropertiesSharedPt(newGraphProperties);
@@ -1156,7 +1156,7 @@ void Workspace::inizializeHistory()
 
     NetworkProperties* newNetworkProperties = new NetworkProperties(this);
     (*newNetworkProperties).setBCXML(networkProperties->getBCXML());
-    //(*newNetworkProperties).setPatientInfoXML(networkProperties->getPatientInfoXML());
+    (*newNetworkProperties).setCaseInfoXML(networkProperties->getCaseInfoXML());
     //(*networkProperties).setSPXML(networkProperties->getSPXML());
     QSharedPointer<NetworkProperties> networkPropertiesSharedPt(newNetworkProperties);
 
@@ -1211,7 +1211,7 @@ void Workspace::insertActInHistory(bool graphChanged)
         GraphProperties* newGraphProperties = new GraphProperties(this);
         (*newGraphProperties).setNodesProperties(graphProperties->getNodesProperties());
         (*newGraphProperties).setEdgesProperties(graphProperties->getEdgesProperties());
-        (*newGraphProperties).setCase(graphProperties->getCase());
+        //(*newGraphProperties).setCase(graphProperties->getCase());
         (*newGraphProperties).setSuperedges(graphProperties->getSuperedges());
         (*newGraphProperties).setTransformations(graphProperties->getTransformations());
         QSharedPointer<GraphProperties> graphPropertiesSharedPt(newGraphProperties);
@@ -1231,7 +1231,7 @@ void Workspace::insertActInHistory(bool graphChanged)
 
         NetworkProperties* newNetworkProperties = new NetworkProperties(this);
         (*newNetworkProperties).setBCXML(networkProperties->getBCXML());
-        //(*newNetworkProperties).setPatientInfoXML(networkProperties->getPatientInfoXML());
+        (*newNetworkProperties).setCaseInfoXML(networkProperties->getCaseInfoXML());
         //(*newNetworkProperties).setSPXML(networkProperties->getSPXML());
         QSharedPointer<NetworkProperties> networkPropertiesSharedPt(newNetworkProperties);
 
@@ -1613,7 +1613,7 @@ QString Workspace::getBCXML()
 QString Workspace::getIdPat()
 {
     QDomDocument caseDoc("case");
-    caseDoc.setContent(graphProperties->getCase());
+    caseDoc.setContent(networkProperties->getCaseInfoXML());
 
     QDomNodeList caseList = caseDoc.elementsByTagName("case");
     QDomNode theCase = caseList.at(0);
@@ -1635,14 +1635,14 @@ QString Workspace::getIdPat()
     return networkProperties->getSPXML();
 }*/
 
-void Workspace::setPatientInfoXML(QString thePatientInfoXML)
+void Workspace::setCaseInfoXML(QString theCaseInfoXML)
 {
-    networkProperties->setPatientInfoXML(thePatientInfoXML);
+    networkProperties->setCaseInfoXML(theCaseInfoXML);
 }
 
-QString Workspace::getPatientInfoXML()
+QString Workspace::getCaseInfoXML()
 {
-    return networkProperties->getPatientInfoXML();
+    return networkProperties->getCaseInfoXML();
 }
 
 void Workspace::setZoomFactor(float theZoomFactor)
@@ -1776,7 +1776,7 @@ void Workspace::initNewCase()
                      "  <patient_id></patient_id>\n"
                      "  <visit></visit>\n"
                      "</case>\n");
-    graphProperties->setCase(theCase);
+    networkProperties->setCaseInfoXML(theCase);
 
     QString theSuperedges("<superedges>\n"
                           "</superedges>\n");

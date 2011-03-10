@@ -42,7 +42,7 @@ InputOutput::InputOutput(QObject *parent) :
 {
 }
 
-bool InputOutput::loadGraphFromLayout(Graph *graph, GraphLayout *graphLayout, GraphProperties *graphProperties)
+bool InputOutput::loadGraphFromLayout(Graph *graph, GraphLayout *graphLayout, GraphProperties *graphProperties, NetworkProperties* networkProperties)
 {
     QString layoutFileName = QFileDialog::getOpenFileName(0, tr("Open a network"),
                                                     "",
@@ -79,7 +79,7 @@ bool InputOutput::loadGraphFromLayout(Graph *graph, GraphLayout *graphLayout, Gr
         QDomDocument graphDoc("graph");
         graphDoc.setContent(graphIn.readAll());
 
-        loadGraph(graphDoc, graph, graphProperties);
+        loadGraph(graphDoc, graph, graphProperties, networkProperties);
     }
 
     if (!layoutFile.open(QFile::ReadOnly | QFile::Text)) {
@@ -100,7 +100,7 @@ bool InputOutput::loadGraphFromLayout(Graph *graph, GraphLayout *graphLayout, Gr
     return true;
 }
 
-bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, GraphProperties *graphProperties)
+bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, GraphProperties *graphProperties, NetworkProperties *networkProperties)
 {
     QString networkFileName = QFileDialog::getOpenFileName(0, tr("Open a network"),
                                                     "",
@@ -123,7 +123,7 @@ bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, Gra
     QDomDocument networkDoc("network");
     networkDoc.setContent(networkIn.readAll());
 
-    loadGraph(networkDoc, graph, graphProperties);
+    loadGraph(networkDoc, graph, graphProperties, networkProperties);
 
     QVector<int> nodesIds = graph->getNodesIds();
     int min = 100;
@@ -318,7 +318,7 @@ void InputOutput::importBC(NetworkProperties *networkProperties)
     networkProperties->setSPXML(SPXML);
 }*/
 
-void InputOutput::saveGraph(const QString &fileName, GraphProperties *graphProperties, QVector<int> nodes, QVector<int> edges)
+void InputOutput::saveGraph(const QString &fileName, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges)
 {
     QString graphName(fileName);
     graphName.append("_graph.xml");
@@ -341,7 +341,7 @@ void InputOutput::saveGraph(const QString &fileName, GraphProperties *graphPrope
     networkResult.append(graphVersion);
     networkResult.append(xmlns);
 
-    networkResult.append(graphProperties->getCase());
+    networkResult.append(networkProperties->getCaseInfoXML());
 
     networkResult.append("<nodes>\n");
     for (int i = 0; i < nodes.size(); i++) {
@@ -438,7 +438,7 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
 }
 
 void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties,
-                              QVector<int> nodes, QVector<int> edges)
+                              NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges)
 {
     QString graphName(fileName);
     QString layout(fileName);
@@ -492,7 +492,7 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
     networkResult.append(graphVersion);
     networkResult.append(xmlns);
 
-    networkResult.append(graphProperties->getCase());
+    networkResult.append(networkProperties->getCaseInfoXML());
 
     networkResult.append("<nodes>\n");
     for (int i = 0; i < nodes.size(); i++) {
@@ -530,6 +530,8 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
     layoutResult.append("\" version =\"");
     layoutResult.append(layoutVersion);
     layoutResult.append(xmlns);
+
+    networkResult.append(networkProperties->getCaseInfoXML());
 
     layoutResult.append("<nodes_layout>\n");
     for (int i = 0; i < nodes.size(); i++) {
@@ -629,7 +631,7 @@ void InputOutput::saveBC(const QString &fileName, QString idpat, QString BCXML)
     BCOut << BCXML;
 }
 
-void InputOutput::loadGraph(QDomDocument theDomDoc, Graph *graph, GraphProperties *graphProperties)
+void InputOutput::loadGraph(QDomDocument theDomDoc, Graph *graph, GraphProperties *graphProperties, NetworkProperties* networkProperties)
 {
     QDomNodeList caseInfoList = theDomDoc.elementsByTagName("case");
     QDomNodeList nodesList = theDomDoc.elementsByTagName("nodes");
@@ -665,7 +667,7 @@ void InputOutput::loadGraph(QDomDocument theDomDoc, Graph *graph, GraphPropertie
         transformations.save(transformationsStream, 4);
     }
 
-    graphProperties->setCase(caseString);
+    networkProperties->setCaseInfoXML(caseString);
     graphProperties->setSuperedges(superedgesString);
     graphProperties->setTransformations(transformationsString);
 

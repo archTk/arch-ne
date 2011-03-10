@@ -49,6 +49,7 @@ signals:
 
 public slots:
     void BCPressed();
+    void caseInfoPressed();
     void customizeGraph(const QString& fileName);
     void closeResultsView(QString cookie);
     void dataConfirAndClose(QString cookie, QString elementData);
@@ -68,7 +69,6 @@ public slots:
     void loadGraphFromGraph();
     void loadMesh();
     void meshHasBeenGenerated();
-    void patientInfoPressed();
     void resultsDockClosed();
     void saveNetwork(const QString& fileName);
     void setPreferences();

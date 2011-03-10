@@ -27,7 +27,7 @@ void NetworkProperties::clear()
 {
     BCXML.clear();
     //SPXML.clear();
-    patientInfoXML.clear();
+    caseInfoXML.clear();
 }
 
 void NetworkProperties::setBCXML(QString theBCXML)
@@ -50,12 +50,12 @@ QString NetworkProperties::getBCXML()
     return SPXML;
 }*/
 
-void NetworkProperties::setPatientInfoXML(QString thePatientInfoXML)
+void NetworkProperties::setCaseInfoXML(QString theCaseInfoXML)
 {
-    patientInfoXML = thePatientInfoXML;
+    caseInfoXML = theCaseInfoXML;
 }
 
-QString NetworkProperties::getPatientInfoXML()
+QString NetworkProperties::getCaseInfoXML()
 {
-    return patientInfoXML;
+    return caseInfoXML;
 }

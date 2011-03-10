@@ -302,9 +302,9 @@ void MainWindow::createActions()
     redoAct->setShortcut(tr("Ctrl+shift+Z"));
     connect(redoAct, SIGNAL(triggered()), this, SIGNAL(redoPressed()));
 
-    patientInfoAct = new QAction(QIcon(":/images/patientInfo.png"), tr("Patient Info"), this);
-    patientInfoAct->setStatusTip(tr("Set patient information"));
-    connect(patientInfoAct, SIGNAL(triggered()), this, SIGNAL(patientInfoPressed()));
+    caseInfoAct = new QAction(QIcon(":/images/patientInfo.png"), tr("Case Info"), this);
+    caseInfoAct->setStatusTip(tr("Set case information"));
+    connect(caseInfoAct, SIGNAL(triggered()), this, SIGNAL(caseInfoPressed()));
 
     BCAct = new QAction(QIcon(":/images/BC.png"), tr("Set Boundary Conditions"), this);
     BCAct->setStatusTip(tr("Set Boundary Conditions"));
@@ -454,7 +454,7 @@ void MainWindow::createMenus()
     editMenu->addAction(importBCAct);
     //editMenu->addAction(SPAct);
     //editMenu->addAction(importSPAct);
-    editMenu->addAction(patientInfoAct);
+    editMenu->addAction(caseInfoAct);
     //editMenu->addAction(importPatientInfoAct);
     editMenu->addSeparator();
     editMenu->addAction(preferencesAct);
@@ -566,7 +566,7 @@ void MainWindow::createToolBars()
     operationToolBar->addSeparator();
     operationToolBar->addAction(BCAct);
     //operationToolBar->addAction(SPAct);
-    operationToolBar->addAction(patientInfoAct);
+    operationToolBar->addAction(caseInfoAct);
     operationToolBar->addAction(customizeAct);
     operationToolBar->addAction(meshAct);
     operationToolBar->addAction(defaultMeshAct);
