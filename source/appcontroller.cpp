@@ -241,29 +241,38 @@ void AppController::goMeshing(const QString &fileName)
         return;
     }
 
+    QString scriptPath;
+    scriptPath = pyNSPath + "/MeshGenerator_Script.py";
     QString idPat = workspace->getIdPat();
-
     QFileInfo fileInfo(fileName);
-    QString workDir = fileInfo.path() + "/";
+    QString workDir = fileInfo.path();
+
     QString xmlSpecificNet = idPat + "_" + fileInfo.fileName();
 
     meshOut = xmlSpecificNet;
     meshOut.remove("_graph.xml");
     meshOut.append("_mesh.xml");
 
-    appout << "AppC::goMeshing workDir= " << workDir << endl << "specificNet= " << xmlSpecificNet << endl << "meshOut= " << meshOut << endl;
-
-    QString scriptPath;
-    scriptPath = pyNSPath + "/MeshGenerator_Script.py";
-
     QStringList arguments;
-    arguments << scriptPath << "--wdir" << workDir << "--xlmNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
+    //arguments << scriptPath << "--wdir" << "/Users/boss/Desktop/AAA" << "--xlmNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
+    arguments << "/Users/boss/Sites/ARCH project/pyNS/MeshGenerator_Script.py" << "--wdir" << "/Users/boss/Desktop/AAA" << "--xmlNet" << "1_test_graph.xml" << "--xmlMesh" << "1_test_mesh.xml";
 
     pyNS = new QProcess(this);
+    meshOut.prepend(workDir + "/");
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshHasBeenGenerated()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     pyNS->start(pythonPath, arguments);
+}
+
+void AppController::meshHasBeenGenerated()
+{
+    appout << "AppC::meshHasBeenGenerated" << endl;
+    InputOutput* inputOutput = new InputOutput();
+    inputOutput->loadMeshAfterGenerating(meshOut, workspace->getGraphMesh());
+    emit updateSignal();
+    emit restoreCurs();
+    emit messageToBeDisplayed(tr("Mesh has been generated"));
 }
 
 void AppController::errorFromExternal(QProcess::ProcessError)
@@ -340,16 +349,6 @@ void AppController::caseInfoPressed()
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
 }
 
-void AppController::meshHasBeenGenerated()
-{
-    InputOutput* inputOutput = new InputOutput();
-    inputOutput->loadMeshAfterGenerating(meshOut, workspace->getGraphMesh());
-    appout << "AppC::meshHasBeenGenerated" << endl;
-    emit updateSignal();
-    emit restoreCurs();
-    emit messageToBeDisplayed(tr("Mesh has been generated"));
-}
-
 void AppController::customizeGraph(const QString &fileName)
 {
     if (!workspace->dataInGraph()) {
@@ -387,7 +386,7 @@ void AppController::goCustomizing(const QString &fileName)
     BC.prepend("BC_");
     BC.remove("_graph");
 
-    appout << "param= " << workDir << "  " << xmlNet << "  " << BC << endl;
+    appout << "AppC:goCustom workDir= " << workDir << endl << "xmlNet" << xmlNet << endl << "xmlBound" << BC << endl;
 
     QStringList arguments;
     arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << xmlNet << "--xmlBound" << BC;

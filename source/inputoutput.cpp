@@ -372,6 +372,7 @@ void InputOutput::saveGraph(const QString &fileName, GraphProperties* graphPrope
     networkFile.open( QIODevice::WriteOnly );
 
     QTextStream graphOut(&networkFile);
+
     graphOut << networkResult;
 
     networkFile.close();
@@ -381,6 +382,9 @@ void InputOutput::saveGraph(const QString &fileName, GraphProperties* graphPrope
 
 void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* graphMesh)
 {
+    IOout << "IO::loadMeshAfterGenererating" << endl;
+    IOout << "fileName= " << fileName << endl;
+
     QFile meshInFile(fileName);
 
     meshInFile.open( QIODevice::ReadWrite);
@@ -433,8 +437,6 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
     }
 
     meshInFile.close();
-
-    IOout << "IO::loadMeshAfterGenerating" << endl;
 }
 
 void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties,
@@ -516,7 +518,7 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
 
     networkResult.append(graphProperties->getTransformations());
 
-    networkResult.append("</NetworkGraph>\n");
+    networkResult.append("</NetworkGraph>");
 
     ///////
 
@@ -531,7 +533,7 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
     layoutResult.append(layoutVersion);
     layoutResult.append(xmlns);
 
-    networkResult.append(networkProperties->getCaseInfoXML());
+    layoutResult.append(networkProperties->getCaseInfoXML());
 
     layoutResult.append("<nodes_layout>\n");
     for (int i = 0; i < nodes.size(); i++) {
