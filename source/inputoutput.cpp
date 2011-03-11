@@ -365,7 +365,7 @@ void InputOutput::saveGraph(const QString &fileName, GraphProperties* graphPrope
 
     networkResult.append(graphProperties->getTransformations());
 
-    networkResult.append("</NetworkGraph>\n");
+    networkResult.append("</NetworkGraph>");
 
     QFile networkFile(graphName);
 

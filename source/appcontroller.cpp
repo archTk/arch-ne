@@ -215,7 +215,6 @@ void AppController::importBC()
 
 void AppController::generateMesh(const QString &fileName)
 {
-    appout << "AppC::genMesh" << endl;
     if (!workspace->dataInGraph()) {
         return;
     }
@@ -254,11 +253,15 @@ void AppController::goMeshing(const QString &fileName)
     meshOut.append("_mesh.xml");
 
     QStringList arguments;
-    //arguments << scriptPath << "--wdir" << "/Users/boss/Desktop/AAA" << "--xlmNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
-    arguments << "/Users/boss/Sites/ARCH project/pyNS/MeshGenerator_Script.py" << "--wdir" << "/Users/boss/Desktop/AAA" << "--xmlNet" << "1_test_graph.xml" << "--xmlMesh" << "1_test_mesh.xml";
+
+    appout << "script " << scriptPath <<  " --wdir " << workDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
+
+    //arguments << scriptPath << "--wdir" << workDir << "--xlmNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
+    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 
     pyNS = new QProcess(this);
-    meshOut.prepend(workDir + "/");
+    //meshOut.prepend(workDir + "/"); // To let it be used in meshHasBeenGenerated - it is passed to inputOutput
+                                    // and it needs the workDir + "/" before the file name.
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshHasBeenGenerated()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
@@ -386,7 +389,7 @@ void AppController::goCustomizing(const QString &fileName)
     BC.prepend("BC_");
     BC.remove("_graph");
 
-    appout << "AppC:goCustom workDir= " << workDir << endl << "xmlNet" << xmlNet << endl << "xmlBound" << BC << endl;
+    appout << "AppC:goCustom workDir= " << workDir << endl << "xmlNet= " << xmlNet << endl << "xmlBound= " << BC << endl;
 
     QStringList arguments;
     arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << xmlNet << "--xmlBound" << BC;
@@ -400,7 +403,7 @@ void AppController::goCustomizing(const QString &fileName)
 
 void AppController::graphHasBeenCustomized()
 {
-    appout << "AppController::graphHasBeenCustomized synchronize with DataCollectot (XML has changed)" << endl;
+    appout << "AppController::graphHasBeenCustomized synchronize with DataCollector (XML has changed)" << endl;
     emit restoreCurs();
     emit messageToBeDisplayed(tr("The graph has been customized"));
 }
@@ -411,37 +414,38 @@ void AppController::simulateGraph(const QString &fileName)
         return;
     }
 
-    emit setCurs();
-
-    QFileInfo fileInfo(fileName);
-    QString workDir = fileInfo.path() + "/";
-    QString file = fileInfo.fileName();
-
-    QString idPat;
-    idPat = workspace->getIdPat();
-    imagesDir = workDir + "Images/";
-
-    QString xmlOut = fileName + "_results.xml";
-    QString specificNet = idPat + "_" + file;
-    QString specificBC = idPat + "_BC_" + file;
-
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
     QString pyNSPath = settings.value("pyNSPath", QString()).toString();
 
     if (!checkPaths(pythonPath, pyNSPath)) {
-        emit restoreCurs();
         return;
     }
+
+    emit setCurs();
+
+    QFileInfo fileInfo(fileName);
+    QString workDir = fileInfo.path();
+    QString file = fileInfo.fileName();
+
+    QString idPat;
+    idPat = workspace->getIdPat();
+    imagesDir = workDir + "/Images/";
+
+    QString xmlOut = idPat + file + "_results.xml";
+    QString specificNet = idPat + "_" + file + "_graph.xml";
+    QString specificBC = idPat + "_BC_" + file + "_graph.xml";
 
     QString scriptPath;
     scriptPath = pyNSPath + "/Solver_Script.py";
 
     QStringList arguments;
 
-    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << specificNet << "--xmlMesh" << meshOut <<
+    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << specificNet <<
             "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
 
+    appout << "AppC::simulateG fileName= " << fileName << endl << "file= " << file << endl << "workDir= " << workDir << endl <<
+            "specificNet= " << specificNet << endl << "bound= " << specificBC << endl <<"out= " << xmlOut;
 
     pyNS = new QProcess(this);
 
@@ -487,6 +491,8 @@ void AppController::clear()
     requestMap.clear();
     dataCollectorList.clear();
     incrementalDataRequest = 0;
+    meshOut.clear();
+    imagesDir.clear();
 }
 
 int AppController::uniqueDataRequestKey()
