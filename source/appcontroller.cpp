@@ -139,7 +139,8 @@ void AppController::initNewCase()
 void AppController::loadGraphFromLayout()
 {
     InputOutput* inputOutput = new InputOutput();
-    connect(inputOutput, SIGNAL(curFileName(QString)), mainWindow, SLOT(setFileName(QString)));
+    //connect(inputOutput, SIGNAL(curFileName(QString)), mainWindow, SLOT(setFileName(QString)));
+    connect(inputOutput, SIGNAL(curFileName(QString, QString)), this, SLOT(setFNameAndWDir(QString,QString)));
 
     emit setCurs();
 
@@ -158,7 +159,8 @@ void AppController::loadGraphFromLayout()
 void AppController::loadGraphFromGraph()
 {
     InputOutput* inputOutput = new InputOutput();
-    connect(inputOutput, SIGNAL(curFileName(QString)), mainWindow, SLOT(setFileName(QString)));
+    //connect(inputOutput, SIGNAL(curFileName(QString)), mainWindow, SLOT(setFileName(QString)));
+    connect(inputOutput, SIGNAL(curFileName(QString, QString)), this, SLOT(setFNameAndWDir(QString,QString)));
 
     emit setCurs();
 
@@ -478,6 +480,14 @@ void AppController::saveNetwork(const QString& fileName)
     emit restoreCurs();
 }
 
+void AppController::setFNameAndWDir(QString theFName, QString theWDir)
+{
+    mainWindow->setCurrentFile(theFName);
+
+    fName = theFName;
+    wDir = theWDir;
+}
+
 void AppController::setPreferences()
 {
     Dialog propDialog;
@@ -493,6 +503,8 @@ void AppController::clear()
     incrementalDataRequest = 0;
     meshOut.clear();
     imagesDir.clear();
+    fName.clear();
+    wDir.clear();
 }
 
 int AppController::uniqueDataRequestKey()

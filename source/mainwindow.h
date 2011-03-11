@@ -46,6 +46,8 @@ public:
 
     void initNew();
 
+    void setCurrentFile(const QString& fileName);
+
     void insertDataCollectorToDock(DataCollector* theDataCollector, QPoint  elementRequest);
     void removeAllDataCollectorFromDock();
     void removeDataCollectorFromDock();
@@ -70,6 +72,7 @@ signals:
     void BCPressed();
     void blockNodesPressed();
     void caseInfoPressed();
+    void currentFileAndWDir(QString, QString);
     void defaultMeshPressed();
     void dockClosedSig();
     void editingEl2Ws(QPoint editingElement);
@@ -77,7 +80,7 @@ signals:
     void graphToBeSimulated(const QString& fileName);
     void homeViewPressed();
     void importBCPressed();
-    void importSPPressed();
+    //void importSPPressed();
     void infoPressed();
     void initNewCase();
     void loadGraphFromLayout();
@@ -96,7 +99,7 @@ signals:
     void showMeshPressed();
     void snapToGridPressed();
     void splitSegmentPressed();
-    void SPPressed();
+    //void SPPressed();
     void superEdgePressed();
     void translatePressed();
     void undoPressed();
@@ -149,7 +152,6 @@ private:
     bool maybeSave();
     void readSettings();
     bool saveFile(const QString& fileName);
-    void setCurrentFile(const QString& fileName);
     QString strippedName(const QString& fullFileName);
     void writeSettings();
 
@@ -159,7 +161,7 @@ private:
     QTabWidget* resultsTabs;
     EditorArea* editorArea;
 
-    QString curFile;
+    QString curFile;////
 
     QMenu* fileMenu;
     QMenu* editMenu;

@@ -71,6 +71,7 @@ public slots:
     void meshHasBeenGenerated();
     void resultsDockClosed();
     void saveNetwork(const QString& fileName);
+    void setFNameAndWDir(QString theFName, QString theWDir);
     void setPreferences();
     void showResults(QPoint elementRequest);
     void simulateGraph(const QString& fileName);
@@ -100,6 +101,9 @@ private:
 
     QString meshOut;
     QString imagesDir;
+
+    QString fName;  // File name.
+    QString wDir;   // Working directory.
 
     bool checkPaths(QString pythonPath, QString pyNSPath);
 };

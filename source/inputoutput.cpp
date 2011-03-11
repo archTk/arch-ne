@@ -96,7 +96,12 @@ bool InputOutput::loadGraphFromLayout(Graph *graph, GraphLayout *graphLayout, Gr
 
     loadLayout(layoutDoc, graphLayout);
 
-    emit curFileName(temp);
+    QFileInfo fileInfo(temp);
+    QString wDir = fileInfo.path();
+
+    IOout << "IO::loadGfromL wDir= " << wDir << endl;
+
+    emit curFileName(temp, wDir);
     return true;
 }
 
@@ -156,7 +161,13 @@ bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, Gra
 
     QString temp(networkFileName);
     temp.remove(".xml");
-    emit curFileName(temp);
+
+    QFileInfo fileInfo(temp);
+    QString wDir = fileInfo.path();
+
+    IOout << "IO::loadGfromG wDir= " << wDir << endl;
+
+    emit curFileName(temp, wDir);
 
     return true;
 }
@@ -610,7 +621,12 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
     //QTextStream meshOut(meshFile);
     //meshOut << meshResult;
 
-    emit curFileName(fileName);
+    QFileInfo fileInfo(fileName);
+    QString wDir = fileInfo.path();
+
+    IOout << "IO::saveNetwork wDir= " << wDir << endl;
+
+    emit curFileName(fileName,wDir);
 }
 
 void InputOutput::saveBC(const QString &fileName, QString BCXML)

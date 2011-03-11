@@ -53,7 +53,7 @@ public:
     //void importSP(NetworkProperties* networkProperties);
 
 signals:
-    void curFileName(QString theName);
+    void curFileName(QString theFName, QString theWDir);
     void graphSaved(QString theName);
     void pyNSCompleted(QString fileName);
     void meshFileReady(QString fileName);

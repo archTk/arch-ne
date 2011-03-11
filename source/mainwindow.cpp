@@ -673,11 +673,13 @@ bool MainWindow::saveFile(const QString& fileName)
 
 void MainWindow::setCurrentFile(const QString& fileName)
 {
-    curFile = fileName;
+    //curFile = fileName;
+
+    mainout << "MW::setCurrentFile fileName= " << fileName << endl;
     setWindowModified(false);
 
-    QString shownName = curFile;
-    if (curFile.isEmpty()) {
+    QString shownName = fileName;
+    if (fileName.isEmpty()) {
         shownName = "untitled";
     }
     setWindowFilePath(shownName);
@@ -691,6 +693,7 @@ QString MainWindow::strippedName(const QString& fullFileName)
 void MainWindow::newNetwork()
 {
     if (maybeSave()) {
+        emit currentFileAndWDir(QString(), QString());
         setCurrentFile("");
         clear();
         emit initNewCase();
