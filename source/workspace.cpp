@@ -1869,5 +1869,7 @@ void Workspace::clear()
     currentStatus = 0;
     inizializeHistory();
 
+    initNewCase();
+
     emit updateSignal();
 }

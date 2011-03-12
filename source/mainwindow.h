@@ -44,7 +44,8 @@ public:
 
     EditorArea* getEditorArea();
 
-    void initNew();
+    //void initNewCase();
+    void clear();
 
     void setCurrentFile(const QString& fileName);
 
@@ -63,35 +64,41 @@ public:
     void showDock();
     void showResultsDock();
 
-    QString getFileName();
+    void writeSettings();
 
-    void clear();
+    //QString getFileName();
 
 signals:
     void addSegmentPressed();
     void BCPressed();
     void blockNodesPressed();
     void caseInfoPressed();
-    void currentFileAndWDir(QString, QString);
+    void closeEventSignal(QCloseEvent* event);
+    void currentFNameAndWDir(QString theFName, QString theWDir);
     void defaultMeshPressed();
     void dockClosedSig();
     void editingEl2Ws(QPoint editingElement);
+    void goCustomize();
+    void goMesh();
+    void goSimulate();
     void graphToBeCustomized(const QString& fileName);
     void graphToBeSimulated(const QString& fileName);
     void homeViewPressed();
     void importBCPressed();
+    void importNetwork();
     //void importSPPressed();
     void infoPressed();
-    void initNewCase();
+    //void initNewCase();
     void loadGraphFromLayout();
     void loadGraphFromGraph();
-    void meshToBeGenerated(const QString& fileName);
     void meshToBeLoaded();
+    void newNetwork();
+    void openNetwork();
     void redoPressed();
     void removeSegmentPressed();
     void resultsDockClosedSig();
     void resultsPressed();
-    void saveNetwork(const QString& fileName);
+    void save();
     void selectElementsPressed();
     void setPrefPressed();
     void showGridPressed();
@@ -112,18 +119,18 @@ protected:
 
 private slots:
     void about();
-    void customizePressed();
+    //void customizePressed();
     void documentWasModified();
     void elementsBeenHit(QVector<QPoint> hitEls);
-    void importNetwork();
+    //void importNetwork();
     void importMesh();
     void meshElsBeenHit(QVector<QPoint> hitMeshEls);
-    void meshPressed();
-    void newNetwork();
-    void openNetwork();
-    bool save();
-    bool saveAs();
-    void simulatePressed();
+    //void meshPressed();
+    //void newNetwork();
+    //void openNetwork();
+    //bool save();
+    //bool saveAs();
+    //void simulatePressed();
     void tabsContentChanged();
     void resultsTabsContentChanged();
 
@@ -149,11 +156,10 @@ private:
     void loadNetwork();
     void loadNetWithoutLayout();
     void loadMesh();
-    bool maybeSave();
+    //bool maybeSave();
     void readSettings();
-    bool saveFile(const QString& fileName);
-    QString strippedName(const QString& fullFileName);
-    void writeSettings();
+    //bool saveFile(const QString& fileName);
+    //QString strippedName(const QString& fullFileName);
 
     QDockWidget* dock;
     QDockWidget* resultsDock;
@@ -161,7 +167,7 @@ private:
     QTabWidget* resultsTabs;
     EditorArea* editorArea;
 
-    QString curFile;////
+    //QString curFile;////
 
     QMenu* fileMenu;
     QMenu* editMenu;

@@ -19,6 +19,7 @@
 #ifndef APPCONTROLLER_H
 #define APPCONTROLLER_H
 
+#include <QCloseEvent>
 #include <QObject>
 #include <QPointF>
 #include <QFile>
@@ -42,6 +43,7 @@ public:
     void createConnections();
 
 signals:
+    void currentFile(QString theCurrentFile);
     void messageToBeDisplayed(QString theMessage);
     void restoreCurs();
     void setCurs();
@@ -50,41 +52,50 @@ signals:
 public slots:
     void BCPressed();
     void caseInfoPressed();
-    void customizeGraph(const QString& fileName);
+    void customizeGraph();
+    void closeEvent(QCloseEvent* event);
     void closeResultsView(QString cookie);
     void dataConfirAndClose(QString cookie, QString elementData);
     void dataConfirmed(QString cookie ,QString elementData);
     void dataRequest(QPoint elementRequest);
     void dockClosed();
     void errorFromExternal(QProcess::ProcessError);
-    void generateMesh(const QString& fileName);
-    void goMeshing(const QString& fileName);
-    void goCustomizing(const QString& fileName);
+    void generateMesh();
     void graphHasBeenCustomized();
     void importBC();
+    void importNetwork();
     void initNewCase();
     //void importPatientInfo();
     //void importSP();
-    void loadGraphFromLayout();
-    void loadGraphFromGraph();
     void loadMesh();
     void meshHasBeenGenerated();
+    void newNetwork();
+    void openNetwork();
     void resultsDockClosed();
-    void saveNetwork(const QString& fileName);
+    bool save();
     void setFNameAndWDir(QString theFName, QString theWDir);
     void setPreferences();
     void showResults(QPoint elementRequest);
-    void simulateGraph(const QString& fileName);
+    void simulateGraph();
     void simulationHasBeenPerformed();
     //void SPPressed();
 
+private slots:
+    void goMeshing();
+    void goCustomizing();
+
 private:
     void clear();
-    int uniqueDataRequestKey();
-    int uniqueResultsRequestKey();
     void collectData(QPoint elementRequest, QString XMLString, QVector<QString> hiddenItems,
                      QVector<QString> readonlyItems, QString XMLSchema);
+    void loadGraphFromLayout();
+    void loadGraphFromGraph();
+    bool maybeSave();
+    bool saveAs();
+    bool saveNetwork();
     void showMessage(QString theTitle, QString theMessage);
+    int uniqueDataRequestKey();
+    int uniqueResultsRequestKey();
 
     MainWindow* mainWindow;
     Workspace* workspace;

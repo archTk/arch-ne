@@ -26,6 +26,7 @@
 #include "resultsview.h"
 
 #include <QDialog>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QWidget>
 #include <QGridLayout>
@@ -63,24 +64,29 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(BCPressed()), this, SLOT(BCPressed()));
     connect(mainWindow, SIGNAL(blockNodesPressed()), workspace, SLOT(blockNodes()));
     connect(mainWindow, SIGNAL(caseInfoPressed()), this, SLOT(caseInfoPressed()));
+    connect(mainWindow, SIGNAL(closeEventSignal(QCloseEvent*)), this, SLOT(closeEvent(QCloseEvent*)));
     connect(mainWindow, SIGNAL(defaultMeshPressed()), workspace, SLOT(applyDefaultMesh()));
     connect(mainWindow, SIGNAL(dockClosedSig()), this, SLOT(dockClosed()));
     connect(mainWindow, SIGNAL(editingEl2Ws(QPoint)), workspace, SLOT(setHighlightingEl(QPoint)));
     connect(mainWindow, SIGNAL(homeViewPressed()), workspace, SLOT(homeView()));
-    connect(mainWindow, SIGNAL(graphToBeCustomized(QString)), this, SLOT(customizeGraph(QString)));
-    connect(mainWindow, SIGNAL(graphToBeSimulated(QString)), this, SLOT(simulateGraph(QString)));
+    connect(mainWindow, SIGNAL(goCustomize()), this, SLOT(customizeGraph()));
+    connect(mainWindow, SIGNAL(goMesh()), this, SLOT(generateMesh()));
+    connect(mainWindow, SIGNAL(goSimulate()), this, SLOT(simulateGraph()));
     connect(mainWindow, SIGNAL(importBCPressed()), this, SLOT(importBC()));
+    connect(mainWindow, SIGNAL(importNetwork()), this, SLOT(importNetwork()));
     //connect(mainWindow, SIGNAL(importPatientInfoPressed()), this, SLOT(importPatientInfo()));
     //connect(mainWindow, SIGNAL(importSPPressed()), this, SLOT(importSP()));
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
-    connect(mainWindow, SIGNAL(initNewCase()), this, SLOT(initNewCase()));
-    connect(mainWindow, SIGNAL(meshToBeGenerated(QString)), this, SLOT(generateMesh(QString)));
+    //connect(mainWindow, SIGNAL(initNewCase()), this, SLOT(initNewCase()));
+    connect(mainWindow, SIGNAL(newNetwork()), this, SLOT(newNetwork()));
+    connect(mainWindow, SIGNAL(openNetwork()), this, SLOT(openNetwork()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
     connect(mainWindow, SIGNAL(resultsDockClosedSig()), this, SLOT(resultsDockClosed()));
     connect(mainWindow, SIGNAL(resultsPressed()), workspace, SLOT(resultsRequest()));
     connect(mainWindow, SIGNAL(selectElementsPressed()), workspace, SLOT(selectElements()));
     connect(mainWindow, SIGNAL(setPrefPressed()), this, SLOT(setPreferences()));
+    connect(mainWindow, SIGNAL(save()), this, SLOT(save()));
     connect(mainWindow, SIGNAL(showGridPressed()), workspace, SLOT(showGrid()));
     connect(mainWindow, SIGNAL(showLabelsPressed()), workspace, SLOT(showLabels()));
     connect(mainWindow, SIGNAL(showMeshPressed()), workspace, SLOT(showMesh()));
@@ -94,10 +100,10 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(zoomInPressed()), editorArea, SLOT(zoomIn()));
     connect(mainWindow, SIGNAL(zoomOutPressed()), editorArea, SLOT(zoomOut()));
 
-    connect(mainWindow, SIGNAL(loadGraphFromLayout()), this, SLOT(loadGraphFromLayout()));
-    connect(mainWindow, SIGNAL(loadGraphFromGraph()), this, SLOT(loadGraphFromGraph()));
+    //connect(mainWindow, SIGNAL(loadGraphFromLayout()), this, SLOT(loadGraphFromLayout()));
+    //connect(mainWindow, SIGNAL(loadGraphFromGraph()), this, SLOT(loadGraphFromGraph()));
     connect(mainWindow, SIGNAL(meshToBeLoaded()), this, SLOT(loadMesh()));
-    connect(mainWindow, SIGNAL(saveNetwork(QString)), this, SLOT(saveNetwork(QString)));
+
 
     connect(workspace, SIGNAL(contentsChanged()), mainWindow, SLOT(documentWasModified()));
     connect(workspace, SIGNAL(dataRequest(QPoint)), this, SLOT(dataRequest(QPoint)));
@@ -120,6 +126,7 @@ void AppController::createConnections()
     connect(editorArea, SIGNAL(meshElsBeenHit(QVector<QPoint>)), workspace, SLOT(meshElsBeenHit(QVector<QPoint>)));
     connect(editorArea, SIGNAL(meshElsBeenHit(QVector<QPoint>)), mainWindow, SLOT(meshElsBeenHit(QVector<QPoint>)));
 
+    connect(this, SIGNAL(currentFile(QString)), mainWindow, SLOT(setFileName(QString)));
     connect(this, SIGNAL(messageToBeDisplayed(QString)), mainWindow, SLOT(showStatusBarMessage(QString)));
     connect(this, SIGNAL(setCurs()), mainWindow, SLOT(setCurs()));
     connect(this, SIGNAL(restoreCurs()), mainWindow, SLOT(restoreCurs()));
@@ -131,16 +138,122 @@ void AppController::initNewCase()
     //InputOutput* inputOutput = new InputOutput();
     //QString defaultBCXML = inputOutput->loadDefaultBC();
     QString defaultBCXML = QString();
-    workspace->setBCXML(defaultBCXML);
+    mainWindow->clear();
+    editorArea->clear();
+    workspace->clear();
+}
 
-    workspace->initNewCase();
+bool AppController::save()
+{
+    if (fName.isEmpty()) {
+        return saveAs();
+    } else {
+        return saveNetwork();
+    }
+    return true;
+}
+
+bool AppController::saveNetwork()
+{
+    appout << "AppC::saveNet" << endl;
+
+    if (fName.isEmpty()) {
+        return saveAs();
+    }
+
+    emit setCurs();
+
+    InputOutput* inputOutput = new InputOutput();
+    connect(inputOutput, SIGNAL(curFNameAndWDir(QString, QString)), this, SLOT(setFNameAndWDir(QString,QString)));
+
+    QVector<int> nodes = workspace->getNodesIds();
+    QVector<int> edges = workspace->getEdgesIds();
+
+
+
+    bool saved = inputOutput->saveNetwork(fName, workspace->getGraphLayout(), workspace->getGraphProperties(),
+                             workspace->getNetworkProperties(), nodes, edges);
+
+    QString theMessage(tr("Network saved"));
+    emit messageToBeDisplayed(theMessage);
+    emit currentFile(fName);
+    emit restoreCurs();
+
+    return saved;
+}
+
+bool AppController::saveAs()
+{
+    QString fileName = QFileDialog::getSaveFileName();
+    if (fileName.isEmpty()) {
+        return false;
+    }
+
+    QFileInfo fileInfo(fileName);
+    wDir = fileInfo.path();
+    fName = fileName;
+    return saveNetwork();
+}
+
+bool AppController::maybeSave()
+{
+    if (mainWindow->isWindowModified()) {
+        QMessageBox::StandardButton ret;
+        ret = QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                                   tr("The network has been modified.\n"
+                                      "Do you want to save the changes?"),
+                                   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save) {
+            return saveNetwork();
+        } else if (ret == QMessageBox::Cancel) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void AppController::closeEvent(QCloseEvent* event)
+{
+    if (maybeSave()) {
+        mainWindow->writeSettings();
+        event->accept();
+    } else {
+        event->ignore();
+    }
+}
+
+void AppController::newNetwork()
+{
+    if (maybeSave()) {
+        emit currentFile("");
+        clear();
+        initNewCase();
+    }
+}
+
+void AppController::importNetwork()
+{
+    if (maybeSave()) {
+        clear();
+        initNewCase();
+        loadGraphFromGraph();
+    }
+}
+
+void AppController::openNetwork()
+{
+    if (maybeSave()) {
+        clear();
+        initNewCase();
+        loadGraphFromLayout();
+    }
 }
 
 void AppController::loadGraphFromLayout()
 {
     InputOutput* inputOutput = new InputOutput();
     //connect(inputOutput, SIGNAL(curFileName(QString)), mainWindow, SLOT(setFileName(QString)));
-    connect(inputOutput, SIGNAL(curFileName(QString, QString)), this, SLOT(setFNameAndWDir(QString,QString)));
+    connect(inputOutput, SIGNAL(curFNameAndWDir(QString, QString)), this, SLOT(setFNameAndWDir(QString,QString)));
 
     emit setCurs();
 
@@ -160,7 +273,7 @@ void AppController::loadGraphFromGraph()
 {
     InputOutput* inputOutput = new InputOutput();
     //connect(inputOutput, SIGNAL(curFileName(QString)), mainWindow, SLOT(setFileName(QString)));
-    connect(inputOutput, SIGNAL(curFileName(QString, QString)), this, SLOT(setFNameAndWDir(QString,QString)));
+    connect(inputOutput, SIGNAL(curFNameAndWDir(QString, QString)), this, SLOT(setFNameAndWDir(QString,QString)));
 
     emit setCurs();
 
@@ -178,14 +291,13 @@ void AppController::loadGraphFromGraph()
 
 void AppController::loadMesh()
 {
-    InputOutput* inputOutput = new InputOutput();
-    connect(inputOutput, SIGNAL(curFileName(QString)), mainWindow, SLOT(setFileName(QString)));
-
     emit setCurs();
 
+    InputOutput* inputOutput = new InputOutput();
     inputOutput->loadMesh(workspace->getGraphMesh());
 
     QString theMessage(tr("Mesh imported"));
+
     emit updateSignal();
     emit messageToBeDisplayed(theMessage);
     emit restoreCurs();
@@ -215,7 +327,7 @@ void AppController::importBC()
     emit messageToBeDisplayed("Simulation Parameters have been imported");
 }*/
 
-void AppController::generateMesh(const QString &fileName)
+void AppController::generateMesh()
 {
     if (!workspace->dataInGraph()) {
         return;
@@ -229,10 +341,10 @@ void AppController::generateMesh(const QString &fileName)
     InputOutput* inputOutput = new InputOutput();
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goMeshing(QString)));
 
-    inputOutput->saveGraph(fileName, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
+    inputOutput->saveGraph(fName, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
 }
 
-void AppController::goMeshing(const QString &fileName)
+void AppController::goMeshing()
 {
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
@@ -245,7 +357,7 @@ void AppController::goMeshing(const QString &fileName)
     QString scriptPath;
     scriptPath = pyNSPath + "/MeshGenerator_Script.py";
     QString idPat = workspace->getIdPat();
-    QFileInfo fileInfo(fileName);
+    QFileInfo fileInfo(fName);
     QString workDir = fileInfo.path();
 
     QString xmlSpecificNet = idPat + "_" + fileInfo.fileName();
@@ -354,7 +466,7 @@ void AppController::caseInfoPressed()
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
 }
 
-void AppController::customizeGraph(const QString &fileName)
+void AppController::customizeGraph()
 {
     if (!workspace->dataInGraph()) {
         return;
@@ -368,10 +480,10 @@ void AppController::customizeGraph(const QString &fileName)
     InputOutput* inputOutput = new InputOutput();
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goCustomizing(QString)));
 
-    inputOutput->saveGraph(fileName, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
+    inputOutput->saveGraph(fName, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
 }
 
-void AppController::goCustomizing(const QString &fileName)
+void AppController::goCustomizing()
 {
     QSettings settings("archTk", "ARCHNetworkEditor");
     QString pythonPath = settings.value("pythonPath", QString()).toString();
@@ -383,7 +495,7 @@ void AppController::goCustomizing(const QString &fileName)
 
     QString scriptPath;
     scriptPath = pyNSPath + "/ModelAdaptor_Script.py";
-    QFileInfo fileInfo(fileName);
+    QFileInfo fileInfo(fName);
     //QString workDir = fileInfo.path() + "/";
     QString workDir = fileInfo.path();
     QString xmlNet = fileInfo.fileName();
@@ -410,7 +522,7 @@ void AppController::graphHasBeenCustomized()
     emit messageToBeDisplayed(tr("The graph has been customized"));
 }
 
-void AppController::simulateGraph(const QString &fileName)
+void AppController::simulateGraph()
 {
     if (!workspace->dataInGraphMesh()) {
         return;
@@ -426,7 +538,7 @@ void AppController::simulateGraph(const QString &fileName)
 
     emit setCurs();
 
-    QFileInfo fileInfo(fileName);
+    QFileInfo fileInfo(fName);
     QString workDir = fileInfo.path();
     QString file = fileInfo.fileName();
 
@@ -446,8 +558,8 @@ void AppController::simulateGraph(const QString &fileName)
     arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << specificNet <<
             "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
 
-    appout << "AppC::simulateG fileName= " << fileName << endl << "file= " << file << endl << "workDir= " << workDir << endl <<
-            "specificNet= " << specificNet << endl << "bound= " << specificBC << endl <<"out= " << xmlOut;
+    //appout << "AppC::simulateG fileName= " << fileName << endl << "file= " << file << endl << "workDir= " << workDir << endl <<
+    //        "specificNet= " << specificNet << endl << "bound= " << specificBC << endl <<"out= " << xmlOut;
 
     pyNS = new QProcess(this);
 
@@ -460,24 +572,6 @@ void AppController::simulationHasBeenPerformed()
 {
     emit restoreCurs();
     emit messageToBeDisplayed(tr("Simulation has been completed"));
-}
-
-void AppController::saveNetwork(const QString& fileName)
-{
-    InputOutput* inputOutput = new InputOutput();
-    connect(inputOutput, SIGNAL(curFileName(QString)), mainWindow, SLOT(setFileName(QString)));
-
-    emit setCurs();
-
-    QVector<int> nodes = workspace->getNodesIds();
-    QVector<int> edges = workspace->getEdgesIds();
-
-    inputOutput->saveNetwork(fileName, workspace->getGraphLayout(), workspace->getGraphProperties(),
-                             workspace->getNetworkProperties(), nodes, edges);
-
-    QString theMessage(tr("Network saved"));
-    emit messageToBeDisplayed(theMessage);
-    emit restoreCurs();
 }
 
 void AppController::setFNameAndWDir(QString theFName, QString theWDir)
@@ -498,6 +592,8 @@ void AppController::setPreferences()
 void AppController::clear()
 {
     mainWindow->clear();
+    editorArea->clear();
+    workspace->clear();
     requestMap.clear();
     dataCollectorList.clear();
     incrementalDataRequest = 0;
@@ -660,7 +756,7 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
     } else if (temp.x() == 3) { // Boundary Conditions.
         workspace->setBCXML(elementData);
         InputOutput* inputOutput = new InputOutput();
-        inputOutput->saveBC(mainWindow->getFileName(),elementData);
+        inputOutput->saveBC(fName,elementData);
         //QDomNodeList patDataList = doc.elementsByTagName("patient_data");
         //QDomNode patDataNode = patDataList.at(0);
         //QDomElement idpat = patDataNode.firstChildElement("idpat");

@@ -42,7 +42,7 @@ public:
     void loadMesh(GraphMesh* graphMesh);
 
     void saveGraph(const QString& fileName, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
-    void saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
+    bool saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
 
     void saveBC(const QString& fileName, QString BCXML);
 
@@ -53,7 +53,7 @@ public:
     //void importSP(NetworkProperties* networkProperties);
 
 signals:
-    void curFileName(QString theFName, QString theWDir);
+    void curFNameAndWDir(QString theFName, QString theWDir);
     void graphSaved(QString theName);
     void pyNSCompleted(QString fileName);
     void meshFileReady(QString fileName);

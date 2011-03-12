@@ -99,15 +99,13 @@ bool InputOutput::loadGraphFromLayout(Graph *graph, GraphLayout *graphLayout, Gr
     QFileInfo fileInfo(temp);
     QString wDir = fileInfo.path();
 
-    IOout << "IO::loadGfromL wDir= " << wDir << endl;
-
-    emit curFileName(temp, wDir);
+    emit curFNameAndWDir(temp, wDir);
     return true;
 }
 
 bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, GraphProperties *graphProperties, NetworkProperties *networkProperties)
 {
-    QString networkFileName = QFileDialog::getOpenFileName(0, tr("Open a network"),
+    QString networkFileName = QFileDialog::getOpenFileName(0, tr("Import a network"),
                                                     "",
                                                     tr("XML files (*.xml)"));
 
@@ -165,9 +163,7 @@ bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, Gra
     QFileInfo fileInfo(temp);
     QString wDir = fileInfo.path();
 
-    IOout << "IO::loadGfromG wDir= " << wDir << endl;
-
-    emit curFileName(temp, wDir);
+    emit curFNameAndWDir(temp, wDir);
 
     return true;
 }
@@ -450,15 +446,13 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
     meshInFile.close();
 }
 
-void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties,
+bool InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties,
                               NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges)
 {
     QString graphName(fileName);
     QString layout(fileName);
-    //QString mesh(fileName);
     graphName.append("_graph.xml");
     layout.append("_layout.xml");
-    //mesh.append("_mesh.xml");
 
     QFile networkFile(graphName);
     if (!networkFile.open(QFile::WriteOnly | QFile::Text)) {
@@ -466,7 +460,7 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
                              tr("Cannot write file %1:\n%2.")
                              .arg(graphName)
                              .arg(networkFile.errorString()));
-        return;
+        return false;
     }
 
     QFile layoutFile(layout);
@@ -475,17 +469,8 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
                              tr("Cannot write file %1:\n%2.")
                              .arg(layout)
                              .arg(layoutFile.errorString()));
-        return;
+        return false;
     }
-
-    /*QFile meshFile(mesh);
-    if (!meshFile.open(QFile::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(0, tr("ARCHNetworkEditor"),
-                             tr("Cannot write file %1:\n%2.")
-                             .arg(mesh)
-                             .arg(meshFile.errorString()));
-        return;
-    }*/
 
     QString networkResult;
 
@@ -593,40 +578,17 @@ void InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
 
     ///////
 
-    /*QString meshResult;
-
-    QString meshVersion;
-    meshVersion = "doppio69";
-
-    meshResult.append("<?xml version='1.0' encoding='ISO-8859-1'?>\n"
-                      "<!--Vascular Network Model: graph mesh description-->\n"
-                      "<NetworkMesh version=\"");
-    meshResult.append(meshVersion);
-    meshResult.append("\" id=\"");
-    meshResult.append(graphVersion);
-    meshResult.append("\">");
-    meshResult.append("<elements>");
-
-    meshResult.append("</elements>");
-    meshResult.append("</NetworkMesh>");*/
-
-    ///////
-
     QTextStream networkOut(&networkFile);
     networkOut << networkResult;
 
     QTextStream layoutOut(&layoutFile);
     layoutOut << layoutResult;
 
-    //QTextStream meshOut(meshFile);
-    //meshOut << meshResult;
-
     QFileInfo fileInfo(fileName);
     QString wDir = fileInfo.path();
 
-    IOout << "IO::saveNetwork wDir= " << wDir << endl;
-
-    emit curFileName(fileName,wDir);
+    emit curFNameAndWDir(fileName,wDir);
+    return true;
 }
 
 void InputOutput::saveBC(const QString &fileName, QString BCXML)

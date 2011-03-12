@@ -229,7 +229,7 @@ void EditorArea::clear()
     meshElsType.clear();
     meshId2GraphId.clear();
     meshElToBeHigh = -1;
-    workspace->clear();
+    //workspace->clear();
 }
 
 void EditorArea::homeView()

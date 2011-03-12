@@ -61,10 +61,10 @@ EditorArea* MainWindow::getEditorArea()
     return editorArea;
 }
 
-void MainWindow::initNew()
-{
-    emit initNewCase();
-}
+//void MainWindow::initNewCase()
+//{
+//   clear();
+//}
 
 void MainWindow::insertDataCollectorToDock(DataCollector* theDataCollector, QPoint elementRequest)
 {
@@ -263,16 +263,16 @@ void MainWindow::createActions()
     newNetworkAct = new QAction(QIcon(":/images/new.png"), tr("&New Network"), this);
     newNetworkAct->setShortcuts(QKeySequence::New);
     newNetworkAct->setStatusTip(tr("Create a new network"));
-    connect(newNetworkAct, SIGNAL(triggered()), this, SLOT(newNetwork()));
+    connect(newNetworkAct, SIGNAL(triggered()), this, SIGNAL(newNetwork()));
 
     openNetworkAct = new QAction(QIcon(":/images/openNet.png"), tr("&Open Network"), this);
     openNetworkAct->setShortcuts(QKeySequence::Open);
-    openNetworkAct->setStatusTip(tr("Open an existing network"));
-    connect(openNetworkAct, SIGNAL(triggered()), this, SLOT(openNetwork()));
+    openNetworkAct->setStatusTip(tr("Open a network saved by ARCH Network Editor"));
+    connect(openNetworkAct, SIGNAL(triggered()), this, SIGNAL(openNetwork()));
 
     importNetworkAct = new QAction(QIcon(":/images/importNet.png"), tr("&Import Network"), this);
-    importNetworkAct->setStatusTip(tr("Import an existing network"));
-    connect(importNetworkAct, SIGNAL(triggered()), this, SLOT(importNetwork()));
+    importNetworkAct->setStatusTip(tr("Import a network"));
+    connect(importNetworkAct, SIGNAL(triggered()), this, SIGNAL(importNetwork()));
 
     importMeshAct = new QAction(QIcon(":/images/importMesh.png"), tr("Import Mesh"), this);
     importMeshAct->setStatusTip(tr("Import an existing mesh"));
@@ -281,12 +281,12 @@ void MainWindow::createActions()
     saveAct = new QAction(QIcon(":/images/save.png"), tr("&Save File"), this);
     saveAct->setShortcut(tr("Ctrl+S"));
     saveAct->setStatusTip(tr("Save the netwrok"));
-    connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
+    connect(saveAct, SIGNAL(triggered()), this, SIGNAL(save()));
 
     saveAsAct = new QAction(tr("Save &As..."), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     saveAsAct->setStatusTip(tr("Save the network under a new name"));
-    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+    connect(saveAsAct, SIGNAL(triggered()), this, SIGNAL(save()));
 
     exitAct = new QAction(tr("Exit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
@@ -316,11 +316,11 @@ void MainWindow::createActions()
 
     customizeAct = new QAction(QIcon(":/images/custom.png"), tr("Personalize graph information"), this);
     customizeAct->setStatusTip(tr("Personalize graph information"));
-    connect(customizeAct, SIGNAL(triggered()), this, SLOT(customizePressed()));
+    connect(customizeAct, SIGNAL(triggered()), this, SIGNAL(goCustomize()));
 
     simulateAct = new QAction(QIcon(":/images/simulation.png"), tr("Simulate"), this);
     simulateAct->setStatusTip(tr("Launch the simulation"));
-    connect(simulateAct, SIGNAL(triggered()), this, SLOT(simulatePressed()));
+    connect(simulateAct, SIGNAL(triggered()), this, SIGNAL(goSimulate()));
 
     importBCAct = new QAction(QIcon(":/images/importBC.png"), tr("Import BC"), this);
     importBCAct->setStatusTip(tr("Import Boundary Conditions"));
@@ -364,7 +364,7 @@ void MainWindow::createActions()
 
     meshAct = new QAction(QIcon(":/images/mesh.png"), tr("Mesh the network"), this);
     meshAct->setStatusTip(tr("Create the mesh for the network"));
-    connect(meshAct, SIGNAL(triggered()), this, SLOT(meshPressed()));
+    connect(meshAct, SIGNAL(triggered()), this, SIGNAL(goMesh()));
 
     defaultMeshAct = new QAction(QIcon(":/images/defaultMesh.png"), tr("Apply default mesh"), this);
     defaultMeshAct->setShortcut(tr("Ctrl+shift+D"));
@@ -625,57 +625,56 @@ void MainWindow::writeSettings()
     settings.setValue("operationToolBarPosition", toolBarArea(operationToolBar));
 }
 
-bool MainWindow::maybeSave()
-{
-    if (isWindowModified()) {
-        QMessageBox::StandardButton ret;
-        ret = QMessageBox::warning(this, tr("ARCHNetworkEditor"),
-                                   tr("The network has been modified.\n"
-                                      "Do you want to save the changes?"),
-                                   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        if (ret == QMessageBox::Save) {
-            return save();
-        } else if (ret == QMessageBox::Cancel) {
-            return false;
-        }
-    }
-    return true;
-}
+//bool MainWindow::maybeSave()
+//{
+//    if (isWindowModified()) {
+//        QMessageBox::StandardButton ret;
+//        ret = QMessageBox::warning(this, tr("ARCHNetworkEditor"),
+//                                   tr("The network has been modified.\n"
+//                                      "Do you want to save the changes?"),
+//                                   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+//        if (ret == QMessageBox::Save) {
+//            //return save();////
+//            return true;
+//        } else if (ret == QMessageBox::Cancel) {
+//            return false;
+//        }
+//    }
+//    return true;
+//}
 
-void MainWindow::loadNetwork()
-{
-    clear();
-    emit initNewCase();
-    emit loadGraphFromLayout();
-}
+//void MainWindow::loadNetwork()
+//{
+//    clear();
+//    //emit initNewCase();
+//    emit loadGraphFromLayout();
+//}
 
-void MainWindow::loadNetWithoutLayout()
-{
-    clear();
-    emit initNewCase();
-    emit loadGraphFromGraph();
-}
+//void MainWindow::loadNetWithoutLayout()
+//{
+//    clear();
+//    //emit initNewCase();
+//    emit loadGraphFromGraph();
+//}
 
 void MainWindow::loadMesh()
 {
     emit meshToBeLoaded();
 }
 
-bool MainWindow::saveFile(const QString& fileName)
-{
-    emit saveNetwork(fileName);
+//bool MainWindow::saveFile()
+//{
+//    emit saveNetwork();
 
-    curFile = fileName;
+//    curFile = fileName;
 
-    setWindowModified(false);
-    return true;
-}
+//    setWindowModified(false);
+//    return true;
+//}
 
 void MainWindow::setCurrentFile(const QString& fileName)
 {
     //curFile = fileName;
-
-    mainout << "MW::setCurrentFile fileName= " << fileName << endl;
     setWindowModified(false);
 
     QString shownName = fileName;
@@ -685,34 +684,36 @@ void MainWindow::setCurrentFile(const QString& fileName)
     setWindowFilePath(shownName);
 }
 
-QString MainWindow::strippedName(const QString& fullFileName)
-{
-    return QFileInfo(fullFileName).fileName();
-}
+//QString MainWindow::strippedName(const QString& fullFileName)
+//{
+//    return QFileInfo(fullFileName).fileName();
+//}
 
-void MainWindow::newNetwork()
-{
-    if (maybeSave()) {
-        emit currentFileAndWDir(QString(), QString());
-        setCurrentFile("");
-        clear();
-        emit initNewCase();
-    }
-}
+//void MainWindow::newNet()
+//{
 
-void MainWindow::openNetwork()
-{
-    if (maybeSave()) {
-        loadNetwork();
-    }
-}
 
-void MainWindow::importNetwork()
-{
-    if (maybeSave()) {
-        loadNetWithoutLayout();
-    }
-}
+    //if (maybeSave()) {
+        //emit currentFileAndWDir(QString(), QString());
+        //setCurrentFile("");
+        //clear();
+        //emit initNewCase();
+    //}
+//}
+
+//void MainWindow::openNetwork()
+//{
+//    if (maybeSave()) {
+//        loadNetwork();
+//    }
+//}
+
+//void MainWindow::importNetwork()
+//{
+//    if (maybeSave()) {
+//        loadNetWithoutLayout();
+//    }
+//}
 
 void MainWindow::importMesh()
 {
@@ -727,49 +728,46 @@ void MainWindow::importMesh()
     loadMesh();
 }
 
-void MainWindow::meshPressed()
-{
-    emit meshToBeGenerated(curFile);
-}
+//void MainWindow::customizePressed()
+//{
+//    emit graphToBeCustomized(curFile);
+//}
 
-void MainWindow::customizePressed()
-{
-    emit graphToBeCustomized(curFile);
-}
-
-bool MainWindow::save()
-{
-    if (curFile.isEmpty()) {
-        return saveAs();
-    } else {
-        return saveFile(curFile);
-    }
-}
+//bool MainWindow::save()
+//{
+//    if (curFile.isEmpty()) {
+//        return saveAs();
+//    } else {
+//        return saveFile(curFile);
+//    }
+//}
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-    if (maybeSave()) {
-        writeSettings();
-        event->accept();
-    } else {
-        event->ignore();
-    }
+    emit closeEventSignal(event);
+
+//    if (maybeSave()) {
+//        writeSettings();
+//        event->accept();
+//    } else {
+//        event->ignore();
+//    }
 }
 
-bool MainWindow::saveAs()
-{
-    QString fileName = QFileDialog::getSaveFileName(this);
-    if (fileName.isEmpty()) {
-        return false;
-    }
+//bool MainWindow::saveAs()
+//{
+//    QString fileName = QFileDialog::getSaveFileName(this);
+//    if (fileName.isEmpty()) {
+//        return false;
+//    }
 
-    return saveFile(fileName);
-}
+//    return saveFile(fileName);
+//}
 
-void MainWindow::simulatePressed()
-{
-    emit graphToBeSimulated(curFile);
-}
+//void MainWindow::simulatePressed()
+//{
+//    emit graphToBeSimulated(curFile);
+//}
 
 void MainWindow::about()
 {
@@ -849,10 +847,10 @@ void MainWindow::updateMainWindow()
     }
 }
 
-QString MainWindow::getFileName()
-{
-    return curFile;
-}
+//QString MainWindow::getFileName()
+//{
+//    return curFile;
+//}
 
 void MainWindow::clear()
 {
@@ -862,7 +860,6 @@ void MainWindow::clear()
     hideResultsDock();
     dataCollectorList.clear();
     resultsViewList.clear();
-    editorArea->clear();
 }
 
 void MainWindow::showStatusBarMessage(QString theMessage)
