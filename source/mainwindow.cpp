@@ -276,7 +276,7 @@ void MainWindow::createActions()
 
     importMeshAct = new QAction(QIcon(":/images/importMesh.png"), tr("Import Mesh"), this);
     importMeshAct->setStatusTip(tr("Import an existing mesh"));
-    connect(importMeshAct, SIGNAL(triggered()), this, SLOT(importMesh()));
+    connect(importMeshAct, SIGNAL(triggered()), this, SIGNAL(importMesh()));
 
     saveAct = new QAction(QIcon(":/images/save.png"), tr("&Save File"), this);
     saveAct->setShortcut(tr("Ctrl+S"));
@@ -310,10 +310,6 @@ void MainWindow::createActions()
     BCAct->setStatusTip(tr("Set Boundary Conditions"));
     connect(BCAct, SIGNAL(triggered()), this, SIGNAL(BCPressed()));
 
-    /*SPAct = new QAction(QIcon(":/images/SP.png"), tr("Set Simulation Parameters"), this);
-    SPAct->setStatusTip(tr("Set Simulation Parameters"));
-    connect(SPAct, SIGNAL(triggered()), this, SIGNAL(SPPressed()));*/
-
     customizeAct = new QAction(QIcon(":/images/custom.png"), tr("Personalize graph information"), this);
     customizeAct->setStatusTip(tr("Personalize graph information"));
     connect(customizeAct, SIGNAL(triggered()), this, SIGNAL(goCustomize()));
@@ -325,14 +321,6 @@ void MainWindow::createActions()
     importBCAct = new QAction(QIcon(":/images/importBC.png"), tr("Import BC"), this);
     importBCAct->setStatusTip(tr("Import Boundary Conditions"));
     connect(importBCAct, SIGNAL(triggered()), this, SIGNAL(importBCPressed()));
-
-    /*importSPAct = new QAction(QIcon(":/images/importSP.png"), tr("Import SP"), this);
-    importSPAct->setStatusTip(tr("Import Simulation Parameters"));
-    connect(importSPAct, SIGNAL(triggered()), this, SIGNAL(importSPPressed()));*/
-
-    /*importPatientInfoAct = new QAction(QIcon(":/images/importPatientInfo.png"), tr("Import Patient Info"), this);
-    importPatientInfoAct->setStatusTip(tr("Import Patient Info"));
-    connect(importPatientInfoAct, SIGNAL(triggered()), this, SIGNAL(importPatientInfoPressed()));*/
     /////
 
     addSegmentAct = new QAction(QIcon(":/images/addSegment.png"), tr("&Add Segment"), this);
@@ -657,10 +645,10 @@ void MainWindow::writeSettings()
 //    emit loadGraphFromGraph();
 //}
 
-void MainWindow::loadMesh()
-{
-    emit meshToBeLoaded();
-}
+//void MainWindow::loadMesh()
+//{
+//    emit meshToBeLoaded();
+//}
 
 //bool MainWindow::saveFile()
 //{
@@ -715,18 +703,18 @@ void MainWindow::setCurrentFile(const QString& fileName)
 //    }
 //}
 
-void MainWindow::importMesh()
-{
-    if (!editorArea->getWorkspace()->dataInGraph()) {
-        QMessageBox msgBox;
-        msgBox.setText("You need to have a network\n"
-                       "before importing a mesh.");
-        msgBox.exec();
-        return;
-    }
+//void MainWindow::importMesh()
+//{
+//    if (!editorArea->getWorkspace()->dataInGraph()) {
+//        QMessageBox msgBox;
+//        msgBox.setText("You need to have a network\n"
+//                       "before importing a mesh.");
+//        msgBox.exec();
+//        return;
+//    }
 
-    loadMesh();
-}
+//    loadMesh();
+//}
 
 //void MainWindow::customizePressed()
 //{

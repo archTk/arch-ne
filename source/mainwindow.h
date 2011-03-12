@@ -85,6 +85,7 @@ signals:
     void graphToBeSimulated(const QString& fileName);
     void homeViewPressed();
     void importBCPressed();
+    void importMesh();
     void importNetwork();
     //void importSPPressed();
     void infoPressed();
@@ -123,7 +124,7 @@ private slots:
     void documentWasModified();
     void elementsBeenHit(QVector<QPoint> hitEls);
     //void importNetwork();
-    void importMesh();
+    //void importMesh();
     void meshElsBeenHit(QVector<QPoint> hitMeshEls);
     //void meshPressed();
     //void newNetwork();

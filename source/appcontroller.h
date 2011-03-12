@@ -61,13 +61,13 @@ public slots:
     void dockClosed();
     void errorFromExternal(QProcess::ProcessError);
     void generateMesh();
+    void goMeshing();
+    void goCustomizing();
     void graphHasBeenCustomized();
     void importBC();
+    void importMesh();
     void importNetwork();
     void initNewCase();
-    //void importPatientInfo();
-    //void importSP();
-    void loadMesh();
     void meshHasBeenGenerated();
     void newNetwork();
     void openNetwork();
@@ -78,11 +78,8 @@ public slots:
     void showResults(QPoint elementRequest);
     void simulateGraph();
     void simulationHasBeenPerformed();
-    //void SPPressed();
 
 private slots:
-    void goMeshing();
-    void goCustomizing();
 
 private:
     void clear();

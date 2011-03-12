@@ -97,9 +97,10 @@ bool InputOutput::loadGraphFromLayout(Graph *graph, GraphLayout *graphLayout, Gr
     loadLayout(layoutDoc, graphLayout);
 
     QFileInfo fileInfo(temp);
+    QString fName = fileInfo.fileName();
     QString wDir = fileInfo.path();
 
-    emit curFNameAndWDir(temp, wDir);
+    emit curFNameAndWDir(fName, wDir);
     return true;
 }
 
@@ -161,9 +162,10 @@ bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, Gra
     temp.remove(".xml");
 
     QFileInfo fileInfo(temp);
+    QString fName = fileInfo.fileName();
     QString wDir = fileInfo.path();
 
-    emit curFNameAndWDir(temp, wDir);
+    emit curFNameAndWDir(fName, wDir);
 
     return true;
 }
@@ -325,9 +327,10 @@ void InputOutput::importBC(NetworkProperties *networkProperties)
     networkProperties->setSPXML(SPXML);
 }*/
 
-void InputOutput::saveGraph(const QString &fileName, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges)
+void InputOutput::saveGraph(const QString& fName, const QString& wDir, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges)
 {
-    QString graphName(fileName);
+    QString graphName(fName);
+    graphName.prepend(wDir + "/");
     graphName.append("_graph.xml");
 
     QString networkResult;
@@ -384,7 +387,7 @@ void InputOutput::saveGraph(const QString &fileName, GraphProperties* graphPrope
 
     networkFile.close();
 
-    emit graphSaved(graphName);
+    emit graphSaved();
 }
 
 void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* graphMesh)
@@ -591,14 +594,9 @@ bool InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
     return true;
 }
 
-void InputOutput::saveBC(const QString &fileName, QString BCXML)
+void InputOutput::saveBC(const QString &fName, const QString &wDir, QString BCXML)
 {
-    QFileInfo fileInfo(fileName);
-    QString workDir = fileInfo.filePath() + "/";
-    QString f = fileInfo.fileName();
-    QString BC = workDir + "BC_" + f;
-
-    IOout << "IO::saveBC file= " << BC << endl;
+    QString BC = wDir + "/BC_" + fName + "_graph.xml";
 
     QFile BCFile(BC);
     if (!BCFile.open(QFile::WriteOnly | QFile::Text)) {

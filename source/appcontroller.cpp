@@ -73,11 +73,9 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(goMesh()), this, SLOT(generateMesh()));
     connect(mainWindow, SIGNAL(goSimulate()), this, SLOT(simulateGraph()));
     connect(mainWindow, SIGNAL(importBCPressed()), this, SLOT(importBC()));
+    connect(mainWindow, SIGNAL(importMesh()), this, SLOT(importMesh()));
     connect(mainWindow, SIGNAL(importNetwork()), this, SLOT(importNetwork()));
-    //connect(mainWindow, SIGNAL(importPatientInfoPressed()), this, SLOT(importPatientInfo()));
-    //connect(mainWindow, SIGNAL(importSPPressed()), this, SLOT(importSP()));
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
-    //connect(mainWindow, SIGNAL(initNewCase()), this, SLOT(initNewCase()));
     connect(mainWindow, SIGNAL(newNetwork()), this, SLOT(newNetwork()));
     connect(mainWindow, SIGNAL(openNetwork()), this, SLOT(openNetwork()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
@@ -92,18 +90,12 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(showMeshPressed()), workspace, SLOT(showMesh()));
     connect(mainWindow, SIGNAL(snapToGridPressed()), workspace, SLOT(snapToGrid()));
     connect(mainWindow, SIGNAL(splitSegmentPressed()), workspace, SLOT(splitSegment()));
-    //connect(mainWindow, SIGNAL(SPPressed()), this, SLOT(SPPressed()));
     connect(mainWindow, SIGNAL(superEdgePressed()), workspace, SLOT(superEdge()));
     connect(mainWindow, SIGNAL(translatePressed()), workspace, SLOT(translate()));
     connect(mainWindow, SIGNAL(undoPressed()), workspace, SLOT(undo()));
     connect(mainWindow, SIGNAL(unravelNetPressed()), workspace, SLOT(netToBeUnravelled()));
     connect(mainWindow, SIGNAL(zoomInPressed()), editorArea, SLOT(zoomIn()));
     connect(mainWindow, SIGNAL(zoomOutPressed()), editorArea, SLOT(zoomOut()));
-
-    //connect(mainWindow, SIGNAL(loadGraphFromLayout()), this, SLOT(loadGraphFromLayout()));
-    //connect(mainWindow, SIGNAL(loadGraphFromGraph()), this, SLOT(loadGraphFromGraph()));
-    connect(mainWindow, SIGNAL(meshToBeLoaded()), this, SLOT(loadMesh()));
-
 
     connect(workspace, SIGNAL(contentsChanged()), mainWindow, SLOT(documentWasModified()));
     connect(workspace, SIGNAL(dataRequest(QPoint)), this, SLOT(dataRequest(QPoint)));
@@ -135,12 +127,7 @@ void AppController::createConnections()
 
 void AppController::initNewCase()
 {
-    //InputOutput* inputOutput = new InputOutput();
-    //QString defaultBCXML = inputOutput->loadDefaultBC();
-    QString defaultBCXML = QString();
-    mainWindow->clear();
-    editorArea->clear();
-    workspace->clear();
+    clear();
 }
 
 bool AppController::save()
@@ -155,8 +142,6 @@ bool AppController::save()
 
 bool AppController::saveNetwork()
 {
-    appout << "AppC::saveNet" << endl;
-
     if (fName.isEmpty()) {
         return saveAs();
     }
@@ -289,8 +274,16 @@ void AppController::loadGraphFromGraph()
     emit restoreCurs();
 }
 
-void AppController::loadMesh()
+void AppController::importMesh()
 {
+    if (workspace->dataInGraph()) {
+        QMessageBox msgBox;
+        msgBox.setText("You need to have a network\n"
+                       "before importing a mesh.");
+        msgBox.exec();
+        return;
+    }
+
     emit setCurs();
 
     InputOutput* inputOutput = new InputOutput();
@@ -307,25 +300,10 @@ void AppController::importBC()
 {
     InputOutput* inputOutput = new InputOutput();
     inputOutput->importBC(workspace->getNetworkProperties());
+    inputOutput->saveBC(fName, wDir, workspace->getBCXML());
 
     emit messageToBeDisplayed("Boundary Conditions have been imported");
 }
-
-/*void AppController::importPatientInfo()
-{
-    InputOutput* inputOutput = new InputOutput();
-    inputOutput->importPatientInfo(workspace->getNetworkProperties());
-
-    emit messageToBeDisplayed("Patient Info have been imported");
-}*/
-
-/*void AppController::importSP()
-{
-    InputOutput* inputOutput = new InputOutput();
-    inputOutput->importSP(workspace->getNetworkProperties());
-
-    emit messageToBeDisplayed("Simulation Parameters have been imported");
-}*/
 
 void AppController::generateMesh()
 {
@@ -341,7 +319,7 @@ void AppController::generateMesh()
     InputOutput* inputOutput = new InputOutput();
     connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goMeshing(QString)));
 
-    inputOutput->saveGraph(fName, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
+    inputOutput->saveGraph(fName, wDir, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
 }
 
 void AppController::goMeshing()
@@ -478,9 +456,9 @@ void AppController::customizeGraph()
     QVector<int> edges = workspace->getEdgesIds();
 
     InputOutput* inputOutput = new InputOutput();
-    connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goCustomizing(QString)));
+    connect(inputOutput, SIGNAL(graphSaved()), this, SLOT(goCustomizing()));
 
-    inputOutput->saveGraph(fName, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
+    inputOutput->saveGraph(fName, wDir, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
 }
 
 void AppController::goCustomizing()
@@ -493,20 +471,15 @@ void AppController::goCustomizing()
         return;
     }
 
-    QString scriptPath;
-    scriptPath = pyNSPath + "/ModelAdaptor_Script.py";
-    QFileInfo fileInfo(fName);
-    //QString workDir = fileInfo.path() + "/";
-    QString workDir = fileInfo.path();
-    QString xmlNet = fileInfo.fileName();
-    QString BC = xmlNet;
+    QString scriptPath = pyNSPath + "/ModelAdaptor_Script.py";
+    QString xmlNet = fName + "_graph.xml";
+    QString BC = fName + "_graph.xml";
     BC.prepend("BC_");
-    BC.remove("_graph");
 
-    appout << "AppC:goCustom workDir= " << workDir << endl << "xmlNet= " << xmlNet << endl << "xmlBound= " << BC << endl;
+    appout << "AppC::goCustom xmlNet= " << xmlNet << endl << "wDir= " << wDir << endl << "BC= " << BC << endl;
 
     QStringList arguments;
-    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << xmlNet << "--xmlBound" << BC;
+    arguments << scriptPath << "--wdir" << wDir << "--xmlNet" << xmlNet << "--xmlBound" << BC;
 
     pyNS = new QProcess(this);
 
@@ -756,7 +729,7 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
     } else if (temp.x() == 3) { // Boundary Conditions.
         workspace->setBCXML(elementData);
         InputOutput* inputOutput = new InputOutput();
-        inputOutput->saveBC(fName,elementData);
+        inputOutput->saveBC(fName, wDir, elementData);
         //QDomNodeList patDataList = doc.elementsByTagName("patient_data");
         //QDomNode patDataNode = patDataList.at(0);
         //QDomElement idpat = patDataNode.firstChildElement("idpat");
