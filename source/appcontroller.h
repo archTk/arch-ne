@@ -51,7 +51,7 @@ signals:
     void updateSignal();
 
 public slots:
-    //void awake();
+    void abortSimulation();
     void BCPressed();
     void caseInfoPressed();
     void customizeGraph();

@@ -524,20 +524,14 @@ void AppController::simulateGraph()
     pyNS = new QProcess(this);
 
     infoDialog = new InfoDialog;
+    connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
     infoDialog->initWithMessage(tr("Simulation is running..."));;
     infoDialog->exec();
-
-    //QTimer::singleShot(2000, this, SLOT(awake()));
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     pyNS->start(pythonPath, arguments);
 }
-
-//void AppController::awake()
-//{
-//    simulationHasBeenPerformed();
-//}
 
 void AppController::simulationHasBeenPerformed()
 {
@@ -545,6 +539,11 @@ void AppController::simulationHasBeenPerformed()
 
     emit restoreCurs();
     emit messageToBeDisplayed(tr("Simulation has been completed"));
+}
+
+void AppController::abortSimulation()
+{
+    appout << "abortSmulation Pressed" << endl;
 }
 
 void AppController::setFNameAndWDir(QString theFName, QString theWDir)

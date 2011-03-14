@@ -35,6 +35,9 @@ public:
 
     void initWithMessage(QString message);
 
+signals:
+    void abortSimulation();
+
 private:
     Ui::InfoDialog *ui;
 
