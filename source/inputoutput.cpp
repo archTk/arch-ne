@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2011 Mario Negri Institute & Orobix Srl
+//   Copyright 2011 Orobix Srl & Mario Negri Institute
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -392,9 +392,6 @@ void InputOutput::saveGraph(const QString& fName, const QString& wDir, GraphProp
 
 void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* graphMesh)
 {
-    IOout << "IO::loadMeshAfterGenererating" << endl;
-    IOout << "fileName= " << fileName << endl;
-
     QFile meshInFile(fileName);
 
     meshInFile.open( QIODevice::ReadWrite);

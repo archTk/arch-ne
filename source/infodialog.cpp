@@ -16,39 +16,35 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef QUERYEXECUTER_H
-#define QUERYEXECUTER_H
+#include "infodialog.h"
+#include "ui_infodialog.h"
 
-#include <QWidget>
-#include <QMap>
+#include <iostream>
+#include <QTextStream>
+using namespace std;
 
-class QString;
+QTextStream infoDout(stdout);
 
-class QueryExecuter : public QWidget
+InfoDialog::InfoDialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::InfoDialog)
 {
-    Q_OBJECT
+    ui->setupUi(this);
+    ui->abortButton->setCheckable(false);
+}
 
-public:
-    QueryExecuter(QWidget *parent=0);
-    void setQueryFile(const QString queryFileName);
-    void setQueryString(const QString theQueryString);
-    void setDocFile(const QString docFileName);
-    void addVariable(const QString varName, const QString varValue);
-    void evaluateQuery();
-    void useQueryFromFile();
-    void useQueryFromString();
-    QString getQueryResult();
+InfoDialog::~InfoDialog()
+{
+    delete ui;
+}
 
-public slots:
+void InfoDialog::initWithMessage(QString message)
+{
+    ui->infoLabel->setText(message);
+}
 
-signals:
-
-private:
-    QMap<QString, QString > queryFiles;
-    QMap<QString, QString > queryVariables;
-    QString queryResult;
-    QString queryString;
-    bool queryFromFile;
-};
-
-#endif
+void InfoDialog::abortButtonReleased()
+{
+    infoDout << "infoDialog::abortButtonReleased" << endl;
+    done(1);
+}

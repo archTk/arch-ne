@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2011 Mario Negri Institute & Orobix Srl
+//   Copyright 2011 Orobix Srl & Mario Negri Institute
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 #include "mainwindow.h"
 #include "workspace.h"
 #include "editorarea.h"
+#include "infodialog.h"
 #include "inputoutput.h"
 #include "DataCollector/datacollector.h"
 #include "resultsview.h"
@@ -276,7 +277,7 @@ void AppController::loadGraphFromGraph()
 
 void AppController::importMesh()
 {
-    if (workspace->dataInGraph()) {
+    if (!workspace->dataInGraph()) {
         QMessageBox msgBox;
         msgBox.setText("You need to have a network\n"
                        "before importing a mesh.");
@@ -317,7 +318,7 @@ void AppController::generateMesh()
     QVector<int> edges = workspace->getEdgesIds();
 
     InputOutput* inputOutput = new InputOutput();
-    connect(inputOutput, SIGNAL(graphSaved(QString)), this, SLOT(goMeshing(QString)));
+    connect(inputOutput, SIGNAL(graphSaved()), this, SLOT(goMeshing()));
 
     inputOutput->saveGraph(fName, wDir, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
 }
@@ -335,25 +336,16 @@ void AppController::goMeshing()
     QString scriptPath;
     scriptPath = pyNSPath + "/MeshGenerator_Script.py";
     QString idPat = workspace->getIdPat();
-    QFileInfo fileInfo(fName);
-    QString workDir = fileInfo.path();
-
-    QString xmlSpecificNet = idPat + "_" + fileInfo.fileName();
-
-    meshOut = xmlSpecificNet;
-    meshOut.remove("_graph.xml");
-    meshOut.append("_mesh.xml");
+    QString xmlSpecificNet = idPat + "_" + fName + "_graph.xml";
+    meshOut = wDir + "/" + idPat + "_" + fName + "_mesh.xml";
 
     QStringList arguments;
 
-    appout << "script " << scriptPath <<  " --wdir " << workDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
+    appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
 
-    //arguments << scriptPath << "--wdir" << workDir << "--xlmNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
-    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
+    arguments << scriptPath << "--wdir" << wDir << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 
     pyNS = new QProcess(this);
-    //meshOut.prepend(workDir + "/"); // To let it be used in meshHasBeenGenerated - it is passed to inputOutput
-                                    // and it needs the workDir + "/" before the file name.
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshHasBeenGenerated()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
@@ -362,7 +354,6 @@ void AppController::goMeshing()
 
 void AppController::meshHasBeenGenerated()
 {
-    appout << "AppC::meshHasBeenGenerated" << endl;
     InputOutput* inputOutput = new InputOutput();
     inputOutput->loadMeshAfterGenerating(meshOut, workspace->getGraphMesh());
     emit updateSignal();
@@ -372,6 +363,8 @@ void AppController::meshHasBeenGenerated()
 
 void AppController::errorFromExternal(QProcess::ProcessError)
 {
+    infoDialog->done(1);
+
     int err = pyNS->error();
     appout << "error from external process: " << err << endl;
 }
@@ -476,8 +469,6 @@ void AppController::goCustomizing()
     QString BC = fName + "_graph.xml";
     BC.prepend("BC_");
 
-    appout << "AppC::goCustom xmlNet= " << xmlNet << endl << "wDir= " << wDir << endl << "BC= " << BC << endl;
-
     QStringList arguments;
     arguments << scriptPath << "--wdir" << wDir << "--xmlNet" << xmlNet << "--xmlBound" << BC;
 
@@ -511,38 +502,47 @@ void AppController::simulateGraph()
 
     emit setCurs();
 
-    QFileInfo fileInfo(fName);
-    QString workDir = fileInfo.path();
-    QString file = fileInfo.fileName();
+    //QFileInfo fileInfo(fName);
+    //QString workDir = fileInfo.path();
+    //QString file = fileInfo.fileName();
 
     QString idPat;
     idPat = workspace->getIdPat();
-    imagesDir = workDir + "/Images/";
 
-    QString xmlOut = idPat + file + "_results.xml";
-    QString specificNet = idPat + "_" + file + "_graph.xml";
-    QString specificBC = idPat + "_BC_" + file + "_graph.xml";
+    QString xmlOut = idPat + "_" + fName + "_results.xml";
+    QString specificNet = idPat + "_" + fName + "_graph.xml";
+    QString specificBC = idPat + "_BC_" + fName + "_graph.xml";
 
     QString scriptPath;
     scriptPath = pyNSPath + "/Solver_Script.py";
 
     QStringList arguments;
 
-    arguments << scriptPath << "--wdir" << workDir << "--xmlNet" << specificNet <<
+    arguments << scriptPath << "--wdir" << wDir << "--xmlNet" << specificNet <<
             "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
 
-    //appout << "AppC::simulateG fileName= " << fileName << endl << "file= " << file << endl << "workDir= " << workDir << endl <<
-    //        "specificNet= " << specificNet << endl << "bound= " << specificBC << endl <<"out= " << xmlOut;
-
     pyNS = new QProcess(this);
+
+    infoDialog = new InfoDialog;
+    infoDialog->initWithMessage(tr("Simulation is running..."));;
+    infoDialog->exec();
+
+    //QTimer::singleShot(2000, this, SLOT(awake()));
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     pyNS->start(pythonPath, arguments);
 }
 
+//void AppController::awake()
+//{
+//    simulationHasBeenPerformed();
+//}
+
 void AppController::simulationHasBeenPerformed()
 {
+    infoDialog->done(0);
+
     emit restoreCurs();
     emit messageToBeDisplayed(tr("Simulation has been completed"));
 }
@@ -571,7 +571,6 @@ void AppController::clear()
     dataCollectorList.clear();
     incrementalDataRequest = 0;
     meshOut.clear();
-    imagesDir.clear();
     fName.clear();
     wDir.clear();
 }
@@ -606,22 +605,26 @@ void AppController::showResults(QPoint elementRequest)
     cookie.setNum(requestKey);
 
     QString pressureImageName, flowImageName;
+    QString imagesDir = wDir + "/Images/";
 
-    /*
     if (elementRequest.x() == 1 ) {         // MeshElement corresponds to a node of the graph.
-        pressureImageName += imagesDir + workspace->getNodeName(elementRequest.y()) + "_pressure.png";
-        flowImageName += imagesDir + workspace->getNodeName(elementRequest.y()) + "_flow_png";
+        pressureImageName = imagesDir + elementRequest.y() + "_" + workspace->getNodeName(elementRequest.y()) + "_pressure.png";
+        flowImageName = imagesDir + elementRequest.y() + "_" + workspace->getNodeName(elementRequest.y()) + "_flow_png";
     } else if (elementRequest.x() == 2) {   // MeshElement correspond to a segment of an edge of the graph.
-        pressureImageName += imagesDir + workspace->getEdgeName(elementRequest.y()) + "_pressure";
-        flowImageName += imagesDir + workspace->getEdgeName(elementRequest.y()) + "_flow_png";
+        pressureImageName = imagesDir + elementRequest.y() + "_" + workspace->getEdgeName(elementRequest.y()) + "_pressure";
+        flowImageName = imagesDir + elementRequest.y() + "_" + workspace->getEdgeName(elementRequest.y()) + "_flow_png";
     }
-    */
+
+
+    appout << "AppC::showResults pressurePath= " << pressureImageName << endl;
+    appout << "element= " << elementRequest.x() << "-" << elementRequest.y() << endl;
+
 
     QPixmap pressureImage, flowImage;
-    //pressureImage.load(pressureImageName);
-    //flowImage.load(flowImageName);
-    pressureImage.load(":images/aorta_asc_1_pressure.png");
-    flowImage.load(":images/aorta_asc_1_flow.png");
+    pressureImage.load(pressureImageName);
+    flowImage.load(flowImageName);
+    //pressureImage.load(":images/aorta_asc_1_pressure.png");
+    //flowImage.load(":images/aorta_asc_1_flow.png");
 
     QString PMean = QString("100");
     QString FMean = QString("150");

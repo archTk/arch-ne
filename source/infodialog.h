@@ -16,39 +16,30 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef QUERYEXECUTER_H
-#define QUERYEXECUTER_H
+#ifndef INFODIALOG_H
+#define INFODIALOG_H
 
-#include <QWidget>
-#include <QMap>
+#include <QDialog>
 
-class QString;
+namespace Ui {
+    class InfoDialog;
+}
 
-class QueryExecuter : public QWidget
+class InfoDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    QueryExecuter(QWidget *parent=0);
-    void setQueryFile(const QString queryFileName);
-    void setQueryString(const QString theQueryString);
-    void setDocFile(const QString docFileName);
-    void addVariable(const QString varName, const QString varValue);
-    void evaluateQuery();
-    void useQueryFromFile();
-    void useQueryFromString();
-    QString getQueryResult();
+    explicit InfoDialog(QWidget *parent = 0);
+    ~InfoDialog();
 
-public slots:
-
-signals:
+    void initWithMessage(QString message);
 
 private:
-    QMap<QString, QString > queryFiles;
-    QMap<QString, QString > queryVariables;
-    QString queryResult;
-    QString queryString;
-    bool queryFromFile;
+    Ui::InfoDialog *ui;
+
+public slots:
+    void abortButtonReleased();
 };
 
-#endif
+#endif // INFODIALOG_H

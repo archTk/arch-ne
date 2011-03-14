@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2011 Mario Negri Institute & Orobix Srl
+//   Copyright 2011 Orobix Srl & Mario Negri Institute
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@
 #include <QMap>
 #include <QProcess>
 
+class InfoDialog;
 class MainWindow;
 class Workspace;
 class EditorArea;
@@ -50,6 +51,7 @@ signals:
     void updateSignal();
 
 public slots:
+    //void awake();
     void BCPressed();
     void caseInfoPressed();
     void customizeGraph();
@@ -97,6 +99,7 @@ private:
     MainWindow* mainWindow;
     Workspace* workspace;
     EditorArea* editorArea;
+    InfoDialog* infoDialog;
 
     QProcess* pyNS;
 
@@ -108,7 +111,7 @@ private:
     int incrementalResultsRequest;
 
     QString meshOut;
-    QString imagesDir;
+    //QString imagesDir;
 
     QString fName;  // File name.
     QString wDir;   // Working directory.
