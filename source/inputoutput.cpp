@@ -446,11 +446,11 @@ void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* gr
     meshInFile.close();
 }
 
-bool InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties,
+bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLayout* graphLayout, GraphProperties* graphProperties,
                               NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges)
 {
-    QString graphName(fileName);
-    QString layout(fileName);
+    QString graphName(wDir + "/" + fName);
+    QString layout(wDir + "/" + fName);
     graphName.append("_graph.xml");
     layout.append("_layout.xml");
 
@@ -584,10 +584,10 @@ bool InputOutput::saveNetwork(const QString& fileName, GraphLayout* graphLayout,
     QTextStream layoutOut(&layoutFile);
     layoutOut << layoutResult;
 
-    QFileInfo fileInfo(fileName);
-    QString wDir = fileInfo.path();
+    //QFileInfo fileInfo(fileName);
+    //QString wDir = fileInfo.path();
 
-    emit curFNameAndWDir(fileName,wDir);
+    //emit curFNameAndWDir(fileName,wDir);
     return true;
 }
 

@@ -42,7 +42,7 @@ public:
     void loadMesh(GraphMesh* graphMesh);
 
     void saveGraph(const QString& fileName, const QString& wDir, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
-    bool saveNetwork(const QString& fileName, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
+    bool saveNetwork(const QString& fileName, const QString& wDir, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
 
     void saveBC(const QString& fName, const QString& wDir, QString BCXML);
 
