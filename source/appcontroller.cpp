@@ -373,7 +373,7 @@ void AppController::BCPressed()
     XMLString = workspace->getBCXML();
 
     if (XMLString.isEmpty()) {
-        XMLString = "<boundary_condition/>";
+        XMLString = "<BoundaryConditionsGraph/>";
     }
 
     QVector<QString> hiddenItems;
@@ -549,8 +549,6 @@ void AppController::setFNameAndWDir(QString theFName, QString theWDir)
 
     fName = theFName;
     wDir = theWDir;
-
-    appout << "AppC::setFNameAndWDir fName= " << fName << " - wDir= " << wDir << endl;
 }
 
 void AppController::setPreferences()

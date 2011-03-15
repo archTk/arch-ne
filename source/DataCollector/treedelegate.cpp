@@ -1,18 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2011 Orobix Srl & Mario Negri Institute
+// Copyright 2011 Mario Negri Institute & Orobix Srl
 //
-//   Licensed under the Apache License, Version 2.0 (the "License");
-//   you may not use this file except in compliance with the License.
-//   You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//       http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
-//   Unless required by applicable law or agreed to in writing, software
-//   distributed under the License is distributed on an "AS IS" BASIS,
-//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//   See the License for the specific language governing permissions and
-//   limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -33,7 +33,7 @@ QWidget *TreeDelegate::createEditor(QWidget *parent,const QStyleOptionViewItem &
 {
     QStringList list;
     if (index.column()==1)
-        list.append(index.model()->data(index.model()->index(index.row(),4,index.parent())).toStringList());
+        list.append(index.model()->data(index.model()->index(index.row(),10,index.parent())).toStringList());
     else if (index.column()==8)
         list.append(index.model()->data(index.model()->index(index.row(),5,index.parent())).toStringList());
 
@@ -59,7 +59,7 @@ void TreeDelegate::setEditorData(QWidget *editor,const QModelIndex &index) const
 {
     QStringList list;
     if (index.column()==1)
-        list.append(index.model()->data(index.model()->index(index.row(),4,index.parent())).toStringList());
+        list.append(index.model()->data(index.model()->index(index.row(),10,index.parent())).toStringList());
     else if (index.column()==8)
         list.append(index.model()->data(index.model()->index(index.row(),5,index.parent())).toStringList());
 
@@ -77,7 +77,7 @@ void TreeDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,const
 {
     QStringList list;
     if (index.column()==1)
-        list.append(index.model()->data(index.model()->index(index.row(),4,index.parent())).toStringList());
+        list.append(index.model()->data(index.model()->index(index.row(),10,index.parent())).toStringList());
     else if (index.column()==8)
         list.append(index.model()->data(index.model()->index(index.row(),5,index.parent())).toStringList());
 

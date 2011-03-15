@@ -1,18 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2011 Orobix Srl & Mario Negri Institute
+// Copyright 2011 Mario Negri Institute & Orobix Srl
 //
-//   Licensed under the Apache License, Version 2.0 (the "License");
-//   you may not use this file except in compliance with the License.
-//   You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//       http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
-//   Unless required by applicable law or agreed to in writing, software
-//   distributed under the License is distributed on an "AS IS" BASIS,
-//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//   See the License for the specific language governing permissions and
-//   limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -21,7 +21,6 @@
 #include <QtXmlPatterns>
 
 #include "datacollector.h"
-#include "queryexecuter.h"
 #include "treemodel.h"
 #include "treedelegate.h"
 
@@ -96,6 +95,7 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     treeView->setColumnHidden(5,true);
     treeView->setColumnHidden(6,true);
     treeView->setColumnHidden(7,true);
+    treeView->setColumnHidden(10,true);
     treeView->header()->moveSection(8,0);
     treeView->header()->moveSection(9,0);
 
@@ -151,7 +151,7 @@ void DataCollector::setupData()
     QXmlQuery query;
     query.bindVariable("inputDocument", &sf);
     query.bindVariable("rootName", QVariant(rootName));
-    query.setQuery("declare variable $inputDocument external;\ndeclare variable $rootName external;\nlet $type := data(doc($inputDocument)//xs:complexType//xs:element[@name = $rootName]/@type)\nreturn string($type)");
+    query.setQuery("declare variable $inputDocument external;\ndeclare variable $rootName external;\nlet $type := data(doc($inputDocument)//xs:element[@name = $rootName]/@type)\nreturn string($type)");
     if (!query.isValid())
         return;
     QString result;
@@ -299,7 +299,8 @@ QStringList DataCollector::fixElementInfo(QStringList info)
     return fixedMembers;
 }
 
-int DataCollector::insertChild(bool isAttribute,bool required,QModelIndex index,QString rowFirstCol,QString type,QStringList members,QString value)
+int DataCollector::insertChild(bool isAttribute,bool required,QModelIndex index,QString rowFirstCol,
+                               QString type,QStringList members,QStringList enumeration,QString value)
 {
     QAbstractItemModel *model = treeView->model();
     if (model->columnCount(index) == 0) {
@@ -318,6 +319,7 @@ int DataCollector::insertChild(bool isAttribute,bool required,QModelIndex index,
     model->setData(model->index(iRow, 3, index), QVariant(type), Qt::EditRole);
     model->setData(model->index(iRow, 4, index), QVariant(members), Qt::EditRole);
     model->setData(model->index(iRow, 6, index), QVariant(required), Qt::EditRole);
+    model->setData(model->index(iRow, 10, index), QVariant(enumeration), Qt::EditRole);
     if (isAttribute){
         model->setData(model->index(iRow, 2, index), QVariant(isAttribute), Qt::EditRole);
     } else {
@@ -460,7 +462,18 @@ void DataCollector::setRequestSchemaPath(QString path)
 
 void DataCollector::setElementDom(QString theElementDom)
 {
-    requestDom = theElementDom;
+    QByteArray byteArray;
+    byteArray.append(theElementDom);
+    QBuffer buffer(&byteArray);
+    buffer.open(QIODevice::ReadOnly);
+    QXmlQuery query;
+    query.bindVariable("inputDocument", &buffer);
+    query.setQuery("declare variable $inputDocument external;\ndoc($inputDocument)/*");
+    if (!query.isValid())
+        return;
+    if (!query.evaluateTo(&requestDom))
+        return;
+    buffer.close();
 }
 
 void DataCollector::setElementCookie(QString theElementCookie)
@@ -585,7 +598,6 @@ void DataCollector::TreeToDom(QDomDocument *doc,QDomElement iDomElement,QModelIn
 void DataCollector::DomToTree(QDomElement iDomElement,QString iParentType,QModelIndex index,bool required)
 {
     QAbstractItemModel *model = treeView->model();
-
     QString childText = "";
 
     if(iDomElement.firstChild().isText())
@@ -594,18 +606,18 @@ void DataCollector::DomToTree(QDomElement iDomElement,QString iParentType,QModel
     QList<QStringList> iInfo = getElementInfo(iDomElement.tagName(),iParentType);
     QStringList anyMember = iInfo.at(2);
     anyMember << iInfo.at(3);
-    int iRow = insertChild(false,required,index,iDomElement.tagName(),iInfo.at(0).at(0),anyMember,childText);
+    int iRow = insertChild(false,required,index,iDomElement.tagName(),iInfo.at(0).at(0),
+                            anyMember,getEnumeration(iInfo.at(0).at(0)),childText);
     QDomNamedNodeMap attributeMap = iDomElement.attributes();
 
     if(!iInfo.at(1).isEmpty()){
         for (int i = 0; i < iInfo.at(1).count(); ++i) {
             QString iName = iInfo.at(1).at(i).split("=")[0];
             QString iType = iInfo.at(1).at(i).split("=")[1];
-            QStringList iMembers = getEnumeration(iType);
             QString iVal = "";
             if(!attributeMap.namedItem(iName).isNull())
-               iVal.append(attributeMap.namedItem(iName).nodeValue()); 
-            insertChild(true,true,model->index(iRow,0,index),iName,iType,iMembers,iVal);
+               iVal.append(attributeMap.namedItem(iName).nodeValue());
+            insertChild(true,true,model->index(iRow,0,index),iName,iType,QStringList(),getEnumeration(iType),iVal);
         }
     }
 
@@ -653,24 +665,25 @@ void DataCollector::setRequestSchema()
             file.close();
             cachedSchema = true;
     }
-
-    /*<TEMP>
-      QString isfound = cachedSchema ? "Found":"Not Found";
-      QMessageBox confirmationBox;
-      confirmationBox.setText("Cached Schema Path = "+QDir::tempPath()+"/"+fi.fileName()+"."+rootName+".dat");
-      confirmationBox.setInformativeText("Cached schema "+isfound);
-      confirmationBox.exec();
-      cachedSchema = false;
-    //</TEMP>*/
-
     if(!cachedSchema){
-       QueryExecuter *query = new QueryExecuter; 
-       query->setQueryFile(":xml/getSubSchema.xq");
-       query->setDocFile(requestSchemaPath);
-       query->addVariable("rootName",rootName);
-       query->addVariable("rootType",rootType);
-       query->evaluateQuery();
-       resultString.append(query->getQueryResult());
+       QXmlQuery query;
+       QFile sf(requestSchemaPath);
+       sf.open(QIODevice::ReadOnly);
+       QFile queryFile(":xml/getSubSchema.xq");
+       queryFile.open(QIODevice::ReadOnly);
+       query.bindVariable("inputDocument", &sf);
+       query.bindVariable("rootName", QVariant(rootName));
+       query.bindVariable("rootType", QVariant(rootType));
+       query.setQuery(QString::fromLatin1(queryFile.readAll()));
+       if (!query.isValid())
+           return;
+       QString result;
+       if (!query.evaluateTo(&result))
+           return;
+       sf.close();
+       queryFile.close();
+
+       resultString.append(result);
        QFile ofile(QDir::tempPath()+"/"+fi.fileName()+"."+rootName+".dat");
        if (ofile.open(QIODevice::WriteOnly)) {
            ofile.write(resultString);
