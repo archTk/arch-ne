@@ -378,6 +378,7 @@ void AppController::BCPressed()
 
     QVector<QString> hiddenItems;
     hiddenItems.clear();
+    hiddenItems << "idpat";
 
     QVector<QString> readOnlyItems;
     readOnlyItems.clear();
@@ -385,32 +386,7 @@ void AppController::BCPressed()
     QString XMLSchema(":XMLschema/boundary_conditions.xsd");
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
-
-    //InputOutput* inputOutput = new InputOutput();
-    //inputOutput->saveBC(mainWindow->getFileName(), workspace->getBCXML());
 }
-
-/*void AppController::SPPressed()
-{
-    QPoint elementRequest(4, 0);
-    QString XMLString;
-    XMLString = workspace->getSPXML();
-    //XMLString = workspace->getBCXML();
-
-    if (XMLString.isEmpty()) {
-        XMLString = "<simulation_parameters/>";
-    }
-
-    QVector<QString> hiddenItems;
-    hiddenItems.clear();
-
-    QVector<QString> readOnlyItems;
-    readOnlyItems.clear();
-
-    QString XMLSchema(":XMLschema/boundary_conditions.xsd");
-
-    collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
-}*/
 
 void AppController::caseInfoPressed()
 {
@@ -499,10 +475,6 @@ void AppController::simulateGraph()
 
     emit setCurs();
 
-    //QFileInfo fileInfo(fName);
-    //QString workDir = fileInfo.path();
-    //QString file = fileInfo.fileName();
-
     QString idPat;
     idPat = workspace->getIdPat();
 
@@ -540,7 +512,9 @@ void AppController::simulationHasBeenPerformed()
 
 void AppController::abortSimulation()
 {
-    appout << "abortSmulation Pressed" << endl;
+    appout << "AppC::abortSmulation" << endl;
+    pyNS->kill();
+    infoDialog->done(1);
 }
 
 void AppController::setFNameAndWDir(QString theFName, QString theWDir)

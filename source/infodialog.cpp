@@ -45,7 +45,5 @@ void InfoDialog::initWithMessage(QString message)
 
 void InfoDialog::abortButtonReleased()
 {
-    infoDout << "infoDialog::abortButtonReleased" << endl;
     emit abortSimulation();
-    //done(1);
 }
