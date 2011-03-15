@@ -604,19 +604,25 @@ void AppController::showResults(QPoint elementRequest)
 
     QString pressureImageName, flowImageName;
     QString imagesDir = wDir + "/Images/";
+    QString elIdString;
+    elIdString.setNum(elementRequest.y());
+
+    appout << "wDir= " << wDir << endl;
+    appout << "imagesDir= " << imagesDir << endl;
+    appout << "element= " << elementRequest.x() << "-" << elementRequest.y() << endl;
 
     if (elementRequest.x() == 1 ) {         // MeshElement corresponds to a node of the graph.
         pressureImageName = imagesDir + elementRequest.y();
         //pressureImageName = imagesDir + elementRequest.y() + "_" + workspace->getNodeName(elementRequest.y()) + "pressure.png";
-        //flowImageName = imagesDir + elementRequest.y() + "_" + workspace->getNodeName(elementRequest.y()) + "_flow_png";
+        //flowImageName = imagesDir + elementRequest.y() + "_" + workspace->getNodeName(elementRequest.y()) + "_flow.png";
     } else if (elementRequest.x() == 2) {   // MeshElement correspond to a segment of an edge of the graph.
-        //pressureImageName = imagesDir + elementRequest.y() + "_" + workspace->getEdgeName(elementRequest.y()) + "_pressure";
-        //flowImageName = imagesDir + elementRequest.y() + "_" + workspace->getEdgeName(elementRequest.y()) + "_flow_png";
+        pressureImageName = imagesDir + elIdString + "_" + workspace->getEdgeName(elementRequest.y()) + "_1" + "_pressure.png";
+        flowImageName = imagesDir + elIdString + "_" + workspace->getEdgeName(elementRequest.y()) + "_1" + "_flow.png";
     }
 
     appout << "AppC::showR pressurePath= " << pressureImageName << endl;
-    appout << "element= " << elementRequest.x() << "-" << elementRequest.y() << endl;
-    appout << "wDir= " << wDir << endl;
+
+
 
     QPixmap pressureImage, flowImage;
     pressureImage.load(pressureImageName);
