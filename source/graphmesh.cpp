@@ -290,6 +290,20 @@ void GraphMesh::setEdgesMElementsId(QMap<int, QVector<int> > theEdgesMElementsId
     edgesMElementsId = theEdgesMElementsId;
 }
 
+int GraphMesh::getEdgeIdFromMElId(int meshElId)
+{
+    QMapIterator<int, QVector<int> > edgesMElementsIdIter(edgesMElementsId);
+    while (edgesMElementsIdIter.hasNext()) {
+        edgesMElementsIdIter.next();
+        QVector<int> meshElsId = edgesMElementsIdIter.value();
+        if (meshElsId.contains(meshElId)) {
+            return edgesMElementsIdIter.key();
+        }
+    }
+
+    return -1000;
+}
+
 void GraphMesh::deleteNode(int nodeId)
 {
     nodesMType.remove(nodeId);

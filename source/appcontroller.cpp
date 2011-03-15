@@ -579,20 +579,23 @@ void AppController::showResults(QPoint elementRequest)
     QString elIdString;
     elIdString.setNum(elementRequest.y());
 
-    appout << "wDir= " << wDir << endl;
-    appout << "imagesDir= " << imagesDir << endl;
-    appout << "element= " << elementRequest.x() << "-" << elementRequest.y() << endl;
+    //appout << "wDir= " << wDir << endl;
+    //appout << "imagesDir= " << imagesDir << endl;
+    //appout << "element= " << elementRequest.x() << "-" << elementRequest.y() << endl;
 
     if (elementRequest.x() == 1 ) {         // MeshElement corresponds to a node of the graph.
-        pressureImageName = imagesDir + elementRequest.y();
-        //pressureImageName = imagesDir + elementRequest.y() + "_" + workspace->getNodeName(elementRequest.y()) + "pressure.png";
-        //flowImageName = imagesDir + elementRequest.y() + "_" + workspace->getNodeName(elementRequest.y()) + "_flow.png";
+        //pressureImageName = imagesDir + elementRequest.y();
+        pressureImageName = imagesDir + elIdString + "_" + workspace->getNodeName(workspace->getNodeMElementId(elementRequest.y())) + "pressure.png";
+        flowImageName = imagesDir + elIdString + "_" + workspace->getNodeName(workspace->getNodeMElementId(elementRequest.y())) + "_flow.png";
     } else if (elementRequest.x() == 2) {   // MeshElement correspond to a segment of an edge of the graph.
-        pressureImageName = imagesDir + elIdString + "_" + workspace->getEdgeName(elementRequest.y()) + "_1" + "_pressure.png";
-        flowImageName = imagesDir + elIdString + "_" + workspace->getEdgeName(elementRequest.y()) + "_1" + "_flow.png";
+        //int edgeId = workspace->getEdgeIdFromMElId(elementRequest.y());
+        //QString edgeName = workspace->getEdgeName(edgeId);
+        pressureImageName = imagesDir + elIdString + "_" + workspace->getEdgeName(workspace->getEdgeIdFromMElId(elementRequest.y())) + "_pressure.png";
+        flowImageName = imagesDir + elIdString + "_" + workspace->getEdgeName(workspace->getEdgeIdFromMElId(elementRequest.y())) + "_flow.png";
     }
 
     appout << "AppC::showR pressurePath= " << pressureImageName << endl;
+    appout << "pressure= " << flowImageName << endl;
 
 
 

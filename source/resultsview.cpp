@@ -32,7 +32,7 @@ ResultsView::ResultsView(QString cookie, QPixmap pressurePix, QPixmap flowPix, Q
 {
     ui->setupUi(this);
 
-    connect(ui->splitter, SIGNAL(splitterMoved(int, int)), this, SLOT(resizeLabels()));
+    //connect(ui->splitter, SIGNAL(splitterMoved(int, int)), this, SLOT(resizeLabels()));
 
     pressPix = pressurePix;
     flPix = flowPix;
@@ -40,10 +40,10 @@ ResultsView::ResultsView(QString cookie, QPixmap pressurePix, QPixmap flowPix, Q
     QPixmap shownFImage= flowPix.scaledToWidth(50, Qt::SmoothTransformation);
 
     ui->pressureLabel->setPixmap(shownPImage);
-    ui->PValue->setText(PMean);
+    //ui->PValue->setText(PMean);
 
     ui->flowLabel->setPixmap(shownFImage);
-    ui->FValue->setText(FMean);
+    //ui->FValue->setText(FMean);
 
     setResultsCookie(cookie);
 }
@@ -74,8 +74,6 @@ void ResultsView::resizeLabels()
     QPixmap newFPixmap;
     newFPixmap = flPix.scaled(newFSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     ui->flowLabel->setPixmap(newFPixmap);
-
-    //resizeLabels();
 }
 
 void ResultsView::okButtClicked()

@@ -76,6 +76,8 @@ public:
     void deleteNode(int nodeId);
     void deleteEdge(int edgeId);
 
+    int getEdgeIdFromMElId(int meshElId);
+
 signals:
     void setEdgeType(int edgeId, QString edgeType);
 

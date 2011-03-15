@@ -1465,6 +1465,11 @@ int Workspace::getNodeMElementId(int nodeId)
     return graphMesh->getNodeMElementId(nodeId);
 }
 
+int Workspace::getEdgeIdFromMElId(int meshElId)
+{
+    return graphMesh->getEdgeIdFromMElId(meshElId);
+}
+
 bool Workspace::getGridStatus()
 {
     return gridStatus;

@@ -71,14 +71,13 @@ public:
     QVector<int> getEdgeMElementsId(int edgeId);
     QString getNodeMType (int nodeId);
     int getNodeMElementId(int nodeId);
+    int getEdgeIdFromMElId(int meshElId);
 
     void setNodeProperties(int nodeId, QString nodeProp);
     void setEdgeProperties(int edgeId, QString edgeProp);
     void setBCXML(QString theBCXML);
-    //void setSPXML(QString theSPXML);
     void setCaseInfoXML(QString theCaseInfoXML);
     QString getBCXML();
-    //QString getSPXML();
     QString getCaseInfoXML();
     QString getIdPat();
 
