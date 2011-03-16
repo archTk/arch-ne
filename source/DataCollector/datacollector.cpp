@@ -23,6 +23,7 @@
 #include "datacollector.h"
 #include "treemodel.h"
 #include "treedelegate.h"
+#include "textdecorator.h"
 
 class MessageHandler : public QAbstractMessageHandler
 {
@@ -72,9 +73,10 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     setupUi(this);
 
     workingDomText->setReadOnly(true);
+    new TextDecorator(workingDomText->document());
     actionShowDom->setChecked(false);
     workingDomText->hide();
-    detailStatusLabel->hide();
+    detailStatusText->hide();
     actionOkCombo->setEnabled(false);
     actionCancelCombo->setEnabled(false);
 
@@ -700,22 +702,21 @@ bool DataCollector::validateDom(QString DomString)
         return false;
  
     MessageHandler messageHandler;
-    requestSchema.setMessageHandler(&messageHandler);
 
     QByteArray XMLByteContent;
+
     XMLByteContent.append(DomString);
     QXmlSchemaValidator validator(requestSchema);
+    validator.setMessageHandler(&messageHandler);
+
     bool valid = false;
     if (validator.validate(XMLByteContent))
         valid = true;
-    QString stylebase="QLabel {border-radius:3px;padding-left:2px;border:0px solid #515151;";
-    const QString styleSheet = QString(stylebase + "background: %1;}").arg(valid ? "#51b151" : "#b15151");
     if(valid){
-        detailStatusLabel->hide();
+        detailStatusText->hide();
     } else {
-        detailStatusLabel->setStyleSheet(styleSheet);
-        detailStatusLabel->setText(messageHandler.statusMessage());
-        detailStatusLabel->show();
+        detailStatusText->setHtml(messageHandler.statusMessage());
+        detailStatusText->show();
     }
     return valid;
 } 

@@ -4,7 +4,8 @@
 <widget class="QWidget" name="DataCollector">
 <property name="styleSheet">
 <string notr="true">
-QPlainTextEdit {color:#000000;border 0px solid transparent;margin:0;padding:0;background-color:#ffffbf}
+QTextEdit#workingDomText {color:#000000;border 0px solid transparent;margin:0;padding:0;background-color:#ffffbf}
+QTextEdit#detailStatusText {border-radius:3px;padding-left:2px;border:0px solid #515151;background-color:#b15151}
 </string>
 </property>
 	<layout class="QVBoxLayout" name="vboxLayout">
@@ -22,38 +23,41 @@ QPlainTextEdit {color:#000000;border 0px solid transparent;margin:0;padding:0;ba
 				<property name="animated"><bool>false</bool></property>
 				<property name="allColumnsShowFocus"><bool>true</bool></property>
 				</widget>
-				<widget class="QPlainTextEdit" name="workingDomText">
+				<widget class="QTextEdit" name="workingDomText">
                                 <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
 				</widget>
 			</widget>
    		</item>
 		<item>
-                       	<widget class="QLabel" name="detailStatusLabel">
+                    	<widget class="QTextEdit" name="detailStatusText">
+			<property name="maximumHeight"><number>40</number></property>
+			<property name="minimumHeight"><number>40</number></property>
 			<property name="frameShape"><enum>QFrame::NoFrame</enum></property>
-			<property name="maximumHeight"><number>30</number></property>
-			<property name="minimumHeight"><number>30</number></property>
-			<property name="text"><string/></property>
-			<property name="wordWrap"><bool>true</bool></property>
+			<property name="sizePolicy">
+          		<sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           		<verstretch>0</verstretch>
+          		</sizepolicy>
+         		</property>
 			</widget>
 		</item>
 		<item>
 			<widget class="QFrame" name="toolbarFrame">
-				<property name="maximumHeight"><number>40</number></property>
-				<property name="minimumHeight"><number>40</number></property>
-                                <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
-                        <layout class="QHBoxLayout" name="domStatusLayout">
-			<property name="margin"><number>4</number></property>
-			<property name="spacing"><number>10</number></property>
-			<item>
-			<widget class="QToolBar" name="lowerToolBar">
-			<addaction name="actionShowDom"/>
-			<addaction name="actionEditDom"/>
-			<addaction name="actionUndo"/>
-			<addaction name="actionRedo"/>
-			<addaction name="actionReset"/>
-			</widget>
-                        </item>
-                        </layout>
+			<property name="maximumHeight"><number>40</number></property>
+			<property name="minimumHeight"><number>40</number></property>
+                        <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+                        	<layout class="QHBoxLayout" name="domStatusLayout">
+					<property name="margin"><number>4</number></property>
+					<property name="spacing"><number>10</number></property>
+					<item>
+					<widget class="QToolBar" name="lowerToolBar">
+					<addaction name="actionShowDom"/>
+					<addaction name="actionEditDom"/>
+					<addaction name="actionUndo"/>
+					<addaction name="actionRedo"/>
+					<addaction name="actionReset"/>
+					</widget>
+                        		</item>
+                        	</layout>
 			</widget>
 		</item>
 		<item>
