@@ -242,7 +242,6 @@ QStringList DataCollector::getEnumeration(QString iType)
 {
     QFile docFile(requestSchemaPath);
     docFile.open(QIODevice::ReadOnly);
-
     QXmlQuery query;
     query.bindVariable("inputDocument", &docFile);
     query.bindVariable("attributeType", QVariant(iType));
@@ -370,7 +369,7 @@ int DataCollector::getInsertionRow(QModelIndex index,QString iName)
 void DataCollector::updateLeftMembers(QModelIndex index)
 {
     QAbstractItemModel *model = treeView->model();
-   QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
+    QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
     QStringList splitList;
     for (int i=0;i<list.size();++i)
         splitList.append(list.at(i).split(",")[0]);
@@ -403,10 +402,8 @@ void DataCollector::updateTools()
      actionUndo->setEnabled(currentStack > 0);
      actionRedo->setEnabled(currentStack < undoStack.size()-1);
      actionReset->setEnabled(currentStack > 0);
-
      bool viewSelected = !treeView->selectionModel()->selection().isEmpty();
      bool validSelection = treeView->selectionModel()->currentIndex().isValid();
-
      if (viewSelected and validSelection) {
          QModelIndex index = treeView->selectionModel()->currentIndex();
          QAbstractItemModel *model = treeView->model();
@@ -563,16 +560,15 @@ void DataCollector::updateDomStatus()
     doc->appendChild(rootElement);
     TreeToDom(doc,rootElement,mainIndex);
     workingDom = doc->toString();
+    workingDomText->setPlainText(workingDom);
     domStatus = validateDom(workingDom);
     if (newStack)
         updateHistory();
-    workingDomText->setPlainText(workingDom);
 }
 
 void DataCollector::TreeToDom(QDomDocument *doc,QDomElement iDomElement,QModelIndex index)
 {
     QAbstractItemModel *model = treeView->model();
-
     int rowCount = model->rowCount(index);
     for (int i=0;i<rowCount;++i){
         QString iName = model->data(model->index(i,0,index)).toString();
@@ -702,21 +698,37 @@ bool DataCollector::validateDom(QString DomString)
         return false;
  
     MessageHandler messageHandler;
-
     QByteArray XMLByteContent;
+    requestSchema.setMessageHandler(&messageHandler);
+    QXmlSchemaValidator validator(requestSchema);
 
     XMLByteContent.append(DomString);
-    QXmlSchemaValidator validator(requestSchema);
-    validator.setMessageHandler(&messageHandler);
-
-    bool valid = false;
-    if (validator.validate(XMLByteContent))
-        valid = true;
-    if(valid){
+    workingDomText->setExtraSelections(QList<QTextEdit::ExtraSelection>());
+    if (validator.validate(XMLByteContent)){
         detailStatusText->hide();
+        return true;
     } else {
         detailStatusText->setHtml(messageHandler.statusMessage());
+        detailStatusText->append(QString().setNum(messageHandler.line()));
+        highlightError(messageHandler.line());
         detailStatusText->show();
+        return false;
     }
-    return valid;
-} 
+}
+
+void DataCollector::highlightError(int line)
+{
+    workingDomText->moveCursor(QTextCursor::Start);
+    for (int i=1; i<line; ++i)
+        workingDomText->moveCursor(QTextCursor::Down);
+
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    QTextEdit::ExtraSelection selection;
+    selection.format.setBackground(QColor("#ee8080"));
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = workingDomText->textCursor();
+    selection.cursor.clearSelection();
+    extraSelections.append(selection);
+    workingDomText->setExtraSelections(extraSelections);
+}
+

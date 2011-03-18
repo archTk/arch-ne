@@ -135,7 +135,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
          if (index.column() == 0){
          QFont boldFont;
          boldFont.setBold(true);
-         return boldFont;
+	 return boldFont;
          }
      }
 

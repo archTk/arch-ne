@@ -56,6 +56,7 @@ public slots:
     void updateTools();
     void treeViewDataChanged();
     void viewClicked(QModelIndex index);
+
 signals:
     void applyClicked(QString cookie,QString XMLString);  
     void okButtonClicked(QString cookie,QString XMLString);  
@@ -79,13 +80,13 @@ private:
     void updateLeftMembers(QModelIndex index);
     int getInsertionRow(QModelIndex index, QString iName);
     void updateHistory();
+    void highlightError(int line);
 
     QVector<QString> requestHiddenItems;
     QVector<QString> requestReadOnlyItems;
     QString requestCookie;
     QString requestDom;   
     QString requestSchemaPath;
-
     QString workingDom;   
     QString rootName;   
     QString rootType;   
