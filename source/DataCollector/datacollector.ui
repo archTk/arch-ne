@@ -4,7 +4,7 @@
 <widget class="QWidget" name="DataCollector">
 <property name="styleSheet">
 <string notr="true">
-QTextEdit#workingDomText {color:#000000;border 0px solid transparent;margin:0;padding:0;background-color:#ffffbf}
+QPlainTextEdit#workingDomText {color:#000000;border 0px solid transparent;margin:0;padding:0;background-color:#ffffbf}
 QTextEdit#detailStatusText {border-radius:3px;padding-left:2px;border:0px solid #515151;background-color:#b15151}
 </string>
 </property>
@@ -23,8 +23,9 @@ QTextEdit#detailStatusText {border-radius:3px;padding-left:2px;border:0px solid 
 				<property name="animated"><bool>false</bool></property>
 				<property name="allColumnsShowFocus"><bool>true</bool></property>
 				</widget>
-				<widget class="QTextEdit" name="workingDomText">
+				<widget class="QPlainTextEdit" name="workingDomText">
                                 <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+                                <property name="lineWrapMode"><enum>QPlainTextEdit::NoWrap</enum></property>
 				</widget>
 			</widget>
    		</item>

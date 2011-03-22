@@ -25,17 +25,20 @@ TreeModel::TreeModel( QObject *parent)
 {
      QVector<QVariant> rootData;
      QStringList headers;
-     headers <<tr("Property")<< tr("Value")<<"att"<<"typ"<<"mbrs"<<"lftmbrs"<<"rmv"<<"RO"<<"+"<<"-"<<"enum";
-
+     headers <<tr("Property")<< tr("Value")<<"att"<<"typ"<<"mbrs"<<"lftmbrs"<<"rmv"<<"RO"<<"+"<<"-"<<"enum"<<"line";
      foreach (QString header, headers)
          rootData << header;
-
      rootItem = new TreeItem(rootData);
 }
 
 TreeModel::~TreeModel()
 {
      delete rootItem;
+}
+
+void TreeModel::setErrorLine(int line)
+{
+    errorLine = line;
 }
 
 bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -45,7 +48,6 @@ bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
      TreeItem *item = getItem(index);
      bool result = item->setData(index.column(), value);
-
      if (result)
          emit dataChanged(index, index);
 
@@ -58,7 +60,6 @@ bool TreeModel::setHeaderData(int section, Qt::Orientation orientation, const QV
          return false;
 
      bool result = rootItem->setData(section, value);
-
      if (result)
          emit headerDataChanged(orientation, section, section);
 
@@ -83,22 +84,18 @@ bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent)
 {
      TreeItem *parentItem = getItem(parent);
      bool success = true;
-
      beginRemoveRows(parent, position, position + rows - 1);
      success = parentItem->removeChildren(position, rows);
      endRemoveRows();
-
      return success;
 }
 
 bool TreeModel::insertColumns(int position, int columns, const QModelIndex &parent)
 {
      bool success;
-
      beginInsertColumns(parent, position, position + columns - 1);
      success = rootItem->insertColumns(position, columns);
      endInsertColumns();
-
      return success;
 }
 
@@ -106,11 +103,9 @@ bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent)
 {
      TreeItem *parentItem = getItem(parent);
      bool success;
-
      beginInsertRows(parent, position, position + rows - 1);
      success = parentItem->insertChildren(position, rows, rootItem->columnCount());
      endInsertRows();
-
      return success;
 }
 
@@ -122,7 +117,6 @@ int TreeModel::columnCount(const QModelIndex & /* parent */) const
 int TreeModel::rowCount(const QModelIndex &parent) const
 {
      TreeItem *parentItem = getItem(parent);
-
      return parentItem->childCount();
 }
 
@@ -148,10 +142,10 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
             return QBrush("#ff2244");
      }
 
-     /*if (role == Qt::BackgroundRole){
-         if (index.column() == 1 or index.column() == 0)
-             return QBrush(QColor("#515151"));
-     }*/
+     if (role == Qt::BackgroundRole){
+         if (index.column() <= 1 and errorLine>0 and getItem(index)->data(11).toInt()==errorLine)
+            return QBrush("#ee8080");
+     }
 
      if (role == Qt::DecorationRole){
          if(index.column()==8 and !getItem(index)->data(2).toBool() and !getItem(index)->data(5).toStringList().isEmpty())

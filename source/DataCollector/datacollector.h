@@ -37,12 +37,8 @@ class DataCollector : public QWidget, private Ui::DataCollector
     Q_OBJECT
 
 public:
-    DataCollector(QString cookie,QString XMLString,QVector<QString> hiddenItems,QVector<QString> readOnlyItems,QWidget *parent=0);
-    void setHiddenItems(QVector<QString> theHiddenItems);
-    void setElementDom(QString theElementDom);
-    void setRequestSchemaPath(QString path);
-    void setElementCookie(QString theElementCookie);
-    void setReadOnlyItems(QVector<QString> theReadOnlyItems);
+    DataCollector(QString &cookie,QString &XMLString,QVector<QString> &hiddenItems,QVector<QString> &readOnlyItems,QWidget *parent=0);
+    void setRequestSchemaPath(QString &path);
 
 public slots:
     void editDomToggled();
@@ -55,32 +51,35 @@ public slots:
     void showDomToggled();
     void updateTools();
     void treeViewDataChanged();
-    void viewClicked(QModelIndex index);
+    void viewClicked(const QModelIndex &index);
 
 signals:
     void applyClicked(QString cookie,QString XMLString);  
     void okButtonClicked(QString cookie,QString XMLString);  
     void deleteItself();
+    void setErrorLine(int line);
 
 private:
+    bool getConfirmation();
     void setupData();
     void setRequestSchema();
-    bool validateDom(QString DomString);
+    void updateDomStatus(bool newStack);
+    void setQueryStrings();
+    void updateHistory();
+    void setElementDom(QString &theElementDom);
+    bool validateDom(QString &DomString);
     void TreeToDom(QDomDocument *doc,QDomElement iDomElement, QModelIndex index);
     void DomToTree(QDomElement iDomElement,QString iParentType,QModelIndex index,bool required=false);
     void removeRow(QModelIndex index);
     int insertChild(bool isAttribute,bool required,QModelIndex index,QString rowFirstCol,
                     QString type,QStringList members,QStringList enumeration,QString value="");
     QList<QStringList> getElementInfo(QString elementName,QString parentType);
-    QStringList fixElementInfo(QStringList info);
-    QStringList getEnumeration(QString iType);
-    void updateDomStatus();
-    void loadStack(int stackId);
-    void setQueryStrings();
-    void updateLeftMembers(QModelIndex index);
-    int getInsertionRow(QModelIndex index, QString iName);
-    void updateHistory();
-    void highlightError(int line);
+    QStringList fixElementInfo(QList<QString> info);
+    QStringList getEnumeration(const QString &iType);
+    void loadStack(const int &stackId);
+    void updateLeftMembers(QModelIndex &index);
+    int getInsertionRow(QModelIndex &index, QString &iName);
+    void highlightError(const int &line);
 
     QVector<QString> requestHiddenItems;
     QVector<QString> requestReadOnlyItems;
@@ -95,10 +94,10 @@ private:
     QXmlSchema requestSchema;
     bool domStatus;
     bool avoidUpdateFlag;
-    bool newStack;
     QStringList undoStack;
     int currentStack;
     bool autoFill;
+    int lineCount;
 };
 
 #endif

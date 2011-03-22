@@ -48,10 +48,14 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,int role = Qt::DisplayRole) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
+public slots:
+    void setErrorLine(int line);
+
 private:
     TreeItem *getItem(const QModelIndex &index) const;
     TreeItem *rootItem;
     void setupModelData(const QStringList &lines, TreeItem *parent);
+    int errorLine;
 };
 
 #endif

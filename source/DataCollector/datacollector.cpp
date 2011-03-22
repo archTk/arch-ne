@@ -66,11 +66,15 @@ class MessageHandler : public QAbstractMessageHandler
          QSourceLocation m_sourceLocation;
 };
 
-DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> hiddenItems,QVector<QString> readOnlyItems,QWidget *parent)
+DataCollector::DataCollector(QString &cookie,QString &XMLString,QVector<QString> &hiddenItems,QVector<QString> &readOnlyItems,QWidget *parent)
    : QWidget(parent)
 {
     Q_INIT_RESOURCE(DataCollector);
     setupUi(this);
+
+    requestCookie = cookie;    
+    requestHiddenItems = hiddenItems;
+    requestReadOnlyItems = readOnlyItems;
 
     workingDomText->setReadOnly(true);
     new TextDecorator(workingDomText->document());
@@ -82,10 +86,7 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
 
     avoidUpdateFlag = false;
     setQueryStrings();
-    setHiddenItems(hiddenItems);
     setElementDom(XMLString);
-    setElementCookie(cookie);
-    setReadOnlyItems(readOnlyItems);
 
     TreeModel *model = new TreeModel();
     TreeDelegate *delegate = new TreeDelegate();
@@ -98,12 +99,13 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     treeView->setColumnHidden(6,true);
     treeView->setColumnHidden(7,true);
     treeView->setColumnHidden(10,true);
+    treeView->setColumnHidden(11,true);
     treeView->header()->moveSection(8,0);
     treeView->header()->moveSection(9,0);
 
     connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(treeViewDataChanged()));
     connect(treeView->selectionModel(),SIGNAL(selectionChanged(const QItemSelection &,const QItemSelection &)),this, SLOT(updateTools()));
-    connect(treeView,SIGNAL(clicked(QModelIndex)),this, SLOT(viewClicked(QModelIndex)));
+    connect(treeView,SIGNAL(clicked(const QModelIndex &)),this, SLOT(viewClicked(const QModelIndex &)));
     connect(applyButton, SIGNAL(clicked()), this, SLOT(buttonApplyClicked()));
     connect(okButton, SIGNAL(clicked()), this, SLOT(buttonOkClicked()));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
@@ -112,9 +114,10 @@ DataCollector::DataCollector(QString cookie,QString XMLString,QVector<QString> h
     connect(actionRedo,SIGNAL(triggered()),this, SLOT(redoClicked()));
     connect(actionReset, SIGNAL(triggered()), this, SLOT(resetClicked()));
     connect(actionEditDom, SIGNAL(triggered()), this, SLOT(editDomToggled()));
+    connect(this, SIGNAL(setErrorLine(int)), model, SLOT(setErrorLine(int)));
 }
 
-void DataCollector::viewClicked(QModelIndex index)
+void DataCollector::viewClicked(const QModelIndex &index)
 {
     if (index.column()==9 and actionRemoveElement->isEnabled()){
         removeRow(index);
@@ -132,7 +135,7 @@ void DataCollector::viewClicked(QModelIndex index)
         avoidUpdateFlag=true;
         DomToTree(addedElement,model->data(model->index(index.row(),3,index.parent())).toString(),model->index(index.row(),0,index.parent()));
         avoidUpdateFlag=false;
-        updateDomStatus();
+        updateDomStatus(true);
         return;
     }
     if (index.column()==1 and !model->data(model->index(index.row(),7,index.parent())).toBool()){
@@ -185,13 +188,14 @@ void DataCollector::editDomToggled()
     }
 }
 
-void DataCollector::loadStack(int stackId)
+void DataCollector::loadStack(const int &stackId)
 {
    avoidUpdateFlag = true;
    autoFill=false;
    QAbstractItemModel *model = treeView->model();
    if(model->index(0,0,treeView->rootIndex()).isValid())
       removeRow(model->index(0,0,treeView->rootIndex()));
+   lineCount = 0;
    QDomDocument domDoc;
    domDoc.setContent(undoStack.at(stackId));
    QDomElement rootElement = domDoc.documentElement();
@@ -209,9 +213,7 @@ void DataCollector::loadStack(int stackId)
             model->setData(model->index(i,7,mainIndex),QVariant(true), Qt::EditRole);
    }
    avoidUpdateFlag = false;
-   newStack=false;
-   updateDomStatus();
-   newStack=true;
+   updateDomStatus(false);
    updateTools();
    autoFill=true;
 }
@@ -238,7 +240,7 @@ void DataCollector::setQueryStrings()
     queryFile.close();
 }
 
-QStringList DataCollector::getEnumeration(QString iType)
+QStringList DataCollector::getEnumeration(const QString &iType)
 {
     QFile docFile(requestSchemaPath);
     docFile.open(QIODevice::ReadOnly);
@@ -285,7 +287,7 @@ QList<QStringList> DataCollector::getElementInfo(QString elementName,QString par
     return output;
 }
 
-QStringList DataCollector::fixElementInfo(QStringList info)
+QStringList DataCollector::fixElementInfo(QList<QString> info)
 {
     QStringList fixedMembers;
     QString tmp;
@@ -324,6 +326,7 @@ int DataCollector::insertChild(bool isAttribute,bool required,QModelIndex index,
     if (isAttribute){
         model->setData(model->index(iRow, 2, index), QVariant(isAttribute), Qt::EditRole);
     } else {
+        model->setData(model->index(iRow, 11, index), QVariant(++lineCount), Qt::EditRole);
         QStringList splitList;
         for (int i=0;i<members.size();++i)
             splitList.append(members.at(i).split(",")[0]);
@@ -340,7 +343,7 @@ void DataCollector::updateHistory()
     currentStack = undoStack.size()-1;
 }
 
-int DataCollector::getInsertionRow(QModelIndex index,QString iName)
+int DataCollector::getInsertionRow(QModelIndex &index,QString &iName)
 {
     QAbstractItemModel *model = treeView->model();
     QStringList currentMembers;
@@ -362,11 +365,10 @@ int DataCollector::getInsertionRow(QModelIndex index,QString iName)
             return minIndex + currentMembers.lastIndexOf(splitList.at(i))+1;
         }
     }
-
     return minIndex;
 }
 
-void DataCollector::updateLeftMembers(QModelIndex index)
+void DataCollector::updateLeftMembers(QModelIndex &index)
 {
     QAbstractItemModel *model = treeView->model();
     QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
@@ -416,7 +418,8 @@ void DataCollector::updateTools()
 void DataCollector::showDomToggled()
 {
     if(actionShowDom->isChecked()){
-        workingDomText->show(); 
+        workingDomText->show();
+        workingDomText->repaint();
     } else {
         workingDomText->hide();
     }
@@ -432,14 +435,12 @@ void DataCollector::resetClicked()
 
 void DataCollector::redoClicked()
 {
-    currentStack++;
-    loadStack(currentStack);
+    loadStack(++currentStack);
 }
 
 void DataCollector::undoClicked()
 {
-    currentStack--;
-    loadStack(currentStack);
+    loadStack(--currentStack);
 }
 
 void DataCollector::cancelClicked()
@@ -448,18 +449,13 @@ void DataCollector::cancelClicked()
     emit deleteItself();
 }
 
-void DataCollector::setHiddenItems(QVector<QString> theHiddenItems)
-{
-    requestHiddenItems = theHiddenItems;
-}
-
-void DataCollector::setRequestSchemaPath(QString path)
+void DataCollector::setRequestSchemaPath(QString &path)
 {
     requestSchemaPath = path;
     setupData();
 }
 
-void DataCollector::setElementDom(QString theElementDom)
+void DataCollector::setElementDom(QString &theElementDom)
 {
     QByteArray byteArray;
     byteArray.append(theElementDom);
@@ -475,53 +471,31 @@ void DataCollector::setElementDom(QString theElementDom)
     buffer.close();
 }
 
-void DataCollector::setElementCookie(QString theElementCookie)
+bool DataCollector::getConfirmation()
 {
-    requestCookie = theElementCookie;    
-}
-
-void DataCollector::setReadOnlyItems(QVector<QString> theReadOnlyItems)
-{
-    requestReadOnlyItems = theReadOnlyItems;
+   QMessageBox confirmationBox;
+   confirmationBox.setText("You are about to send non valid data");
+   confirmationBox.setInformativeText("Do you wish to continue?");
+   confirmationBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+   confirmationBox.setDefaultButton(QMessageBox::No);
+   return confirmationBox.exec()==QMessageBox::Yes;
 }
 
 void DataCollector::buttonApplyClicked()
 {
-    newStack=false;
-    updateDomStatus();
-    newStack=true;
-
-    if(!domStatus){
-       QMessageBox confirmationBox;
-       confirmationBox.setText("You are about to apply non valid data");
-       confirmationBox.setInformativeText("Do you wish to continue?");
-       confirmationBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-       confirmationBox.setDefaultButton(QMessageBox::No);
-       int answerValue = confirmationBox.exec();
-       if (answerValue == QMessageBox::No) 
-           return;
+    updateDomStatus(false);
+    if(!domStatus and !getConfirmation()){
+       return;
     }
-
     emit(applyClicked(requestCookie,workingDom));
 }
 
 void DataCollector::buttonOkClicked()
 {
-    newStack=false;
-    updateDomStatus();
-    newStack=true;
-
-    if(!domStatus){
-       QMessageBox confirmationBox;
-       confirmationBox.setText("You are about to submit non valid data");
-       confirmationBox.setInformativeText("Do you wish to continue?");
-       confirmationBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-       confirmationBox.setDefaultButton(QMessageBox::No);
-       int answerValue = confirmationBox.exec();
-       if (answerValue == QMessageBox::No) 
-           return;
+    updateDomStatus(false);
+    if(!domStatus and !getConfirmation()){
+       return;
     }
-
     emit(okButtonClicked(requestCookie,workingDom));
     emit deleteItself();
 }
@@ -542,28 +516,27 @@ void DataCollector::treeViewDataChanged()
         DomToTree(addedElement,model->data(model->index(index.row(),3,index.parent())).toString(),model->index(index.row(),0,index.parent()));
         model->setData(index,QVariant(""),Qt::EditRole);
         avoidUpdateFlag=false;
-        updateDomStatus();
+        updateDomStatus(true);
         return;
     }
-    
-    updateDomStatus();
+    updateDomStatus(true);
     updateTools();
 }
 
-void DataCollector::updateDomStatus()
+void DataCollector::updateDomStatus(bool newStack)
 {
     QAbstractItemModel *model = treeView->model();
-    QModelIndex mainIndex = model->index(0,0,treeView->rootIndex());
-    QString irootName = model->data(mainIndex).toString();
+    QString irootName = model->data(model->index(0,0,treeView->rootIndex())).toString();
     QDomDocument *doc = new QDomDocument(); 
     QDomElement rootElement = doc->createElement(irootName);
     doc->appendChild(rootElement);
-    TreeToDom(doc,rootElement,mainIndex);
+    TreeToDom(doc,rootElement,model->index(0,0,treeView->rootIndex()));
     workingDom = doc->toString();
     workingDomText->setPlainText(workingDom);
     domStatus = validateDom(workingDom);
     if (newStack)
         updateHistory();
+    workingDomText->repaint();
 }
 
 void DataCollector::TreeToDom(QDomDocument *doc,QDomElement iDomElement,QModelIndex index)
@@ -573,8 +546,7 @@ void DataCollector::TreeToDom(QDomDocument *doc,QDomElement iDomElement,QModelIn
     for (int i=0;i<rowCount;++i){
         QString iName = model->data(model->index(i,0,index)).toString();
         QString iValue = model->data(model->index(i,1,index)).toString();
-        bool iIsAttribute = model->data(model->index(i,2,index)).toBool();
-        if (iIsAttribute){
+        if (model->data(model->index(i,2,index)).toBool()){
             if (!iValue.isEmpty())
                 iDomElement.setAttribute(iName,iValue);
         } else {
@@ -630,9 +602,9 @@ void DataCollector::DomToTree(QDomElement iDomElement,QString iParentType,QModel
     }
 
     if(autoFill or currentStack==0){
-    QDomDocument *doc = new QDomDocument();
-    for(int i=0;i<iInfo.at(2).size();++i){
-        for(int j=0;j<iInfo.at(2).at(i).split(",")[1].toInt();++j){
+       QDomDocument *doc = new QDomDocument();
+       for(int i=0;i<iInfo.at(2).size();++i){
+          for(int j=0;j<iInfo.at(2).at(i).split(",")[1].toInt();++j){
             int k = currentChildren.indexOf(iInfo.at(2).at(i).split(",")[0]);
             if(k>-1){
                 DomToTree(iDomElement.childNodes().item(k).toElement(),iInfo.at(0).at(0),model->index(iRow,0,index),true);
@@ -641,14 +613,14 @@ void DataCollector::DomToTree(QDomElement iDomElement,QString iParentType,QModel
                 QDomElement jElement = doc->createElement(iInfo.at(2).at(i).split(",")[0]);
                 DomToTree(jElement,iInfo.at(0).at(0),model->index(iRow,0,index),true); 
             }
-        }
-    }
+          }
+       }
     }
 
     for(int i=0;i<iDomElement.childNodes().size();++i){
         if(currentChildren.at(i)!="#")
             DomToTree(iDomElement.childNodes().item(i).toElement(),iInfo.at(0).at(0),model->index(iRow,0,index)); 
-    }  
+    }
 }
 
 void DataCollector::setRequestSchema()
@@ -692,7 +664,7 @@ void DataCollector::setRequestSchema()
     requestSchema.load(resultString);
 }
 
-bool DataCollector::validateDom(QString DomString)
+bool DataCollector::validateDom(QString &DomString)
 {
     if(!requestSchema.isValid())
         return false;
@@ -702,21 +674,22 @@ bool DataCollector::validateDom(QString DomString)
     requestSchema.setMessageHandler(&messageHandler);
     QXmlSchemaValidator validator(requestSchema);
 
+    emit(setErrorLine(0));
     XMLByteContent.append(DomString);
     workingDomText->setExtraSelections(QList<QTextEdit::ExtraSelection>());
     if (validator.validate(XMLByteContent)){
         detailStatusText->hide();
         return true;
-    } else {
-        detailStatusText->setHtml(messageHandler.statusMessage());
-        detailStatusText->append(QString().setNum(messageHandler.line()));
-        highlightError(messageHandler.line());
-        detailStatusText->show();
-        return false;
     }
+
+    detailStatusText->setHtml(messageHandler.statusMessage());
+    highlightError(messageHandler.line());
+    detailStatusText->show();
+    //emit(setErrorLine(messageHandler.line()));
+    return false;
 }
 
-void DataCollector::highlightError(int line)
+void DataCollector::highlightError(const int &line)
 {
     workingDomText->moveCursor(QTextCursor::Start);
     for (int i=1; i<line; ++i)
@@ -731,4 +704,3 @@ void DataCollector::highlightError(int line)
     extraSelections.append(selection);
     workingDomText->setExtraSelections(extraSelections);
 }
-
