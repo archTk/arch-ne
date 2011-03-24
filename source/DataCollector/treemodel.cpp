@@ -126,21 +126,27 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
          return QVariant();
 
      if (role == Qt::FontRole){
-         if (index.column() == 0){
-         QFont boldFont;
-         boldFont.setBold(true);
-	 return boldFont;
-         }
+        if (index.column() == 0 ) {
+           if (getItem(index)->data(2).toBool()){
+             QFont italicFont;
+             italicFont.setItalic(true);
+	     return italicFont;
+           } else {
+             QFont boldFont;
+             boldFont.setBold(true);
+	     return boldFont;
+           }
+        }
      }
 
-     if (role == Qt::ForegroundRole){
+    /* if (role == Qt::ForegroundRole){
          if (index.column() == 0 and !getItem(index)->data(2).toBool())
             return QBrush("#2244ee");
          if (index.column() == 0 and getItem(index)->data(2).toBool())
             return QBrush("#22aa44");
          if (index.column() == 1 and getItem(index)->data(2).toBool())
             return QBrush("#ff2244");
-     }
+     }*/
 
      if (role == Qt::BackgroundRole){
          if (index.column() <= 1 and errorLine>0 and getItem(index)->data(11).toInt()==errorLine)

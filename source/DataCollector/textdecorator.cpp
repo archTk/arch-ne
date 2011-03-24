@@ -23,22 +23,19 @@ TextDecorator::TextDecorator(QTextDocument *parent)
 {
     styleSet styleset;
 
-    elementStyle.setForeground(QColor("#2244ee"));
-    elementStyle.setFontWeight(QFont::Bold);
+/*    elementStyle.setFontWeight(QFont::Bold);
     styleset.regexp = QRegExp("(<[A-Za-z0-9:_]+\\b|<\\?[A-Za-z0-9:_]+\\b|\\?>|>|/>|</[A-Za-z0-9:_]+>)");
     styleset.format = elementStyle;
-    styleSettings.append(styleset);
+    styleSettings.append(styleset);*/
 
-    attNameStyle.setForeground(QColor("#22aa44"));
-    attNameStyle.setFontWeight(QFont::Bold);
+    attNameStyle.setFontItalic(true);
     styleset.regexp = QRegExp("[A-Za-z0-9:_]+=");
     styleset.format = attNameStyle;
     styleSettings.append(styleset);
 
-    attValStyle.setForeground(QColor("#ff2244"));
-    styleset.regexp = QRegExp("(\"[^\"]*\"|'[^']*')");
+   /* styleset.regexp = QRegExp("(\"[^\"]*\"|'[^']*')");
     styleset.format = attValStyle;
-    styleSettings.append(styleset);
+    styleSettings.append(styleset);*/
 }
 
 void TextDecorator::highlightBlock(const QString &text)

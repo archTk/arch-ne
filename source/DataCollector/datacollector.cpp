@@ -419,7 +419,7 @@ void DataCollector::showDomToggled()
 {
     if(actionShowDom->isChecked()){
         workingDomText->show();
-        workingDomText->repaint();
+        //workingDomText->repaint();
     } else {
         workingDomText->hide();
     }
@@ -536,7 +536,7 @@ void DataCollector::updateDomStatus(bool newStack)
     domStatus = validateDom(workingDom);
     if (newStack)
         updateHistory();
-    workingDomText->repaint();
+    //workingDomText->repaint();
 }
 
 void DataCollector::TreeToDom(QDomDocument *doc,QDomElement iDomElement,QModelIndex index)

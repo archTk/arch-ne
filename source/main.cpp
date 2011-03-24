@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <QApplication>
+#include <QPlastiqueStyle>
 
 #include "mainwindow.h"
 #include "appcontroller.h"
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
     qt_set_sequence_auto_mnemonic(true);
 
     QApplication app(argc, argv);
+    //app.setStyle(new QPlastiqueStyle);
     MainWindow mainWin;
 
     AppController appController;
