@@ -327,6 +327,10 @@ void MainWindow::createActions()
     addSegmentAct->setStatusTip(tr("Create a new vascular segment"));
     connect(addSegmentAct, SIGNAL(triggered()), this, SIGNAL(addSegmentPressed()));
 
+    bendSegmentAct = new QAction(QIcon(":/images/bendSegment.png"), tr("&Bend Segment"), this);
+    bendSegmentAct->setStatusTip(tr("Bend vascular segments"));
+    connect(bendSegmentAct, SIGNAL(triggered()), this, SIGNAL(bendSegmentPressed()));
+
     removeSegmentAct = new QAction(QIcon(":/images/removeSegment.png"), tr("&Remove Segment"), this);
     removeSegmentAct->setShortcut(tr("Ctrl+R"));
     removeSegmentAct->setStatusTip(tr("Remove an existing vascular segment"));
@@ -463,6 +467,7 @@ void MainWindow::createMenus()
 
     operationMenu = menuBar()->addMenu(tr("&Operations"));
     operationMenu->addAction(addSegmentAct);
+    operationMenu->addAction(bendSegmentAct);
     operationMenu->addAction(removeSegmentAct);
     operationMenu->addAction(splitSegmentAct);
     operationMenu->addAction(superEdgeAct);
@@ -483,6 +488,7 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutAct);
 
     addSegmentAct->setCheckable(true);
+    bendSegmentAct->setCheckable(true);
     removeSegmentAct->setCheckable(true);
     splitSegmentAct->setCheckable(true);
     superEdgeAct->setCheckable(true);
@@ -534,6 +540,7 @@ void MainWindow::createToolBars()
 
     operationGroup = new QActionGroup(this);
     operationGroup->addAction(addSegmentAct);
+    operationGroup->addAction(bendSegmentAct);
     operationGroup->addAction(removeSegmentAct);
     operationGroup->addAction(splitSegmentAct);
     operationGroup->addAction(infoAct);
@@ -545,6 +552,7 @@ void MainWindow::createToolBars()
 
     operationToolBar->setMovable(true);
     operationToolBar->addAction(addSegmentAct);
+    operationToolBar->addAction(bendSegmentAct);
     operationToolBar->addAction(removeSegmentAct);
     operationToolBar->addAction(splitSegmentAct);
     operationToolBar->addAction(superEdgeAct);

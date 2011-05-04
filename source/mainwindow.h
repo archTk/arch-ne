@@ -71,6 +71,7 @@ public:
 signals:
     void addSegmentPressed();
     void BCPressed();
+    void bendSegmentPressed();
     void blockNodesPressed();
     void caseInfoPressed();
     void closeEventSignal(QCloseEvent* event);
@@ -185,6 +186,7 @@ private:
     QAction* aboutAct;
     QAction* addSegmentAct;
     QAction* BCAct;
+    QAction* bendSegmentAct;
     QAction* blockNodesAct;
     QAction* caseInfoAct;
     QAction* customizeAct;

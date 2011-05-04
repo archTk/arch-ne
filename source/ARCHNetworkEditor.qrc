@@ -37,5 +37,6 @@
         <file>images/importSP.png</file>
         <file>images/showMesh.png</file>
         <file>XMLschema/defaultBC.xml</file>
+        <file>images/bendSegment.png</file>
     </qresource>
 </RCC>

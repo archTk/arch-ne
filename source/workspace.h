@@ -129,6 +129,7 @@ signals:
 public slots:
     void addSegment();
     void applyDefaultMesh();
+    void bendSegment();
     void blockNodes();
     void homeView();
     void info();
@@ -220,6 +221,7 @@ private:
     int edgeMinLength;
 
     int curvingEdgeId;
+    int bendingEdgeId;
     QVector<QPoint> hitEl;
     QVector<QPoint> hitMeshEls;
 
@@ -251,6 +253,7 @@ enum tool {
     information,
     trans,
     results,
+    bendS,
 };
 
 #endif // WORKSPACE_H
