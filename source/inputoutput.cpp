@@ -455,7 +455,16 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
     graphName.append("_graph.xml");
     layout.append("_layout.xml");
 
-
+    QFile test(graphName);
+    if (test.exists()) {
+        QMessageBox::StandardButton ret;
+                ret = QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                                           tr("Are you sure you want to replace the file?"),
+                                           QMessageBox::Yes | QMessageBox::No);
+        if (ret == QMessageBox::No) {
+            return false;
+        }
+    }
 
     QFile networkFile(graphName);
     if (!networkFile.open(QFile::WriteOnly | QFile::Text)) {
