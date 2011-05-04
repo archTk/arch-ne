@@ -160,9 +160,13 @@ bool AppController::saveNetwork()
     bool saved = inputOutput->saveNetwork(fName, wDir, workspace->getGraphLayout(), workspace->getGraphProperties(),
                              workspace->getNetworkProperties(), nodes, edges);
 
-    QString theMessage(tr("Network saved"));
-    emit messageToBeDisplayed(theMessage);
-    emit currentFile(fName);
+
+    if (saved) {
+        emit currentFile(fName);
+        QString theMessage(tr("Network saved"));
+        emit messageToBeDisplayed(theMessage);
+    }
+
     emit restoreCurs();
 
     return saved;

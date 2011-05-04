@@ -27,43 +27,43 @@
 
 class MessageHandler : public QAbstractMessageHandler
 {
-     public:
-         MessageHandler()
-             : QAbstractMessageHandler(0)
-         {
-         }
+   public:
+      MessageHandler()
+         : QAbstractMessageHandler(0)
+      {
+      }
 
-         QString statusMessage() const
-         {
-             return m_description;
-         }
+      QString statusMessage() const
+      {
+         return m_description;
+      }
 
-         int line() const
-         {
-             return m_sourceLocation.line();
-         }
+      int line() const
+      {
+         return m_sourceLocation.line();
+      }
 
-         int column() const
-         {
-             return m_sourceLocation.column();
-         }
+      int column() const
+      {
+         return m_sourceLocation.column();
+      }
 
-     protected:
-         virtual void handleMessage(QtMsgType type, const QString &description,
-                                    const QUrl &identifier, const QSourceLocation &sourceLocation)
-         {
-             Q_UNUSED(type);
-             Q_UNUSED(identifier);
+   protected:
+      virtual void handleMessage(QtMsgType type, const QString &description,
+                                  const QUrl &identifier, const QSourceLocation &sourceLocation)
+      {
+         Q_UNUSED(type);
+         Q_UNUSED(identifier);
 
-             m_messageType = type;
-             m_description = description;
-             m_sourceLocation = sourceLocation;
-         }
+         m_messageType = type;
+         m_description = description;
+         m_sourceLocation = sourceLocation;
+      }
 
-     private:
-         QtMsgType m_messageType;
-         QString m_description;
-         QSourceLocation m_sourceLocation;
+   private:
+      QtMsgType m_messageType;
+      QString m_description;
+      QSourceLocation m_sourceLocation;
 };
 
 DataCollector::DataCollector(QString &cookie,QString &XMLString,QVector<QString> &hiddenItems,QVector<QString> &readOnlyItems,QWidget *parent)
@@ -195,7 +195,6 @@ void DataCollector::loadStack(const int &stackId)
    QAbstractItemModel *model = treeView->model();
    if(model->index(0,0,treeView->rootIndex()).isValid())
       removeRow(model->index(0,0,treeView->rootIndex()));
-   lineCount = 0;
    QDomDocument domDoc;
    domDoc.setContent(undoStack.at(stackId));
    QDomElement rootElement = domDoc.documentElement();
@@ -305,35 +304,34 @@ QStringList DataCollector::fixElementInfo(QList<QString> info)
 int DataCollector::insertChild(bool isAttribute,bool required,QModelIndex index,QString rowFirstCol,
                                QString type,QStringList members,QStringList enumeration,QString value)
 {
-    QAbstractItemModel *model = treeView->model();
-    if (model->columnCount(index) == 0) {
-        if (!model->insertColumn(0, index))
-           return 0;
-    }
+   QAbstractItemModel *model = treeView->model();
+   if (model->columnCount(index) == 0) {
+      if (!model->insertColumn(0, index))
+         return 0;
+   }
 
-    int iRow = model->rowCount(index);
-    if(!isAttribute and iRow > 0){
-        iRow = getInsertionRow(index,rowFirstCol);
-    }
+   int iRow = model->rowCount(index);
+   if(!isAttribute and iRow > 0){
+       iRow = getInsertionRow(index,rowFirstCol);
+   }
 
-    model->insertRow(iRow, index);
-    model->setData(model->index(iRow, 0, index), QVariant(rowFirstCol), Qt::EditRole);
-    model->setData(model->index(iRow, 1, index), QVariant(value), Qt::EditRole);
-    model->setData(model->index(iRow, 3, index), QVariant(type), Qt::EditRole);
-    model->setData(model->index(iRow, 4, index), QVariant(members), Qt::EditRole);
-    model->setData(model->index(iRow, 6, index), QVariant(required), Qt::EditRole);
-    model->setData(model->index(iRow, 10, index), QVariant(enumeration), Qt::EditRole);
-    if (isAttribute){
-        model->setData(model->index(iRow, 2, index), QVariant(isAttribute), Qt::EditRole);
-    } else {
-        model->setData(model->index(iRow, 11, index), QVariant(++lineCount), Qt::EditRole);
-        QStringList splitList;
-        for (int i=0;i<members.size();++i)
-            splitList.append(members.at(i).split(",")[0]);
-        model->setData(model->index(iRow, 5, index), QVariant(splitList), Qt::EditRole);
-        updateLeftMembers(index);
-    }
-    return iRow;
+   model->insertRow(iRow, index);
+   model->setData(model->index(iRow, 0, index), QVariant(rowFirstCol), Qt::EditRole);
+   model->setData(model->index(iRow, 1, index), QVariant(value), Qt::EditRole);
+   model->setData(model->index(iRow, 3, index), QVariant(type), Qt::EditRole);
+   model->setData(model->index(iRow, 4, index), QVariant(members), Qt::EditRole);
+   model->setData(model->index(iRow, 6, index), QVariant(required), Qt::EditRole);
+   model->setData(model->index(iRow, 10, index), QVariant(enumeration), Qt::EditRole);
+   if (isAttribute){
+      model->setData(model->index(iRow, 2, index), QVariant(isAttribute), Qt::EditRole);
+   } else {
+      QStringList splitList;
+      for (int i=0;i<members.size();++i)
+         splitList.append(members.at(i).split(",")[0]);
+      model->setData(model->index(iRow, 5, index), QVariant(splitList), Qt::EditRole);
+      updateLeftMembers(index);
+   }
+   return iRow;
 }
 
 void DataCollector::updateHistory()
@@ -345,58 +343,58 @@ void DataCollector::updateHistory()
 
 int DataCollector::getInsertionRow(QModelIndex &index,QString &iName)
 {
-    QAbstractItemModel *model = treeView->model();
-    QStringList currentMembers;
-    for(int i=0;i<model->rowCount(index);++i){
-        if (!model->data(model->index(i,2,index)).toBool())
-            currentMembers.append(model->data(model->index(i,0,index)).toString());
-    }
-    if (currentMembers.isEmpty())
-        return model->rowCount(index);
- 
-    QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
-    QStringList splitList;
-    for (int i=0;i<list.size();++i)
-        splitList.append(list.at(i).split(",")[0]);
+   QAbstractItemModel *model = treeView->model();
+   QStringList currentMembers;
+   for(int i=0;i<model->rowCount(index);++i){
+      if (!model->data(model->index(i,2,index)).toBool())
+         currentMembers.append(model->data(model->index(i,0,index)).toString());
+   }
+   if (currentMembers.isEmpty())
+      return model->rowCount(index);
 
-    int minIndex = model->rowCount(index) - currentMembers.size();
-    for(int i=splitList.indexOf(iName);i>-1;--i){
-        if(currentMembers.lastIndexOf(splitList.at(i))>=0){
-            return minIndex + currentMembers.lastIndexOf(splitList.at(i))+1;
-        }
-    }
-    return minIndex;
+   QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
+   QStringList splitList;
+   for (int i=0;i<list.size();++i)
+      splitList.append(list.at(i).split(",")[0]);
+
+   int minIndex = model->rowCount(index) - currentMembers.size();
+   for(int i=splitList.indexOf(iName);i>-1;--i){
+      if(currentMembers.lastIndexOf(splitList.at(i))>=0){
+         return minIndex + currentMembers.lastIndexOf(splitList.at(i))+1;
+      }
+   }
+   return minIndex;
 }
 
 void DataCollector::updateLeftMembers(QModelIndex &index)
 {
-    QAbstractItemModel *model = treeView->model();
-    QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
-    QStringList splitList;
-    for (int i=0;i<list.size();++i)
-        splitList.append(list.at(i).split(",")[0]);
-    if(model->rowCount(index) == 0){
-        model->setData(model->index(index.row(), 5, index.parent()), QVariant(splitList), Qt::EditRole);
-        return;
-    }
+   QAbstractItemModel *model = treeView->model();
+   QStringList list = model->data(model->index(index.row(),4,index.parent())).toStringList();
+   QStringList splitList;
+   for (int i=0;i<list.size();++i)
+      splitList.append(list.at(i).split(",")[0]);
+   if(model->rowCount(index) == 0){
+      model->setData(model->index(index.row(), 5, index.parent()), QVariant(splitList), Qt::EditRole);
+      return;
+   }
 
-    QStringList currentMembers;
-    for(int i=0;i<model->rowCount(index);++i){
-        if (!model->data(model->index(i,2,index)).toBool())
-            currentMembers.append(model->data(model->index(i,0,index)).toString());
-    }
+   QStringList currentMembers;
+   for(int i=0;i<model->rowCount(index);++i){
+      if (!model->data(model->index(i,2,index)).toBool())
+         currentMembers.append(model->data(model->index(i,0,index)).toString());
+   }
 
-    QStringList mNames;
-    for(int i=0;i<list.size();++i){
-        if (list.at(i).split(",")[2] == "unbounded" ){
-            mNames.append(list.at(i).split(",")[0]);
-        } else {
-            int maxOccurs = list.at(i).split(",")[2].toInt();
-            if(currentMembers.count(list.at(i).split(",")[0]) < maxOccurs)
-                mNames.append(list.at(i).split(",")[0]);
-        }
-    }
-    model->setData(model->index(index.row(), 5, index.parent()), QVariant(mNames), Qt::EditRole);
+   QStringList mNames;
+   for(int i=0;i<list.size();++i){
+      if (list.at(i).split(",")[2] == "unbounded" ){
+         mNames.append(list.at(i).split(",")[0]);
+      } else {
+         int maxOccurs = list.at(i).split(",")[2].toInt();
+         if(currentMembers.count(list.at(i).split(",")[0]) < maxOccurs)
+             mNames.append(list.at(i).split(",")[0]);
+      }
+   }
+   model->setData(model->index(index.row(), 5, index.parent()), QVariant(mNames), Qt::EditRole);
 }
 
 void DataCollector::updateTools()
@@ -419,7 +417,6 @@ void DataCollector::showDomToggled()
 {
     if(actionShowDom->isChecked()){
         workingDomText->show();
-        //workingDomText->repaint();
     } else {
         workingDomText->hide();
     }
@@ -530,39 +527,47 @@ void DataCollector::updateDomStatus(bool newStack)
     QDomDocument *doc = new QDomDocument(); 
     QDomElement rootElement = doc->createElement(irootName);
     doc->appendChild(rootElement);
+    lineCount=1;
     TreeToDom(doc,rootElement,model->index(0,0,treeView->rootIndex()));
     workingDom = doc->toString();
     workingDomText->setPlainText(workingDom);
     domStatus = validateDom(workingDom);
     if (newStack)
         updateHistory();
-    //workingDomText->repaint();
 }
 
 void DataCollector::TreeToDom(QDomDocument *doc,QDomElement iDomElement,QModelIndex index)
 {
-    QAbstractItemModel *model = treeView->model();
-    int rowCount = model->rowCount(index);
-    for (int i=0;i<rowCount;++i){
-        QString iName = model->data(model->index(i,0,index)).toString();
-        QString iValue = model->data(model->index(i,1,index)).toString();
-        if (model->data(model->index(i,2,index)).toBool()){
-            if (!iValue.isEmpty())
-                iDomElement.setAttribute(iName,iValue);
-        } else {
-            if (!iValue.isEmpty()){
-                QDomElement iTag = doc->createElement(iName);
-                QDomText textNode = doc->createTextNode(iValue);
-                iTag.appendChild(textNode);
-                TreeToDom(doc, iTag,model->index(i,0,index));
-                iDomElement.appendChild(iTag);
-            } else {
-                QDomElement iTag = doc->createElement(iName);
-                TreeToDom(doc, iTag,model->index(i,0,index));
-                iDomElement.appendChild(iTag);
-            }
-        }
-    }
+   QAbstractItemModel *model = treeView->model();
+   int rowCount = model->rowCount(index);
+   int elsCount=0;
+   avoidUpdateFlag=true;
+   model->setData(model->index(index.row(), 11, index.parent()), QVariant(lineCount), Qt::EditRole);
+   avoidUpdateFlag=false;
+   for (int i=0;i<rowCount;++i){
+      QString iName = model->data(model->index(i,0,index)).toString();
+      QString iValue = model->data(model->index(i,1,index)).toString();
+      if (model->data(model->index(i,2,index)).toBool()){
+         if (!iValue.isEmpty())
+            iDomElement.setAttribute(iName,iValue);
+      } else {
+			++lineCount;
+         if (!iValue.isEmpty()){
+            QDomElement iTag = doc->createElement(iName);
+            QDomText textNode = doc->createTextNode(iValue);
+            iTag.appendChild(textNode);
+            TreeToDom(doc, iTag,model->index(i,0,index));
+            iDomElement.appendChild(iTag);
+         } else {
+            QDomElement iTag = doc->createElement(iName);
+            TreeToDom(doc, iTag,model->index(i,0,index));
+            iDomElement.appendChild(iTag);
+         }
+         ++elsCount;
+      }
+   }
+   if (elsCount>0)
+      ++lineCount;
 }
 
 void DataCollector::DomToTree(QDomElement iDomElement,QString iParentType,QModelIndex index,bool required)
@@ -571,7 +576,7 @@ void DataCollector::DomToTree(QDomElement iDomElement,QString iParentType,QModel
     QString childText = "";
 
     if(iDomElement.firstChild().isText())
-        childText.append(iDomElement.text());
+        childText.append(iDomElement.text().replace("\n",""));
 
     QList<QStringList> iInfo = getElementInfo(iDomElement.tagName(),iParentType);
     QStringList anyMember = iInfo.at(2);
@@ -685,7 +690,7 @@ bool DataCollector::validateDom(QString &DomString)
     detailStatusText->setHtml(messageHandler.statusMessage());
     highlightError(messageHandler.line());
     detailStatusText->show();
-    //emit(setErrorLine(messageHandler.line()));
+    emit(setErrorLine(messageHandler.line()));
     return false;
 }
 
