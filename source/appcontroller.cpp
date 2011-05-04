@@ -175,7 +175,8 @@ bool AppController::saveAs()
 
     QFileInfo fileInfo(fileName);
     wDir = fileInfo.path();
-    fName = fileName;
+    fName = fileInfo.fileName();
+
     return saveNetwork();
 }
 

@@ -822,10 +822,10 @@ void Workspace::mouseReleased(QPointF pos)
 {
     mouseButtonPressed = false;
 
-    //QVector<int> nodesIds = getNodesIds();
-    //QVector<int> edgesIds = getEdgesIds();
-    //QMapIterator<QString, int> supportNodesIterator(supportNodes);
-    //QMapIterator<QString, int> supportEdgesIterator(supportEdges);
+    QVector<int> nodesIds = getNodesIds();
+    QVector<int> edgesIds = getEdgesIds();
+    QMapIterator<QString, int> supportNodesIterator(supportNodes);
+    QMapIterator<QString, int> supportEdgesIterator(supportEdges);
 
     QPointF midPos;
     QPoint nodesOfSplittingEdge;
@@ -835,14 +835,17 @@ void Workspace::mouseReleased(QPointF pos)
     QPointF edgeSecondNode;
     QPointF edgeMidPoint;
 
+    QString firstNodeIdString;
+    QString secondNodeIdString;
+
     QPainterPath path;
 
     //QVector<QPoint> edgesWNode;
     //QPointF oldPos;
     //QPointF newPos;
-    //QString key;
+    QString key;
 
-    //QPoint edgesElement;
+    QPoint edgesElement;
 
     QPointF validPos = pos;
 
@@ -879,6 +882,7 @@ void Workspace::mouseReleased(QPointF pos)
                 if (hitEl[0].x() == 1) {      // Hit Elements are nodes.
                     if (hitEl.size() > 1) {
                         if (hitEl[0].y() != supportNodes.value("movingNode")) {
+                            wsout << "hitEl nodeId= " << hitEl[0].y() << endl;
                             graph->setEdgeSecondNode(supportEdges.value("movingEdge"), hitEl[0].y());
                             graph->deleteNode(supportNodes.value("movingNode"));
                             supportNodes.remove("movingNode");
@@ -886,6 +890,10 @@ void Workspace::mouseReleased(QPointF pos)
                     }
                 }
 
+                nodesOfEdge = graph->getNodesOfEdge(supportEdges.value("movingEdge"));
+                firstNodeIdString.setNum(nodesOfEdge.x());
+                secondNodeIdString.setNum(nodesOfEdge.y());
+                graphProperties->createEdge(supportEdges.value("movingEdge"), firstNodeIdString, secondNodeIdString); //To update info in graphProperties.
                 supportEdges.remove("movingEdge");
                 supportNodes.remove("firstNode");
                 supportNodes.remove("movingNode");
@@ -1013,7 +1021,7 @@ void Workspace::mouseReleased(QPointF pos)
         case trans:
             break;
         case information:
-            /*for (int i = 0; i < edgesIds.size(); i++) {
+            for (int i = 0; i < edgesIds.size(); i++) {
                 edgesElement = getNodesOfEdge(edgesIds[i]);
                 wsout << "edge" << edgesIds[i] << " : pointA= " << edgesElement.x() << " pointB= " << edgesElement.y() << endl;
             }
@@ -1029,7 +1037,7 @@ void Workspace::mouseReleased(QPointF pos)
                 supportEdgesIterator.next();
                 key = supportEdgesIterator.key();
                 wsout << key << "SupEdge value: " << supportEdgesIterator.value() << endl;
-            }*/
+            }
 
             if (hitEl[0].x() != -1) {
                 emit dataRequest(hitEl[0]);
@@ -1812,6 +1820,8 @@ int Workspace::createEdge(int nodeAId, int nodeBId)
     QString nodeBIdString;
     nodeBIdString.setNum(nodeBId);
     graphProperties->createEdge(idNewEdge, nodeAIdString, nodeBIdString);
+
+    wsout << "WS::createEdge edgeId= " << idNewEdge << " - firstNode= " << nodeAIdString << " - secondNode= " << nodeBIdString << endl;
 
     return idNewEdge;
 }

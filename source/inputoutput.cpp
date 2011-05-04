@@ -329,6 +329,7 @@ void InputOutput::importBC(NetworkProperties *networkProperties)
 
 void InputOutput::saveGraph(const QString& fName, const QString& wDir, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges)
 {
+    IOout << "IO::saveGraph" << endl;
     QString graphName(fName);
     graphName.prepend(wDir + "/");
     graphName.append("_graph.xml");
@@ -502,8 +503,10 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
     networkResult.append(graphProperties->getSuperedges());
 
     networkResult.append("<edges>\n");
+
     for (int i = 0; i < edges.size(); i++) {
         QString edgeString = graphProperties->getEdgeProperties(edges[i]);
+        //IOout << "IO::saveNetwork edge" << i << " edgeString=" << edgeString << endl;
 
         if (!edgeString.isNull()) {
             networkResult += edgeString;
