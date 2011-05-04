@@ -75,6 +75,7 @@ public slots:
     void openNetwork();
     void resultsDockClosed();
     bool save();
+    bool saveAs();
     void setFNameAndWDir(QString theFName, QString theWDir);
     void setPreferences();
     void showResults(QPoint elementRequest);
@@ -90,7 +91,6 @@ private:
     void loadGraphFromLayout();
     void loadGraphFromGraph();
     bool maybeSave();
-    bool saveAs();
     bool saveNetwork();
     void showMessage(QString theTitle, QString theMessage);
     int uniqueDataRequestKey();

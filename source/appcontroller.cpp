@@ -86,6 +86,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(selectElementsPressed()), workspace, SLOT(selectElements()));
     connect(mainWindow, SIGNAL(setPrefPressed()), this, SLOT(setPreferences()));
     connect(mainWindow, SIGNAL(save()), this, SLOT(save()));
+    connect(mainWindow, SIGNAL(saveAs()), this, SLOT(saveAs()));
     connect(mainWindow, SIGNAL(showGridPressed()), workspace, SLOT(showGrid()));
     connect(mainWindow, SIGNAL(showLabelsPressed()), workspace, SLOT(showLabels()));
     connect(mainWindow, SIGNAL(showMeshPressed()), workspace, SLOT(showMesh()));

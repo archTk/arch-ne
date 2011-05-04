@@ -455,6 +455,8 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
     graphName.append("_graph.xml");
     layout.append("_layout.xml");
 
+
+
     QFile networkFile(graphName);
     if (!networkFile.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(0, tr("ARCHNetworkEditor"),
@@ -463,6 +465,18 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
                              .arg(networkFile.errorString()));
         return false;
     }
+
+//    if (networkFile.exists()) {
+//        IOout << "IO::saveNetwork ocio che esite già!" << endl;
+
+//        QMessageBox::StandardButton ret;
+//        ret = QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+//                                   tr("Are you sure you want to replace the file?"),
+//                                   QMessageBox::Yes | QMessageBox::No);
+//        if (ret == QMessageBox::No) {
+//            return false;
+//        }
+//    }
 
     QFile layoutFile(layout);
     if (!layoutFile.open(QFile::WriteOnly | QFile::Text)) {
@@ -506,7 +520,6 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
 
     for (int i = 0; i < edges.size(); i++) {
         QString edgeString = graphProperties->getEdgeProperties(edges[i]);
-        //IOout << "IO::saveNetwork edge" << i << " edgeString=" << edgeString << endl;
 
         if (!edgeString.isNull()) {
             networkResult += edgeString;

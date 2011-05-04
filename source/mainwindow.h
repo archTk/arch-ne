@@ -100,6 +100,7 @@ signals:
     void resultsDockClosedSig();
     void resultsPressed();
     void save();
+    void saveAs();
     void selectElementsPressed();
     void setPrefPressed();
     void showGridPressed();

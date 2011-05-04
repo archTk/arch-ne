@@ -286,7 +286,7 @@ void MainWindow::createActions()
     saveAsAct = new QAction(tr("Save &As..."), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     saveAsAct->setStatusTip(tr("Save the network under a new name"));
-    connect(saveAsAct, SIGNAL(triggered()), this, SIGNAL(save()));
+    connect(saveAsAct, SIGNAL(triggered()), this, SIGNAL(saveAs()));
 
     exitAct = new QAction(tr("Exit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
