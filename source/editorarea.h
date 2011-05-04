@@ -115,6 +115,8 @@ private:
     QMap<int, QPoint> meshId2GraphId;
 
     int meshElToBeHigh;
+
+    bool isPainting;
 };
 
 #endif // EDITORAREA_H

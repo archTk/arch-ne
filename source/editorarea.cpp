@@ -45,6 +45,8 @@ EditorArea::EditorArea(QWidget *parent)
     edgeDiscretization = 31;    // It defines the divisions on the "Bezier" to position the mesh_element.
 
     meshElToBeHigh = -1;
+
+    isPainting = false;
 }
 
 void EditorArea::setWorkspace(Workspace* theWorkspace)
@@ -59,6 +61,13 @@ Workspace* EditorArea::getWorkspace()
 
 void EditorArea::paintEvent(QPaintEvent*)
 {
+    if (isPainting == true) {
+        cout << "EA::paintEvent already painting" << endl;
+        return;
+    } else {
+        isPainting = true;
+    }
+
     QMap<QString, int> supportNodes(workspace->getSupportNodes());
     QMap<QString, int> supportEdges(workspace->getSupportEdges());
     QVector<int> selectedNodes(workspace->getSelectedNodes());
@@ -168,6 +177,8 @@ void EditorArea::paintEvent(QPaintEvent*)
     if (meshElToBeHigh != -1) {
         paintMeshElToBeHigh(painter);
     }
+
+    isPainting = false;
 }
 
 void EditorArea::zoomIn()
