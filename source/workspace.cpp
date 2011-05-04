@@ -70,6 +70,7 @@ Workspace::Workspace(QObject *parent) :
     selectedTool = selectE;
 
     edgeMinLength = 15;
+    bendingEdgeId = -1;
 
     mouseButtonPressed = false;
     shiftPressed = false;
@@ -97,6 +98,12 @@ Workspace::Workspace(QObject *parent) :
 void Workspace::addSegment()
 {
     selectedTool = addS;
+    clearSelectedAndUpdate();
+}
+
+void Workspace::bendSegment()
+{
+    selectedTool = bendS;
     clearSelectedAndUpdate();
 }
 
@@ -381,6 +388,11 @@ void Workspace::mousePressed(QPointF pos)
                 curvingEdgeId = hitEl[0].y();
             }
             break;
+        case bendS:
+            if (hitEl[0].x() == 2) {            // Hit elements are edges.
+                bendingEdgeId = hitEl[0].y();
+            }
+            break;
         case removeS:
             if (hitEl[0].x() == 2) {              // Hit elements are edges.
                 supportEdges.insert("removingEdge", hitEl[0].y());
@@ -512,6 +524,7 @@ void Workspace::mouseMoved(QPointF pos)
                 break;
             case removeS:
             case superE:
+            case bendS:
                 if (hitEl[0].x() == 2) {            // Hit elements are edges.
                     supportEdges.insert("highlightingEdge", hitEl[0].y());
                 } else {
@@ -600,6 +613,27 @@ void Workspace::mouseMoved(QPointF pos)
                    }
                }
                emit updateSignal();
+               break;
+         case bendS:
+               if (bendingEdgeId != -1) {
+                   nodesOfEdge = graph->getNodesOfEdge(bendingEdgeId);
+                   A = graphLayout->getNodePosition(nodesOfEdge.x());
+                   B = graphLayout->getNodePosition(nodesOfEdge.y());
+
+                   posA = pos - A;
+                   nBA = (B - A) / norm(B - A);
+                   Xp = A + nBA * dot(nBA, posA);
+                   D = posA - nBA * dot(nBA, posA);
+                   d = norm(D);
+                   v = dot((Xp-A), nBA) / norm(B - A);
+
+                   if (((B - A).x() * (pos - A).y() - (B - A).y() * (pos - A).x()) > 0 ) {
+                       graphLayout->setEdgeLayoutParameters(bendingEdgeId, v, -d);
+                   } else {
+                       graphLayout->setEdgeLayoutParameters(bendingEdgeId, v, d);
+                   }
+                   emit updateSignal();
+               }
                break;
          case removeS:
             if (hitEl[0].x() == 2) {      // Hit elements are edges.
@@ -822,10 +856,10 @@ void Workspace::mouseReleased(QPointF pos)
 {
     mouseButtonPressed = false;
 
-    QVector<int> nodesIds = getNodesIds();
-    QVector<int> edgesIds = getEdgesIds();
-    QMapIterator<QString, int> supportNodesIterator(supportNodes);
-    QMapIterator<QString, int> supportEdgesIterator(supportEdges);
+    //QVector<int> nodesIds = getNodesIds();
+    //QVector<int> edgesIds = getEdgesIds();
+    //QMapIterator<QString, int> supportNodesIterator(supportNodes);
+    //QMapIterator<QString, int> supportEdgesIterator(supportEdges);
 
     QPointF midPos;
     QPoint nodesOfSplittingEdge;
@@ -843,9 +877,9 @@ void Workspace::mouseReleased(QPointF pos)
     //QVector<QPoint> edgesWNode;
     //QPointF oldPos;
     //QPointF newPos;
-    QString key;
+    //QString key;
 
-    QPoint edgesElement;
+    //QPoint edgesElement;
 
     QPointF validPos = pos;
 
@@ -882,7 +916,6 @@ void Workspace::mouseReleased(QPointF pos)
                 if (hitEl[0].x() == 1) {      // Hit Elements are nodes.
                     if (hitEl.size() > 1) {
                         if (hitEl[0].y() != supportNodes.value("movingNode")) {
-                            wsout << "hitEl nodeId= " << hitEl[0].y() << endl;
                             graph->setEdgeSecondNode(supportEdges.value("movingEdge"), hitEl[0].y());
                             graph->deleteNode(supportNodes.value("movingNode"));
                             supportNodes.remove("movingNode");
@@ -900,6 +933,13 @@ void Workspace::mouseReleased(QPointF pos)
                 checkTooCloseNodes();
             }
 
+            curvingEdgeId = -1;
+            insertActInHistory(true);
+            emit contentsChanged();
+            emit updateSignal();
+            break;
+        case bendS:
+            bendingEdgeId = -1;
             insertActInHistory(true);
             emit contentsChanged();
             emit updateSignal();
@@ -1021,7 +1061,7 @@ void Workspace::mouseReleased(QPointF pos)
         case trans:
             break;
         case information:
-            for (int i = 0; i < edgesIds.size(); i++) {
+            /*for (int i = 0; i < edgesIds.size(); i++) {
                 edgesElement = getNodesOfEdge(edgesIds[i]);
                 wsout << "edge" << edgesIds[i] << " : pointA= " << edgesElement.x() << " pointB= " << edgesElement.y() << endl;
             }
@@ -1037,7 +1077,7 @@ void Workspace::mouseReleased(QPointF pos)
                 supportEdgesIterator.next();
                 key = supportEdgesIterator.key();
                 wsout << key << "SupEdge value: " << supportEdgesIterator.value() << endl;
-            }
+            }*/
 
             if (hitEl[0].x() != -1) {
                 emit dataRequest(hitEl[0]);
@@ -1820,8 +1860,6 @@ int Workspace::createEdge(int nodeAId, int nodeBId)
     QString nodeBIdString;
     nodeBIdString.setNum(nodeBId);
     graphProperties->createEdge(idNewEdge, nodeAIdString, nodeBIdString);
-
-    wsout << "WS::createEdge edgeId= " << idNewEdge << " - firstNode= " << nodeAIdString << " - secondNode= " << nodeBIdString << endl;
 
     return idNewEdge;
 }

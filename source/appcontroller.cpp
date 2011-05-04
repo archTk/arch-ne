@@ -63,6 +63,7 @@ void AppController::createConnections()
 
     connect(mainWindow, SIGNAL(addSegmentPressed()), workspace, SLOT(addSegment()));
     connect(mainWindow, SIGNAL(BCPressed()), this, SLOT(BCPressed()));
+    connect(mainWindow, SIGNAL(bendSegmentPressed()), workspace, SLOT(bendSegment()));
     connect(mainWindow, SIGNAL(blockNodesPressed()), workspace, SLOT(blockNodes()));
     connect(mainWindow, SIGNAL(caseInfoPressed()), this, SLOT(caseInfoPressed()));
     connect(mainWindow, SIGNAL(closeEventSignal(QCloseEvent*)), this, SLOT(closeEvent(QCloseEvent*)));
