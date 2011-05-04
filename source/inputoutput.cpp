@@ -459,7 +459,8 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
     if (test.exists()) {
         QMessageBox::StandardButton ret;
                 ret = QMessageBox::warning(0, tr("ARCHNetworkEditor"),
-                                           tr("Are you sure you want to replace the file?"),
+                                           tr("The file already exists.\n"
+                                              "Are you sure you want to replace it?"),
                                            QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::No) {
             return false;
