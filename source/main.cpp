@@ -22,10 +22,15 @@
 #include "mainwindow.h"
 #include "appcontroller.h"
 
+#include <iostream>
+#include <QTextStream>
+using namespace std;
+
 extern void qt_set_sequence_auto_mnemonic(bool);
 
 int main(int argc, char *argv[])
 {
+    QTextStream mainOut(stdout);
     Q_INIT_RESOURCE(ARCHNetworkEditor);
 
     qt_set_sequence_auto_mnemonic(true);
@@ -35,6 +40,9 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication app(argc, argv);
+
+    mainOut << argv[1] << endl << argv[2] << endl;
+
     //app.setStyle(new QPlastiqueStyle);
     MainWindow mainWin;
 
@@ -44,6 +52,8 @@ int main(int argc, char *argv[])
     appController.createConnections();
 
     mainWin.clear();
+
+    appController.parseArguments(app.arguments());
 
     mainWin.show();
 

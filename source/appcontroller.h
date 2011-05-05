@@ -39,6 +39,7 @@ class AppController : public QObject
 public:
     explicit AppController(QObject* parent = 0);
 
+    void parseArguments(QStringList args);
     void setMainWindow(MainWindow* mainWin);
     void setEditorArea(EditorArea* theEditorArea);
     void createConnections();

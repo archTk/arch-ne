@@ -47,6 +47,19 @@ AppController::AppController(QObject *parent) :
     workspace = new Workspace;
 }
 
+void AppController::parseArguments(QStringList args)
+{
+    for(int i=0;i<args.size();++i) {
+        if (args.at(i) == "-z" and args.size()> i+1) {
+            if (args.at(i+1) == "in") {
+                editorArea->zoomIn();
+            } else if (args.at(i+1) == "out") {
+                editorArea->zoomOut();
+            }
+        }
+    }
+}
+
 void AppController::setMainWindow(MainWindow* mainWin)
 {
     mainWindow = mainWin;
