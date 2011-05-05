@@ -30,6 +30,10 @@ int main(int argc, char *argv[])
 
     qt_set_sequence_auto_mnemonic(true);
 
+#ifdef Q_WS_X11
+    QApplication::setGraphicsSystem("raster");
+#endif
+
     QApplication app(argc, argv);
     //app.setStyle(new QPlastiqueStyle);
     MainWindow mainWin;
