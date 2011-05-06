@@ -26,6 +26,8 @@
 #include "DataCollector/datacollector.h"
 #include "dock.h"
 #include "resultsdock.h"
+#include "resultschoiceframe.h"
+#include "resultsgroupbox.h"
 #include "resultsview.h"
 
 #include <QTextStream>
@@ -99,26 +101,7 @@ void MainWindow::insertDataCollectorToDock(DataCollector* theDataCollector, QPoi
 
 void MainWindow::insertResultsViewToResultsDock(ResultsView* theResultsView, QPoint elementRequest)
 {
-    QString element;
-
-    /*if (elementRequest.x() == 1) {
-        element = "node ";
-    } else if (elementRequest.x() == 2) {
-        element = "edge ";
-    }*/
-
-    element = "MeshNode ";
-
-    QString idString;
-    idString.setNum(elementRequest.y());
-    element += idString;
-
-    resultsViewList.insert(theResultsView, elementRequest);
-
-    resultsTabs->insertTab(0, theResultsView, element);
-    resultsTabs->setCurrentWidget(theResultsView);
-    //emit editingEl2Ws(elementRequest);
-    resultsDock->setWidget(resultsTabs);
+    resultsGroupBox->addResultsView(theResultsView, elementRequest);
 }
 
 void MainWindow::removeAllDataCollectorFromDock()
@@ -131,10 +114,11 @@ void MainWindow::removeAllDataCollectorFromDock()
 
 void MainWindow::removeAllResultsViewFromResultsDock()
 {
-    resultsTabs->clear();
-    resultsViewList.clear();
-    QPoint temp(-1, -1);
-    emit editingEl2Ws(temp);
+    resultsGroupBox->removeAllResultsViewFromResultsDock();
+    //resultsTabs->clear();
+    //resultsViewList.clear();
+    //QPoint temp(-1, -1);
+    //emit editingEl2Ws(temp);
 }
 
 void MainWindow::removeDataCollectorFromDock()
@@ -148,11 +132,12 @@ void MainWindow::removeDataCollectorFromDock()
 
 void MainWindow::removeResultsViewFromResultsDock()
 {
-    resultsViewList.remove(resultsTabs->currentWidget());
-    resultsTabs->removeTab(resultsTabs->currentIndex());
-    if (resultsTabs->count() == 0) {
-        hideResultsDock();
-    }
+    resultsGroupBox->removeResultsViewFromResultsDock();
+    //resultsViewList.remove(resultsTabs->currentWidget());
+    //resultsTabs->removeTab(resultsTabs->currentIndex());
+    //if (resultsTabs->count() == 0) {
+    //    hideResultsDock();
+    //}
 }
 
 void MainWindow::setPageInTab(QWidget* theDataCollector)
@@ -163,8 +148,9 @@ void MainWindow::setPageInTab(QWidget* theDataCollector)
 
 void MainWindow::setPageInResultsTab(QWidget *theResultsView)
 {
-    resultsTabs->setCurrentWidget(theResultsView);
-    emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
+    resultsGroupBox->setPageInResultsTab(theResultsView);
+    //resultsTabs->setCurrentWidget(theResultsView);
+    //emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
 }
 
 void MainWindow::tabsContentChanged()
@@ -174,8 +160,8 @@ void MainWindow::tabsContentChanged()
 
 void MainWindow::resultsTabsContentChanged()
 {
-    editorArea->setMeshElToBeHigh(resultsViewList.value(resultsTabs->currentWidget()).y());
-    setPageInTab(dataCollectorList.key(editorArea->getGraphEl(resultsViewList.value(resultsTabs->currentWidget()).y())));
+    editorArea->setMeshElToBeHigh(resultsGroupBox->currVListValue().y());
+    setPageInTab(dataCollectorList.key(editorArea->getGraphEl((resultsGroupBox->currVListValue()).y())));
 }
 
 void MainWindow::mouseEnteredInDock()
@@ -185,8 +171,12 @@ void MainWindow::mouseEnteredInDock()
 
 void MainWindow::mouseEnteredInResultsDock()
 {
-    editorArea->setMeshElToBeHigh(resultsViewList.value(resultsTabs->currentWidget()).y());
-    setPageInTab(dataCollectorList.key(editorArea->getGraphEl(resultsViewList.value(resultsTabs->currentWidget()).y())));
+    if (resultsGroupBox->resultsVList().isEmpty()) {
+        return;
+    }
+
+    //editorArea->setMeshElToBeHigh(resultsGroupBox->resultsVList().value((resultsGroupBox->currVListValue()).y()));
+    //setPageInTab(dataCollectorList.key(editorArea->getGraphEl((resultsGroupBox->currVListValue()).y()));
 }
 
 void MainWindow::mouseLeftDock()
@@ -225,15 +215,15 @@ void MainWindow::elementsBeenHit(QVector<QPoint> hitEls)
 
 void MainWindow::meshElsBeenHit(QVector<QPoint> hitMeshEls)
 {
-    if (hitMeshEls[0].x() != -1) {
-        QMapIterator<QWidget*, QPoint> resultsViewIter(resultsViewList);
-        while (resultsViewIter.hasNext()) {
-            resultsViewIter.next();
-            if (resultsViewIter.value() == hitMeshEls[0]) {
-                resultsTabs->setCurrentWidget(resultsViewIter.key());
-            }
-        }
-    }
+//    if (hitMeshEls[0].x() != -1) {
+//        QMapIterator<QWidget*, QPoint> resultsViewIter(resultsViewList);
+//        while (resultsViewIter.hasNext()) {
+//            resultsViewIter.next();
+//            if (resultsViewIter.value() == hitMeshEls[0]) {
+//                resultsTabs->setCurrentWidget(resultsViewIter.key());
+//            }
+//        }
+//    }
 }
 
 void MainWindow::hideDock()
@@ -254,7 +244,7 @@ void MainWindow::showDock()
 
 void MainWindow::showResultsDock()
 {
-    resultsDock->setMinimumSize(100, 100);
+    //resultsDock->setMinimumSize(150, 100);
     resultsDock->show();
 }
 
@@ -589,8 +579,13 @@ void MainWindow::createDockWindows()
     addDockWidget(Qt::RightDockWidgetArea, dock);
     dock->hide();
 
+    resultsGroupBox = new ResultsGroupBox(this);
+    connect(resultsGroupBox, SIGNAL(visualizingEl2Ws(QPoint)), this, SIGNAL(editingEl2Ws(QPoint)));
+
     resultsDock = new ResultsDock(this);
     resultsDock->setWindowTitle("Results");
+    resultsDock->setWidget(resultsGroupBox);
+
     connect(resultsDock, SIGNAL(mouseEnteredInResultsDock()), this, SLOT(mouseEnteredInResultsDock()));
     connect(resultsDock, SIGNAL(mouseLeftResultsDock()), this, SLOT(mouseLeftResultsDock()));
     connect(resultsDock, SIGNAL(resultsDockClosed()), this, SLOT(resultsDockClosed()));
@@ -620,53 +615,6 @@ void MainWindow::writeSettings()
     settings.setValue("size", size());
     settings.setValue("operationToolBarPosition", toolBarArea(operationToolBar));
 }
-
-//bool MainWindow::maybeSave()
-//{
-//    if (isWindowModified()) {
-//        QMessageBox::StandardButton ret;
-//        ret = QMessageBox::warning(this, tr("ARCHNetworkEditor"),
-//                                   tr("The network has been modified.\n"
-//                                      "Do you want to save the changes?"),
-//                                   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-//        if (ret == QMessageBox::Save) {
-//            //return save();////
-//            return true;
-//        } else if (ret == QMessageBox::Cancel) {
-//            return false;
-//        }
-//    }
-//    return true;
-//}
-
-//void MainWindow::loadNetwork()
-//{
-//    clear();
-//    //emit initNewCase();
-//    emit loadGraphFromLayout();
-//}
-
-//void MainWindow::loadNetWithoutLayout()
-//{
-//    clear();
-//    //emit initNewCase();
-//    emit loadGraphFromGraph();
-//}
-
-//void MainWindow::loadMesh()
-//{
-//    emit meshToBeLoaded();
-//}
-
-//bool MainWindow::saveFile()
-//{
-//    emit saveNetwork();
-
-//    curFile = fileName;
-
-//    setWindowModified(false);
-//    return true;
-//}
 
 void MainWindow::setCurrentFile(const QString& fileName)
 {
@@ -729,41 +677,10 @@ void MainWindow::setCurrentFile(const QString& fileName)
 //    emit graphToBeCustomized(curFile);
 //}
 
-//bool MainWindow::save()
-//{
-//    if (curFile.isEmpty()) {
-//        return saveAs();
-//    } else {
-//        return saveFile(curFile);
-//    }
-//}
-
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     emit closeEventSignal(event);
-
-//    if (maybeSave()) {
-//        writeSettings();
-//        event->accept();
-//    } else {
-//        event->ignore();
-//    }
 }
-
-//bool MainWindow::saveAs()
-//{
-//    QString fileName = QFileDialog::getSaveFileName(this);
-//    if (fileName.isEmpty()) {
-//        return false;
-//    }
-
-//    return saveFile(fileName);
-//}
-
-//void MainWindow::simulatePressed()
-//{
-//    emit graphToBeSimulated(curFile);
-//}
 
 void MainWindow::about()
 {
@@ -855,7 +772,7 @@ void MainWindow::clear()
     hideDock();
     hideResultsDock();
     dataCollectorList.clear();
-    resultsViewList.clear();
+    resultsGroupBox->clear();
 }
 
 void MainWindow::showStatusBarMessage(QString theMessage)

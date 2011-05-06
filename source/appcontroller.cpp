@@ -83,6 +83,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
     connect(mainWindow, SIGNAL(resultsDockClosedSig()), this, SLOT(resultsDockClosed()));
+    connect(mainWindow, SIGNAL(resultsPressed()), this, SLOT(showResultsDock()));
     connect(mainWindow, SIGNAL(resultsPressed()), workspace, SLOT(resultsRequest()));
     connect(mainWindow, SIGNAL(selectElementsPressed()), workspace, SLOT(selectElements()));
     connect(mainWindow, SIGNAL(setPrefPressed()), this, SLOT(setPreferences()));
@@ -375,6 +376,10 @@ void AppController::errorFromExternal(QProcess::ProcessError)
 
 void AppController::BCPressed()
 {
+    if (fName.isEmpty()) {
+        appout << "Appc::BCPressed fName is null" << endl;
+    }
+
     QPoint elementRequest(3, 0);
     QString XMLString;
     XMLString = workspace->getBCXML();
@@ -522,6 +527,7 @@ void AppController::abortSimulation()
     appout << "AppC::abortSmulation" << endl;
     pyNS->kill();
     infoDialog->done(1);
+    emit restoreCurs();
 }
 
 void AppController::setFNameAndWDir(QString theFName, QString theWDir)
@@ -566,6 +572,11 @@ int AppController::uniqueResultsRequestKey()
         incrementalResultsRequest++;
     }
     return incrementalResultsRequest;
+}
+
+void AppController::showResultsDock()
+{
+    mainWindow->showResultsDock();
 }
 
 void AppController::showResults(QPoint elementRequest)
@@ -623,7 +634,6 @@ void AppController::showResults(QPoint elementRequest)
     resultsViewList.insert(requestKey, resultsView);
 
     mainWindow->insertResultsViewToResultsDock(resultsView, elementRequest);
-    mainWindow->showResultsDock();
 }
 
 void AppController::dataRequest(QPoint elementRequest)

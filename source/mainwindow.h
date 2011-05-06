@@ -34,6 +34,7 @@ class QString;
 
 class EditorArea;
 class DataCollector;
+class ResultsGroupBox;
 
 class MainWindow : public QMainWindow
 {
@@ -168,6 +169,7 @@ private:
     QDockWidget* resultsDock;
     QTabWidget* tabs;
     QTabWidget* resultsTabs;
+    ResultsGroupBox* resultsGroupBox;
     EditorArea* editorArea;
 
     //QString curFile;////
@@ -225,7 +227,6 @@ private:
     QAction* zoomOutAct;
 
     QMap<QWidget*, QPoint> dataCollectorList;
-    QMap<QWidget*, QPoint> resultsViewList;
 };
 
 #endif // MAINWINDOW_H

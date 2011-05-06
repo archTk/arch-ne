@@ -79,6 +79,7 @@ public slots:
     void setFNameAndWDir(QString theFName, QString theWDir);
     void setPreferences();
     void showResults(QPoint elementRequest);
+    void showResultsDock();
     void simulateGraph();
     void simulationHasBeenPerformed();
 

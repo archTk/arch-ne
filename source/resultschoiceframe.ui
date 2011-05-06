@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ResultsChoiceFrame</class>
+ <widget class="QFrame" name="ResultsChoiceFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>200</width>
+    <height>200</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Frame</string>
+  </property>
+  <property name="frameShape">
+   <enum>QFrame::NoFrame</enum>
+  </property>
+  <property name="frameShadow">
+   <enum>QFrame::Raised</enum>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QComboBox" name="resultsCombo">
+     <item>
+      <property name="text">
+       <string>Mean Pressure</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Max Pressure</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Min Pressure</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mean Flow</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Max Flow</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Min Flow</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mean WSS</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Max WSS</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Min WSS</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

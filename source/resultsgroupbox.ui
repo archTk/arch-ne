@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<class>ResultsGroupBox</class>
+<widget class="QWidget" name="ResultsGroupBox">
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>330</width>
+            <height>496</height>
+        </rect>
+    </property>
+    <property name="styleSheet">
+        <string notr="true">
+        </string>
+    </property>
+    <layout class="QVBoxLayout" name="vboxLayout">
+        <property name="margin"><number>0</number></property>
+        <property name="spacing"><number>0</number></property>
+        <item>
+            <widget class="QSplitter" name="splitter">
+                <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+                <property name="orientation"><enum>Qt::Vertical</enum></property>
+                    <widget class="QTabWidget" name="resTabs">
+                    </widget>
+                    <widget class="ResultsChoiceFrame" name="resultsChoiceFrame">
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>0</y>
+                                <width>330</width>
+                                <height>30</height>
+                            </rect>
+                        </property>
+                    </widget>
+            </widget>
+        </item>
+    </layout>
+</widget>
+<connections/>
+</ui>
