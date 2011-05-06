@@ -46,6 +46,7 @@ public:
     QMap<QWidget*, QPoint> resultsVList();
 
 signals:
+    void result2BeDisaplyedChanged(int theResult);
     void visualizingEl2Ws(QPoint editingElement);
 
 private:

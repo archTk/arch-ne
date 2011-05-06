@@ -28,6 +28,7 @@ ResultsGroupBox::ResultsGroupBox(QWidget *parent) :
 {
     //Q_INIT_RESOURCE(ResultsGroupBox);
     setupUi(this);
+    connect(resultsChoiceFrame, SIGNAL(res2BeDisplayedChanged(int)), this, SIGNAL(result2BeDisaplyedChanged(int)));
 
     resTabs->hide();
 }

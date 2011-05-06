@@ -99,6 +99,7 @@ signals:
     void openNetwork();
     void redoPressed();
     void removeSegmentPressed();
+    void resultToDisplay(int theResult);
     void resultsDockClosedSig();
     void resultsPressed();
     void save();

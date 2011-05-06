@@ -43,6 +43,7 @@ AppController::AppController(QObject *parent) :
 {
     incrementalDataRequest = 0;
     incrementalResultsRequest = 0;
+    resToBeDisplayed = 0; // 0 = No result.
 
     workspace = new Workspace;
 }
@@ -82,6 +83,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(openNetwork()), this, SLOT(openNetwork()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
+    connect(mainWindow, SIGNAL(resultToDisplay(int)), this, SLOT(setResult2Display(int)));
     connect(mainWindow, SIGNAL(resultsDockClosedSig()), this, SLOT(resultsDockClosed()));
     connect(mainWindow, SIGNAL(resultsPressed()), this, SLOT(showResultsDock()));
     connect(mainWindow, SIGNAL(resultsPressed()), workspace, SLOT(resultsRequest()));
@@ -634,6 +636,11 @@ void AppController::showResults(QPoint elementRequest)
     resultsViewList.insert(requestKey, resultsView);
 
     mainWindow->insertResultsViewToResultsDock(resultsView, elementRequest);
+}
+
+void AppController::setResult2Display(int theResult)
+{
+    resToBeDisplayed = theResult;
 }
 
 void AppController::dataRequest(QPoint elementRequest)

@@ -18,9 +18,22 @@
 
 #include "resultschoiceframe.h"
 
+#include <QTextStream>
+using namespace std;
+
+QTextStream choiceOut(stdout);
+
 ResultsChoiceFrame::ResultsChoiceFrame(QWidget *parent) :
     QFrame(parent)
 {
     setupUi(this);
     resultsCombo->setCurrentIndex(5);
+
+    connect(resultsCombo, SIGNAL(activated(int)), this, SLOT(changeDisplayedResult(int)));
+}
+
+void ResultsChoiceFrame::changeDisplayedResult(int newDisplayedResult)
+{
+    choiceOut << "ResultsChoiceFrame::changeDisplayedResults newResults= " << newDisplayedResult << endl;
+    emit res2BeDisplayedChanged(newDisplayedResult);
 }

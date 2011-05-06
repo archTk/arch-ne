@@ -33,6 +33,12 @@ class ResultsChoiceFrame : public QFrame, private Ui::ResultsChoiceFrame
 public:
     explicit ResultsChoiceFrame(QWidget *parent = 0);
 
+signals:
+    void res2BeDisplayedChanged(int theResults);
+
+public slots:
+    void changeDisplayedResult(int newDisplayedResult);
+
 private:
 
 };

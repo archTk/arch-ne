@@ -78,6 +78,7 @@ public slots:
     bool saveAs();
     void setFNameAndWDir(QString theFName, QString theWDir);
     void setPreferences();
+    void setResult2Display(int theResult);
     void showResults(QPoint elementRequest);
     void showResultsDock();
     void simulateGraph();
@@ -118,6 +119,8 @@ private:
     QString wDir;   // Working directory.
 
     bool checkPaths(QString pythonPath, QString pyNSPath);
+
+    int resToBeDisplayed;
 };
 
 #endif // APPCONTROLLER_H

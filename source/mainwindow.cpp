@@ -581,6 +581,7 @@ void MainWindow::createDockWindows()
 
     resultsGroupBox = new ResultsGroupBox(this);
     connect(resultsGroupBox, SIGNAL(visualizingEl2Ws(QPoint)), this, SIGNAL(editingEl2Ws(QPoint)));
+    connect(resultsGroupBox, SIGNAL(result2BeDisaplyedChanged(int)), this, SIGNAL(resultToDisplay(int)));
 
     resultsDock = new ResultsDock(this);
     resultsDock->setWindowTitle("Results");
