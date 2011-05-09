@@ -777,6 +777,7 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
             QDomNode solElChild = solEl.firstChild();
 
             if (solElChild.nodeName() == "value") {
+                tempVector.clear();
                 QDomElement valueEl = solEl.firstChildElement("value");
                 while (!valueEl.isNull()) {
                     QString s = valueEl.attribute("s");
@@ -798,6 +799,7 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
                     valueEl = valueEl.nextSiblingElement("value");
                 }
             } else if (solElChild.nodeName() == "scalar") {
+                tempVector.clear();
                 QDomElement scalarEl = solEl.firstChildElement("scalar");
                 float sValue;
                 sValue = 0.5;
