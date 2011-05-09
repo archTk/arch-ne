@@ -764,6 +764,7 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
 
     while (!resultsElement.isNull()) {
         QString attrId = resultsElement.attribute("id");
+        IOout << "          edgeId=" << attrId << endl;
         int edgeId = attrId.toInt();
 
         QDomElement solution = resultsElement.firstChildElement("solution");
@@ -771,22 +772,39 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
 
         while (!solEl.isNull()) {
             QString solElString = solEl.nodeName();
+            IOout << "solEl= " << solElString << endl;
 
-            QDomElement valueEl = solEl.firstChildElement("value");
+            QDomNode solElChild = solEl.firstChild();
 
-            while (!valueEl.isNull()) {
-                QString s = valueEl.attribute("s", "edgeValue");
-                QDomElement scalarEl = valueEl.firstChildElement("scalar");
-                QString scalarString;
-                QTextStream scalarStream(&scalarString);
-                scalarEl.save(scalarStream, 4);
+            if (solElChild.nodeName() == "value") {
+                QDomElement valueEl = solEl.firstChildElement("value");
+                while (!valueEl.isNull()) {
+                    QString s = valueEl.attribute("s");
 
-                float sValue;
-                if (s == "edgeValue") {
-                    sValue = 0.5;
-                } else {
-                    sValue = s.toFloat();
+                    QDomElement scalarEl = valueEl.firstChildElement("scalar");
+                    QString scalarString = scalarEl.text();
+
+                    float scalarValue;
+                    scalarValue = scalarString.toFloat();
+
+                    QPointF temp;
+                    temp.setX(s.toFloat());
+                    temp.setY(scalarValue);
+
+                    tempVector << temp;
+                    IOout << "s=" << temp.x();
+                    IOout << " scalar=" << temp.y() << endl;
+
+                    valueEl = valueEl.nextSiblingElement("value");
                 }
+            } else if (solElChild.nodeName() == "scalar") {
+                QDomElement scalarEl = solEl.firstChildElement("scalar");
+                float sValue;
+                sValue = 0.5;
+
+                QString scalarString = scalarEl.text();
+                //QTextStream scalarStream(&scalarString);
+                //scalarEl.save(scalarStream, 4);
 
                 float scalarValue;
                 scalarValue = scalarString.toFloat();
@@ -795,9 +813,10 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
                 temp.setX(sValue);
                 temp.setY(scalarValue);
 
-                tempVector << temp;
+                IOout << "s= " << temp.x();
+                IOout << " scalar=" << temp.y() << endl;
 
-                valueEl = valueEl.nextSiblingElement("value");
+                tempVector << temp;
             }
 
             tempMap.insert(solElString, tempVector);

@@ -25,6 +25,7 @@
 #include <QFile>
 #include <QMap>
 #include <QProcess>
+#include <QVector>
 
 class InfoDialog;
 class MainWindow;
@@ -133,6 +134,7 @@ private:
                             // 8 = Max WSS
                             // 9 = Min WSS.
 
+    QMap<int, QMap<QString, QVector<QPointF> > > simResultsMap;
 };
 
 #endif // APPCONTROLLER_H

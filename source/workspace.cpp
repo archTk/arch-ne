@@ -1809,6 +1809,7 @@ void Workspace::unravelNet()
 
 void Workspace::setResultsMap(QMap<int, QMap<QString, QVector<QPointF> > > theResultsMap)
 {
+    wsout << "WS::setResultsOut" << endl;
     resultsMap = theResultsMap;
 }
 

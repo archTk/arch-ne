@@ -913,9 +913,7 @@ void EditorArea::paintLabels(QPainter& painter)
 
 void EditorArea::paintResults(QPainter &painter)
 {
-    QVector<int> edgesIds = workspace->getEdgesIds();
-    QMap<int, QVector<QPointF> > resultsMap;
-    resultsMap = workspace->getResultsMap();
+    /*QVector<int> edgesIds = workspace->getEdgesIds();
 
     QString temp;
 
@@ -935,6 +933,7 @@ void EditorArea::paintResults(QPainter &painter)
     }
 
     for (int i = 0; i < edgesIds.size(); i++) {
+        QPointF res;
         float s = 0.5;
 
         int t = 0;
@@ -956,7 +955,7 @@ void EditorArea::paintResults(QPainter &painter)
         painter.translate(pointPos.x() + x, pointPos.y());
         painter.drawText(0, 0, labelW, labelH, Qt::AlignLeft | Qt::AlignVCenter, temp);
         painter.translate(- pointPos.x() - x, - pointPos.y());
-    }
+    }*/
 }
 
 QPointF EditorArea::graph2screen(QPointF graphCoord)

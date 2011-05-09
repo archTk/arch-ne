@@ -541,13 +541,35 @@ void AppController::populateResDataStructure()
 
     QString idPat;
     idPat = workspace->getIdPat();
-    xmlOut = idPat + "_" + fName + "_results.xml";
+    xmlOut = wDir +"/" + idPat + "_" + fName + "_results.xml";
+    appout << "AppC::populateResDataStructure xmlout= " << xmlOut << endl;
 
     InputOutput* inputOutput = new InputOutput();
     workspace->setResultsMap(inputOutput->loadResData(xmlOut));
 
-    QMap<QString, QVector<QPointF> > temp;
-    //temp = (workspace->getResultsMap()).value("")
+/*
+    simResultsMap = workspace->getResultsMap();
+    QMap<QString, QVector<QPointF> > elResultsMap;
+    QVector<QPointF> resultsV;
+
+    QMapIterator<int, QMap<QString, QVector<QPointF> > > simResultsIter(simResultsMap);
+
+    while (simResultsIter.hasNext()) {
+        simResultsIter.next();
+        appout << "result edgeId= " << simResultsIter.key() << " " ;
+
+        elResultsMap = simResultsMap.value(simResultsIter.key());
+        QMapIterator<QString, QVector<QPointF > > elResultsIter(elResultsMap);
+
+        while (elResultsIter.hasNext()) {
+            elResultsIter.next();
+            appout << "elResult= " << elResultsIter.key() << " ";
+            resultsV = elResultsIter.value();
+            for (int i = 0; i < resultsV.count(); i++) {
+                appout << "s" << i << "= " << resultsV[i].x() << " value=" << resultsV[i].y() << endl;
+            }
+        }
+    }*/
 }
 
 //void AppController::insertResultString(QStringList theResult)
