@@ -427,6 +427,7 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
+    mainout << "LOG@_MainWindow::createMenus()_mainMenu" << endl;
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newNetworkAct);
     fileMenu->addAction(openNetworkAct);
@@ -437,6 +438,7 @@ void MainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(aboutAct);
     fileMenu->addAction(exitAct);
+    mainout << "LOG@_MainWindow::createMenus()_fileMenu" << endl;
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAct);
@@ -450,6 +452,7 @@ void MainWindow::createMenus()
     //editMenu->addAction(importPatientInfoAct);
     editMenu->addSeparator();
     editMenu->addAction(preferencesAct);
+    mainout << "LOG@_MainWindow::createMenus()_editMenu" << endl;
 
     menuBar()->addSeparator();
 
@@ -464,6 +467,7 @@ void MainWindow::createMenus()
     viewMenu->addAction(showMeshAct);
     viewMenu->addAction(unravelNetAct);
     viewMenu->addAction(blockNodesAct);
+    mainout << "LOG@_MainWindow::createMenus()_viewMenu" << endl;
 
     operationMenu = menuBar()->addMenu(tr("&Operations"));
     operationMenu->addAction(addSegmentAct);
@@ -481,11 +485,13 @@ void MainWindow::createMenus()
     operationMenu->addAction(meshAct);
     operationMenu->addAction(defaultMeshAct);
     operationMenu->addAction(simulateAct);
+    mainout << "LOG@_MainWindow::createMenus()_operationMenu" << endl;
 
     menuBar()->addSeparator();
 
     helpMenu = menuBar()->addMenu(tr("Help"));
     helpMenu->addAction(aboutAct);
+    mainout << "LOG@_MainWindow::createMenus()_helpMenu" << endl;
 
     addSegmentAct->setCheckable(true);
     bendSegmentAct->setCheckable(true);

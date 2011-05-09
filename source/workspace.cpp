@@ -149,6 +149,7 @@ void Workspace::translate()
 {
     selectedTool = trans;
     clearSelectedAndUpdate();
+    wsout << "LOG@_Workspace::translate()" << endl;
 }
 
 void Workspace::clearSelectedAndUpdate()
@@ -301,6 +302,7 @@ void Workspace::showGrid()
     }
 
     emit updateSignal();
+    wsout << "LOG@_Workspace::showGrid()" << endl;
 }
 
 void Workspace::snapToGrid()
@@ -343,6 +345,7 @@ void Workspace::homeView()
     zoomFactor = 100;
     insertActInHistory(true);
     emit updateSignal();
+    wsout << "LOG@_Workspace::homeView()" << endl;
 }
 
 void Workspace::mousePressed(QPointF pos)
@@ -855,7 +858,6 @@ void Workspace::mouseMoved(QPointF pos)
 void Workspace::mouseReleased(QPointF pos)
 {
     mouseButtonPressed = false;
-
     //QVector<int> nodesIds = getNodesIds();
     //QVector<int> edgesIds = getEdgesIds();
     //QMapIterator<QString, int> supportNodesIterator(supportNodes);
@@ -1059,6 +1061,7 @@ void Workspace::mouseReleased(QPointF pos)
             emit updateSignal();
             break;
         case trans:
+            wsout << "LOG@_done Workspace::translate()" << endl;
             break;
         case information:
             /*for (int i = 0; i < edgesIds.size(); i++) {

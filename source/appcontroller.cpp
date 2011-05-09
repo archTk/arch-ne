@@ -57,6 +57,12 @@ void AppController::parseArguments(QStringList args)
                 editorArea->zoomOut();
             }
         }
+        else if (args.at(i) == "-r") {
+            workspace->homeView();
+        }
+        else if (args.at(i) == "-g") {
+            workspace->showGrid();
+        }
     }
 }
 
