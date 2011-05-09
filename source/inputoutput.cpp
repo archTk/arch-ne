@@ -764,7 +764,7 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
 
     while (!resultsElement.isNull()) {
         QString attrId = resultsElement.attribute("id");
-        IOout << "          edgeId=" << attrId << endl;
+        //IOout << "          edgeId=" << attrId << endl;
         int edgeId = attrId.toInt();
 
         QDomElement solution = resultsElement.firstChildElement("solution");
@@ -772,7 +772,7 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
 
         while (!solEl.isNull()) {
             QString solElString = solEl.nodeName();
-            IOout << "solEl= " << solElString << endl;
+            //IOout << "solEl= " << solElString << endl;
 
             QDomNode solElChild = solEl.firstChild();
 
@@ -793,8 +793,8 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
                     temp.setY(scalarValue);
 
                     tempVector << temp;
-                    IOout << "s=" << temp.x();
-                    IOout << " scalar=" << temp.y() << endl;
+                    //IOout << "s=" << temp.x();
+                    //IOout << " scalar=" << temp.y() << endl;
 
                     valueEl = valueEl.nextSiblingElement("value");
                 }
@@ -805,8 +805,6 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
                 sValue = 0.5;
 
                 QString scalarString = scalarEl.text();
-                //QTextStream scalarStream(&scalarString);
-                //scalarEl.save(scalarStream, 4);
 
                 float scalarValue;
                 scalarValue = scalarString.toFloat();
@@ -815,8 +813,8 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
                 temp.setX(sValue);
                 temp.setY(scalarValue);
 
-                IOout << "s= " << temp.x();
-                IOout << " scalar=" << temp.y() << endl;
+                //IOout << "s= " << temp.x();
+                //IOout << " scalar=" << temp.y() << endl;
 
                 tempVector << temp;
             }

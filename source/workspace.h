@@ -81,6 +81,8 @@ public:
     QString getCaseInfoXML();
     QString getIdPat();
 
+    QVector<QPointF> getEdgeResults(int edgeId);
+
     void setNodePosition(int nodeId, QPointF pos);
 
     bool getGridStatus();
@@ -118,7 +120,7 @@ public:
 
     void initNewCase();
 
-    QMap< int, QMap<QString, QVector<QPointF> > > getResultsMap();
+    //QMap< int, QMap<QString, QVector<QPointF> > > getResultsMap();
     void setResultsMap(QMap< int, QMap<QString, QVector<QPointF> > >);
 
 signals:
@@ -137,6 +139,7 @@ public slots:
     void homeView();
     void info();
     void resultsRequest();
+    void setResultToDisplay(int theResToDisplay);
 
     void redo();
     void removeSegment();
@@ -247,7 +250,7 @@ private:
     int unravelIter;
 
     QMap<int, QMap<QString, QVector<QPointF> > > resultsMap;
-
+    int resToDisplay;
 };
 
 enum tool {
@@ -260,6 +263,19 @@ enum tool {
     trans,
     results,
     bendS,
+};
+
+enum resultsToDisp {
+    none,                   // = 0
+    meanPressure,          // = 1
+    maxPressure,            // = 2
+    minPressure,            // = 3
+    meanFlow,               // = 4
+    maxFlow,                // = 5
+    minFlow,                // = 6
+    meanWSS,                // = 7
+    maxWSS,                 // = 8
+    minWSS,                 // = 9
 };
 
 #endif // WORKSPACE_H

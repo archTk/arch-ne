@@ -83,7 +83,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(openNetwork()), this, SLOT(openNetwork()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
-    //connect(mainWindow, SIGNAL(resultToDisplay(int)), this, SLOT(setResult2Display(int)));
+    connect(mainWindow, SIGNAL(resultToDisplay(int)), workspace, SLOT(setResultToDisplay(int)));
     connect(mainWindow, SIGNAL(resultToDisplay(int)), editorArea, SLOT(setResToBeDisplayed(int)));
     connect(mainWindow, SIGNAL(resultsDockClosedSig()), this, SLOT(resultsDockClosed()));
     connect(mainWindow, SIGNAL(resultsPressed()), this, SLOT(showResultsDock()));
@@ -547,16 +547,15 @@ void AppController::populateResDataStructure()
     InputOutput* inputOutput = new InputOutput();
     workspace->setResultsMap(inputOutput->loadResData(xmlOut));
 
-/*
-    simResultsMap = workspace->getResultsMap();
-    QMap<QString, QVector<QPointF> > elResultsMap;
+    //simResultsMap = workspace->getResultsMap();
+    /*QMap<QString, QVector<QPointF> > elResultsMap;
     QVector<QPointF> resultsV;
 
     QMapIterator<int, QMap<QString, QVector<QPointF> > > simResultsIter(simResultsMap);
 
     while (simResultsIter.hasNext()) {
         simResultsIter.next();
-        appout << "result edgeId= " << simResultsIter.key() << " " ;
+        appout << endl << endl <<"result edgeId= " << simResultsIter.key() << endl;
 
         elResultsMap = simResultsMap.value(simResultsIter.key());
         QMapIterator<QString, QVector<QPointF > > elResultsIter(elResultsMap);

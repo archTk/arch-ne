@@ -93,6 +93,8 @@ Workspace::Workspace(QObject *parent) :
 
     unravelCount = 0;
     unravelIter = 100;
+
+    resToDisplay = 0;
 }
 
 void Workspace::addSegment()
@@ -1807,15 +1809,81 @@ void Workspace::unravelNet()
     }
 }
 
+void Workspace::setResultToDisplay(int theResToDisplay)
+{
+    resToDisplay = theResToDisplay;
+}
+
 void Workspace::setResultsMap(QMap<int, QMap<QString, QVector<QPointF> > > theResultsMap)
 {
     wsout << "WS::setResultsOut" << endl;
     resultsMap = theResultsMap;
 }
 
-QMap<int, QMap<QString, QVector<QPointF> > > Workspace::getResultsMap()
+//QMap<int, QMap<QString, QVector<QPointF> > > Workspace::getResultsMap()
+//{
+//    return resultsMap;
+//}
+
+QVector<QPointF> Workspace::getEdgeResults(int edgeId)
 {
-    return resultsMap;
+    QMap<QString, QVector<QPointF> > elResultsMap;
+    QVector<QPointF> resultsV;
+
+    elResultsMap = resultsMap.value(edgeId);
+
+    switch (resToDisplay) {
+    case meanPressure:
+        resultsV = elResultsMap.value("pressure_timemean");
+        break;
+    case maxPressure:
+        resultsV = elResultsMap.value("pressure_timemax");
+        break;
+    case minPressure:
+        resultsV = elResultsMap.value("pressure_timemin");
+        break;
+    case meanFlow:
+        resultsV = elResultsMap.value("flow_mean");
+        break;
+    case maxFlow:
+        resultsV = elResultsMap.value("flow_max");
+        break;
+    case minFlow:
+        resultsV = elResultsMap.value("flow_min");
+        break;
+    case meanWSS:
+        resultsV = elResultsMap.value("wss_mean");
+        break;
+    case maxWSS:
+        resultsV = elResultsMap.value("wss_max");
+        break;
+    case minWSS:
+        resultsV = elResultsMap.value("wss_min");
+        break;
+    default:
+        break;
+    }
+
+    return resultsV;
+
+//    QMapIterator<int, QMap<QString, QVector<QPointF> > > simResultsIter(simResultsMap);
+
+//    while (simResultsIter.hasNext()) {
+//        simResultsIter.next();
+//        appout << endl << endl <<"result edgeId= " << simResultsIter.key() << endl;
+
+//        elResultsMap = simResultsMap.value(simResultsIter.key());
+//        QMapIterator<QString, QVector<QPointF > > elResultsIter(elResultsMap);
+
+//        while (elResultsIter.hasNext()) {
+//            elResultsIter.next();
+//            appout << "elResult= " << elResultsIter.key() << " ";
+//            resultsV = elResultsIter.value();
+//            for (int i = 0; i < resultsV.count(); i++) {
+//                appout << "s" << i << "= " << resultsV[i].x() << " value=" << resultsV[i].y() << endl;
+//            }
+//        }
+//    }
 }
 
 void Workspace::setHighlightingEl(QPoint element)

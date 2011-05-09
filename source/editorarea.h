@@ -121,17 +121,4 @@ private:
     int resToBeDisplayed;
 };
 
-enum resultsToDisp {
-    none,                   // = 0
-    MmeanPressure,          // = 1
-    maxPressure,            // = 2
-    minPressure,            // = 3
-    meanFlow,               // = 4
-    maxFlow,                // = 5
-    minFlow,                // = 6
-    meanWSS,                // = 7
-    maxWSS,                 // = 8
-    minWSS,                 // = 9
-};
-
 #endif // EDITORAREA_H

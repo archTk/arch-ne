@@ -913,10 +913,9 @@ void EditorArea::paintLabels(QPainter& painter)
 
 void EditorArea::paintResults(QPainter &painter)
 {
-    /*QVector<int> edgesIds = workspace->getEdgesIds();
+    qcout << "EA::paintResults" << endl;
 
-    QString temp;
-
+    QVector<int> edgesIds = workspace->getEdgesIds();
     float labelW = size2screen(150.0);
     float labelH = size2screen(10.0);
     float fontSize = size2screen(10.0);
@@ -926,13 +925,25 @@ void EditorArea::paintResults(QPainter &painter)
     painter.setPen(Qt::black);
     painter.setFont(QFont("Arial", fontSize));
 
-    switch (resToBeDisplayed) {
-        case 1: //
-            break;
-        case addS:
+    QVector<QPointF> edgeResults;
+    QString resString;
+    QString sString;
+
+    for (int i = 0; i < edgesIds.count(); i++) {
+        edgeResults = workspace->getEdgeResults(edgesIds[i]);
+        for (int j = 0; j < edgeResults.count(); j++) {
+            sString.setNum(edgeResults[j].x());
+            resString.setNum(edgeResults[j].y());
+            //qcout << "edge" << i <<" s" << j << " " <<sString << " " << resString << endl;
+            qcout << "edge" << i <<" s" << j << " " <<edgeResults[j].x() << " " << edgeResults[j].y() << endl;
+        }
     }
 
-    for (int i = 0; i < edgesIds.size(); i++) {
+
+
+
+
+    /*for (int i = 0; i < edgesIds.size(); i++) {
         QPointF res;
         float s = 0.5;
 
