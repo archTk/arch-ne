@@ -242,6 +242,8 @@ private:
     int unravelCount;
 
     int unravelIter;
+
+    bool resToBeDisplayed;
 };
 
 enum tool {

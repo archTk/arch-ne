@@ -153,6 +153,8 @@ void EditorArea::paintEvent(QPaintEvent*)
         paintLabels(painter);
     }
 
+    if
+
     if (!hitElements.isEmpty()) {
         if (!hitElements[0].x() != -1) {
             emit elementsBeenHit(hitElements);

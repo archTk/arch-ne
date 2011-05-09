@@ -93,6 +93,8 @@ Workspace::Workspace(QObject *parent) :
 
     unravelCount = 0;
     unravelIter = 100;
+
+    resToBeDipslayed = 0;
 }
 
 void Workspace::addSegment()
