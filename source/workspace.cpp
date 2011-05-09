@@ -93,8 +93,6 @@ Workspace::Workspace(QObject *parent) :
 
     unravelCount = 0;
     unravelIter = 100;
-
-    resToBeDipslayed = 0;
 }
 
 void Workspace::addSegment()
@@ -1809,6 +1807,16 @@ void Workspace::unravelNet()
     }
 }
 
+void Workspace::setResultsMap(QMap<int, QMap<QString, QVector<QPointF> > > theResultsMap)
+{
+    resultsMap = theResultsMap;
+}
+
+QMap<int, QMap<QString, QVector<QPointF> > > Workspace::getResultsMap()
+{
+    return resultsMap;
+}
+
 void Workspace::setHighlightingEl(QPoint element)
 {
     if (element.x() == 1) { // element is a node.
@@ -1901,6 +1909,7 @@ void Workspace::clear()
     supportEdges4selecting.clear();
     hitEl.clear();
     hitMeshEls.clear();
+    resultsMap.clear();
 
     gridStatus = true;
     snapToGridStatus = true;

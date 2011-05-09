@@ -118,6 +118,9 @@ public:
 
     void initNewCase();
 
+    QMap< int, QMap<QString, QVector<QPointF> > > getResultsMap();
+    void setResultsMap(QMap< int, QMap<QString, QVector<QPointF> > >);
+
 signals:
     void restoreCurs();
     void updateSignal();
@@ -243,7 +246,8 @@ private:
 
     int unravelIter;
 
-    bool resToBeDisplayed;
+    QMap<int, QMap<QString, QVector<QPointF> > > resultsMap;
+
 };
 
 enum tool {

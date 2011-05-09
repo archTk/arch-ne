@@ -46,6 +46,7 @@ public slots:
     void zoomOut();
     void toBeCleared();
     void resetMeshElToBeHigh();
+    void setResToBeDisplayed(int theResult);
 
 private slots:
 
@@ -90,6 +91,7 @@ private:
     void paintMeshEls(QPainter& painter);
     void paintMeshElToBeHigh(QPainter& painter);
     void paintLabels(QPainter& painter);
+    void paintResults(QPainter& painter);
 
     QPointF graph2screen(QPointF graphCoord);
     QPointF screen2graph(QPointF screenCoord);
@@ -115,6 +117,21 @@ private:
     QMap<int, QPoint> meshId2GraphId;
 
     int meshElToBeHigh;
+
+    int resToBeDisplayed;
+};
+
+enum resultsToDisp {
+    none,                   // = 0
+    MmeanPressure,          // = 1
+    maxPressure,            // = 2
+    minPressure,            // = 3
+    meanFlow,               // = 4
+    maxFlow,                // = 5
+    minFlow,                // = 6
+    meanWSS,                // = 7
+    maxWSS,                 // = 8
+    minWSS,                 // = 9
 };
 
 #endif // EDITORAREA_H

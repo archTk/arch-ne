@@ -22,6 +22,7 @@
 #include <QtXmlPatterns/QtXmlPatterns>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPointF>
 
 #include "graph.h"
 #include "graphlayout.h"
@@ -736,4 +737,78 @@ void InputOutput::loadLayout(QDomDocument theDomDoc, GraphLayout *graphLayout)
 
         edgeLayout = edgeLayout.nextSiblingElement("edge_layout");
     }
+}
+
+QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QString resFileName)
+{
+    QFile resInFile(resFileName);
+
+    resInFile.open(QIODevice::ReadOnly);
+
+    QTextStream resStreamIn(&resInFile);
+
+    QDomDocument resDoc("results");
+    resDoc.setContent((resStreamIn.readAll()));
+
+    QMap< int, QMap<QString, QVector<QPointF> > > resultsMap;
+    QMap<QString, QVector<QPointF> > tempMap;
+    QVector<QPointF> tempVector;
+
+    resultsMap.clear();
+
+    QDomNodeList resultsList = resDoc.elementsByTagName("Solutions");
+    QDomNode results = resultsList.at(0);
+    QDomElement resultsElements = results.firstChildElement("edges");
+
+    QDomElement resultsElement = resultsElements.firstChildElement("edge");
+
+    while (!resultsElement.isNull()) {
+        QString attrId = resultsElement.attribute("id");
+        int edgeId = attrId.toInt();
+
+        QDomElement solution = resultsElement.firstChildElement("solution");
+        QDomNode solEl = solution.firstChild();
+
+        while (!solEl.isNull()) {
+            QString solElString = solEl.nodeName();
+
+            QDomElement valueEl = solEl.firstChildElement("value");
+
+            while (!valueEl.isNull()) {
+                QString s = valueEl.attribute("s", "edgeValue");
+                QDomElement scalarEl = valueEl.firstChildElement("scalar");
+                QString scalarString;
+                QTextStream scalarStream(&scalarString);
+                scalarEl.save(scalarStream, 4);
+
+                float sValue;
+                if (s == "edgeValue") {
+                    sValue = 0.5;
+                } else {
+                    sValue = s.toFloat();
+                }
+
+                float scalarValue;
+                scalarValue = scalarString.toFloat();
+
+                QPointF temp;
+                temp.setX(sValue);
+                temp.setY(scalarValue);
+
+                tempVector << temp;
+
+                valueEl = valueEl.nextSiblingElement("value");
+            }
+
+            tempMap.insert(solElString, tempVector);
+
+            solEl = solEl.nextSibling();
+        }
+
+        resultsMap.insert(edgeId, tempMap);
+
+        resultsElement = resultsElement.nextSiblingElement("edge");
+    }
+
+    return resultsMap;
 }

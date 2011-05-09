@@ -27,7 +27,7 @@ ResultsChoiceFrame::ResultsChoiceFrame(QWidget *parent) :
     QFrame(parent)
 {
     setupUi(this);
-    resultsCombo->setCurrentIndex(5);
+    resultsCombo->setCurrentIndex(0);
 
     connect(resultsCombo, SIGNAL(activated(int)), this, SLOT(changeDisplayedResult(int)));
 }

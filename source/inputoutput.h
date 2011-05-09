@@ -19,6 +19,7 @@
 #ifndef INPUTOUTPUT_H
 #define INPUTOUTPUT_H
 
+#include <QMap>
 #include <QObject>
 #include <QtXml/QDomDocument>
 
@@ -28,6 +29,7 @@ class GraphProperties;
 class GraphMesh;
 class NetworkProperties;
 class QFile;
+class QPointF;
 
 class InputOutput : public QObject
 {
@@ -52,11 +54,14 @@ public:
     //void importPatientInfo(NetworkProperties* networkProperties);
     //void importSP(NetworkProperties* networkProperties);
 
+    QMap<int, QMap<QString, QVector<QPointF> > > loadResData(const QString resFileName);
+
 signals:
     void curFNameAndWDir(QString theFName, QString theWDir);
     void graphSaved();
     void pyNSCompleted(QString fileName);
     void meshFileReady(QString fileName);
+    //void newResStrList(QStringList theResult);
 
 public slots:
 

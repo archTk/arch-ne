@@ -78,7 +78,7 @@ public slots:
     bool saveAs();
     void setFNameAndWDir(QString theFName, QString theWDir);
     void setPreferences();
-    void setResult2Display(int theResult);
+    //void setResult2Display(int theResult);
     void showResults(QPoint elementRequest);
     void showResultsDock();
     void simulateGraph();
@@ -93,6 +93,7 @@ private:
     void loadGraphFromLayout();
     void loadGraphFromGraph();
     bool maybeSave();
+    void populateResDataStructure();
     bool saveNetwork();
     void showMessage(QString theTitle, QString theMessage);
     int uniqueDataRequestKey();
@@ -117,10 +118,21 @@ private:
 
     QString fName;  // File name.
     QString wDir;   // Working directory.
+    QString xmlOut; // SimulationResults (xml).
 
     bool checkPaths(QString pythonPath, QString pyNSPath);
 
-    int resToBeDisplayed;
+    int resToBeDisplayed;   // 0 = none
+                            // 1 = Mean Pressure
+                            // 2 = Max Pressure
+                            // 3 = Min Pressure
+                            // 4 = Mean Flow
+                            // 5 = Max Flow
+                            // 6 = Min Flow
+                            // 7 = Mean WSS
+                            // 8 = Max WSS
+                            // 9 = Min WSS.
+
 };
 
 #endif // APPCONTROLLER_H

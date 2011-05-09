@@ -83,7 +83,8 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(openNetwork()), this, SLOT(openNetwork()));
     connect(mainWindow, SIGNAL(redoPressed()), workspace, SLOT(redo()));
     connect(mainWindow, SIGNAL(removeSegmentPressed()), workspace, SLOT(removeSegment()));
-    connect(mainWindow, SIGNAL(resultToDisplay(int)), this, SLOT(setResult2Display(int)));
+    //connect(mainWindow, SIGNAL(resultToDisplay(int)), this, SLOT(setResult2Display(int)));
+    connect(mainWindow, SIGNAL(resultToDisplay(int)), editorArea, SLOT(setResToBeDisplayed(int)));
     connect(mainWindow, SIGNAL(resultsDockClosedSig()), this, SLOT(resultsDockClosed()));
     connect(mainWindow, SIGNAL(resultsPressed()), this, SLOT(showResultsDock()));
     connect(mainWindow, SIGNAL(resultsPressed()), workspace, SLOT(resultsRequest()));
@@ -492,7 +493,7 @@ void AppController::simulateGraph()
     QString idPat;
     idPat = workspace->getIdPat();
 
-    QString xmlOut = idPat + "_" + fName + "_results.xml";
+    xmlOut = idPat + "_" + fName + "_results.xml";
     QString specificNet = idPat + "_" + fName + "_graph.xml";
     QString specificBC = idPat + "_BC_" + fName + "_graph.xml";
 
@@ -520,6 +521,8 @@ void AppController::simulationHasBeenPerformed()
 {
     infoDialog->done(0);
 
+    populateResDataStructure();
+
     emit restoreCurs();
     emit messageToBeDisplayed(tr("Simulation has been completed"));
 }
@@ -531,6 +534,30 @@ void AppController::abortSimulation()
     infoDialog->done(1);
     emit restoreCurs();
 }
+
+void AppController::populateResDataStructure()
+{
+    appout << "aapC::populateResDataStructure - eliminare comando di import results dato in showResultsDock" << endl;
+
+    QString idPat;
+    idPat = workspace->getIdPat();
+    xmlOut = idPat + "_" + fName + "_results.xml";
+
+    InputOutput* inputOutput = new InputOutput();
+    workspace->setResultsMap(inputOutput->loadResData(xmlOut));
+
+    QMap<QString, QVector<QPointF> > temp;
+    //temp = (workspace->getResultsMap()).value("")
+}
+
+//void AppController::insertResultString(QStringList theResult)
+//{
+//    QStringListIterator theResultsIter(theResult);
+//    while (theResultsIter.hasNext()) {
+//        theResultsIter.next();
+//        //appout << theResultsIter.value << endl;
+//    }
+//}
 
 void AppController::setFNameAndWDir(QString theFName, QString theWDir)
 {
@@ -578,7 +605,9 @@ int AppController::uniqueResultsRequestKey()
 
 void AppController::showResultsDock()
 {
+    appout << "Appc::showResultsDock" << endl;
     mainWindow->showResultsDock();
+    populateResDataStructure();
 }
 
 void AppController::showResults(QPoint elementRequest)
@@ -638,12 +667,12 @@ void AppController::showResults(QPoint elementRequest)
     mainWindow->insertResultsViewToResultsDock(resultsView, elementRequest);
 }
 
-void AppController::setResult2Display(int theResult)
-{
-    appout << "AppC::setResult2Display theResult= " << theResult << endl;
+//void AppController::setResult2Display(int theResult)
+//{
+//    appout << "AppC::setResult2Display theResult= " << theResult << endl;
 
-    resToBeDisplayed = theResult;
-}
+//    resToBeDisplayed = theResult;
+//}
 
 void AppController::dataRequest(QPoint elementRequest)
 {
