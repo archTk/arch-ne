@@ -579,6 +579,9 @@ int AppController::uniqueResultsRequestKey()
 void AppController::showResultsDock()
 {
     mainWindow->showResultsDock();
+    if (resToBeDisplayed != 0) {
+        //editorArea->
+    }
 }
 
 void AppController::showResults(QPoint elementRequest)
@@ -640,6 +643,7 @@ void AppController::showResults(QPoint elementRequest)
 
 void AppController::setResult2Display(int theResult)
 {
+    appout << "AppC::setResult2Display theResult= " << theResult << endl;
     resToBeDisplayed = theResult;
 }
 
