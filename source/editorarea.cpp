@@ -939,12 +939,12 @@ void EditorArea::paintResults(QPainter &painter)
             //qcout << "edge" << edgesIds[i] <<" s" << j << " " <<edgeResults[j].x() << " " << edgeResults[j].y() << endl;
 
             float s = edgeResults[j].x();
-//            if (s == 0) {
-//                s = 0.2;
-//            }
-//            if (s == 1) {
-//                s = 0.8;
-//            }
+            if (s == 0) {
+                s = 0.2;
+            }
+            if (s == 1) {
+                s = 0.8;
+            }
 
             int t = 0;
             while (sOnBezier.value(edgesIds[i]).at(t) < s) {
