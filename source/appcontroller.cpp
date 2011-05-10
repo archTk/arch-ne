@@ -549,6 +549,7 @@ void AppController::importResults()
     }
 
     workspace->setResultsMap(tempMap);
+    showResultsDock();
 }
 
 void AppController::populateResDataStructure()
@@ -563,28 +564,7 @@ void AppController::populateResDataStructure()
     InputOutput* inputOutput = new InputOutput();
     workspace->setResultsMap(inputOutput->loadResData(xmlOut));
 
-    //simResultsMap = workspace->getResultsMap();
-    /*QMap<QString, QVector<QPointF> > elResultsMap;
-    QVector<QPointF> resultsV;
-
-    QMapIterator<int, QMap<QString, QVector<QPointF> > > simResultsIter(simResultsMap);
-
-    while (simResultsIter.hasNext()) {
-        simResultsIter.next();
-        appout << endl << endl <<"result edgeId= " << simResultsIter.key() << endl;
-
-        elResultsMap = simResultsMap.value(simResultsIter.key());
-        QMapIterator<QString, QVector<QPointF > > elResultsIter(elResultsMap);
-
-        while (elResultsIter.hasNext()) {
-            elResultsIter.next();
-            appout << "elResult= " << elResultsIter.key() << " ";
-            resultsV = elResultsIter.value();
-            for (int i = 0; i < resultsV.count(); i++) {
-                appout << "s" << i << "= " << resultsV[i].x() << " value=" << resultsV[i].y() << endl;
-            }
-        }
-    }*/
+    showResultsDock();
 }
 
 //void AppController::insertResultString(QStringList theResult)
