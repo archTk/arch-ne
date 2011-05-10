@@ -209,8 +209,79 @@ void InputOutput::loadMesh(GraphMesh *graphMesh)
 
     QDomDocument meshDoc("mesh");
     meshDoc.setContent(meshIn.readAll());
+    meshFile.close();
 
-    QDomNodeList networkMeshList = meshDoc.elementsByTagName("NetworkMesh");
+    populateGraphMeshDataStructure(meshDoc, graphMesh);
+}
+
+void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* graphMesh)
+{
+    IOout << "InputOutput::loadMeshAfterGenerating fileName=" << fileName << endl;
+
+    QFile meshInFile(fileName);
+
+    meshInFile.open( QIODevice::ReadWrite);
+
+    QTextStream meshIn(&meshInFile);
+
+    QDomDocument meshDoc("mesh");
+    meshDoc.setContent(meshIn.readAll());
+
+    meshInFile.close();
+
+    populateGraphMeshDataStructure(meshDoc, graphMesh);
+
+    /*QDomNodeList networkMeshList = meshDoc.elementsByTagName("NetworkMesh");
+    QDomNode networkMesh = networkMeshList.at(0);
+    QDomElement meshElements = networkMesh.firstChildElement("elements");
+
+    QString meshElementsString;
+    IOout << meshElementsString << endl;
+    QTextStream meshElementsStream(&meshElementsString);
+    meshElements.save(meshElementsStream, 4);
+
+    QDomElement meshElement = meshElements.firstChildElement("element");
+
+    while (!meshElement.isNull()) {
+        QString attrId = meshElement.attribute("id");
+        QString attrType = meshElement.attribute("type");
+        QString attrMeshnode1 = meshElement.attribute("meshnode1_id");
+        QString attrMeshnode2 = meshElement.attribute("meshnode2_id");
+        QString attrMeshnode3 = meshElement.attribute("mehnode3_id");
+        IOout << "listaAttr= " << attrId << " " << attrType << " " << attrMeshnode1 << " " << attrMeshnode2 << " " << attrMeshnode3 << endl;
+        QString attrEdgeId;
+        attrEdgeId.clear();
+
+        QDomElement parameters = meshElement.firstChildElement("parameters");
+        QString parametersString;
+        QTextStream parametersStream(&parametersString);
+        parameters.save(parametersStream, 4);
+
+        QDomElement pcoord = meshElement.firstChildElement("pcoord");
+        attrEdgeId = pcoord.attribute("edgeId");
+        if (!attrEdgeId.isNull()) {
+            QDomElement s1 = pcoord.firstChildElement("s1");
+            QString s1ValueString;
+            QTextStream s1ValueStream(&s1ValueString);
+            s1.save(s1ValueStream, 4);
+            s1ValueString.remove("<s1>");
+            s1ValueString.remove("</s1>");
+
+            graphMesh->createEdgeFromXML(attrEdgeId, attrId, attrType, attrMeshnode1, attrMeshnode2, s1ValueString, parametersString);
+        } else {
+            QString attrNodeId = pcoord.attribute("nodeId");
+            graphMesh->createNodeFromXML(attrNodeId, attrId, attrType, attrMeshnode1, attrMeshnode2, attrMeshnode3, parametersString);
+        }
+        meshElement = meshElement.nextSiblingElement("element");
+    }
+
+    meshInFile.close();*/
+}
+
+
+void InputOutput::populateGraphMeshDataStructure(QDomDocument theMeshDoc, GraphMesh *graphMesh)
+{
+    QDomNodeList networkMeshList = theMeshDoc.elementsByTagName("NetworkMesh");
     QDomNode networkMesh = networkMeshList.at(0);
     QDomElement meshElements = networkMesh.firstChildElement("elements");
 
@@ -390,62 +461,6 @@ void InputOutput::saveGraph(const QString& fName, const QString& wDir, GraphProp
     networkFile.close();
 
     emit graphSaved();
-}
-
-void InputOutput::loadMeshAfterGenerating(const QString &fileName, GraphMesh* graphMesh)
-{
-    QFile meshInFile(fileName);
-
-    meshInFile.open( QIODevice::ReadWrite);
-
-    QTextStream meshIn(&meshInFile);
-
-    QDomDocument meshDoc("mesh");
-    meshDoc.setContent(meshIn.readAll());
-
-    QDomNodeList networkMeshList = meshDoc.elementsByTagName("NetworkMesh");
-    QDomNode networkMesh = networkMeshList.at(0);
-    QDomElement meshElements = networkMesh.firstChildElement("elements");
-
-    QString meshElementsString;
-    QTextStream meshElementsStream(&meshElementsString);
-    meshElements.save(meshElementsStream, 4);
-
-    QDomElement meshElement = meshElements.firstChildElement("element");
-
-    while (!meshElement.isNull()) {
-        QString attrId = meshElement.attribute("id");
-        QString attrType = meshElement.attribute("type");
-        QString attrMeshnode1 = meshElement.attribute("meshnode1_id");
-        QString attrMeshnode2 = meshElement.attribute("meshnode2_id");
-        QString attrMeshnode3 = meshElement.attribute("mehnode3_id");
-        QString attrEdgeId;
-        attrEdgeId.clear();
-
-        QDomElement parameters = meshElement.firstChildElement("parameters");
-        QString parametersString;
-        QTextStream parametersStream(&parametersString);
-        parameters.save(parametersStream, 4);
-
-        QDomElement pcoord = meshElement.firstChildElement("pcoord");
-        attrEdgeId = pcoord.attribute("edgeId");
-        if (!attrEdgeId.isNull()) {
-            QDomElement s1 = pcoord.firstChildElement("s1");
-            QString s1ValueString;
-            QTextStream s1ValueStream(&s1ValueString);
-            s1.save(s1ValueStream, 4);
-            s1ValueString.remove("<s1>");
-            s1ValueString.remove("</s1>");
-
-            graphMesh->createEdgeFromXML(attrEdgeId, attrId, attrType, attrMeshnode1, attrMeshnode2, s1ValueString, parametersString);
-        } else {
-            QString attrNodeId = pcoord.attribute("nodeId");
-            graphMesh->createNodeFromXML(attrNodeId, attrId, attrType, attrMeshnode1, attrMeshnode2, attrMeshnode3, parametersString);
-        }
-        meshElement = meshElement.nextSiblingElement("element");
-    }
-
-    meshInFile.close();
 }
 
 bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLayout* graphLayout, GraphProperties* graphProperties,

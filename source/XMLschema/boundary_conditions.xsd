@@ -158,9 +158,9 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="mean_pressure" type="simParameterType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="cardiac_output" type="simParameterType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="period" type="scalarType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="brachial_flow" type="scalarType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="radial_flow" type="scalarType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="ulnar_flow" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="brachial_flow" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="radial_flow" type="scalarType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="ulnar_flow" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="0" name="ht" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="0" name="cp" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="dynamic_viscosity" type="simParameterType"/>
@@ -186,7 +186,6 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="poisson_ratio" type="xsd:float"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="timestep" type="scalarType"/>
 			<xsd:element maxOccurs="1" minOccurs="1" name="cycles" type="xsd:int"/>
-			<xsd:element maxOccurs="1" minOccurs="0" name="angle" type="scalarType"/>
 		</xsd:sequence>
 		<xsd:attribute name="id" type="xsd:string" use="required"/>
 	</xsd:complexType>
@@ -227,6 +226,7 @@
 			<xsd:enumeration value="Brachio-Cephalic SideToSide"/>
 			<xsd:enumeration value="Brachio-Basilic EndToSide"/>
 			<xsd:enumeration value="Brachio-Basilic SideToSide"/>
+			<xsd:enumeration value="Pre-Surgery"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	

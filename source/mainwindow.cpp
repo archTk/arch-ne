@@ -264,6 +264,10 @@ void MainWindow::createActions()
     importNetworkAct->setStatusTip(tr("Import a network"));
     connect(importNetworkAct, SIGNAL(triggered()), this, SIGNAL(importNetwork()));
 
+    importBCAct = new QAction(QIcon(":/images/importBC.png"), tr("Import BC"), this);
+    importBCAct->setStatusTip(tr("Import Boundary Conditions"));
+    connect(importBCAct, SIGNAL(triggered()), this, SIGNAL(importBCPressed()));
+
     importMeshAct = new QAction(QIcon(":/images/importMesh.png"), tr("Import Mesh"), this);
     importMeshAct->setStatusTip(tr("Import an existing mesh"));
     connect(importMeshAct, SIGNAL(triggered()), this, SIGNAL(importMesh()));
@@ -307,10 +311,6 @@ void MainWindow::createActions()
     simulateAct = new QAction(QIcon(":/images/simulation.png"), tr("Simulate"), this);
     simulateAct->setStatusTip(tr("Launch the simulation"));
     connect(simulateAct, SIGNAL(triggered()), this, SIGNAL(goSimulate()));
-
-    importBCAct = new QAction(QIcon(":/images/importBC.png"), tr("Import BC"), this);
-    importBCAct->setStatusTip(tr("Import Boundary Conditions"));
-    connect(importBCAct, SIGNAL(triggered()), this, SIGNAL(importBCPressed()));
     /////
 
     addSegmentAct = new QAction(QIcon(":/images/addSegment.png"), tr("&Add Segment"), this);
@@ -421,6 +421,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(newNetworkAct);
     fileMenu->addAction(openNetworkAct);
     fileMenu->addAction(importNetworkAct);
+    fileMenu->addAction(importBCAct);
     fileMenu->addAction(importMeshAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
@@ -433,7 +434,6 @@ void MainWindow::createMenus()
     editMenu->addAction(redoAct);
     editMenu->addSeparator();
     editMenu->addAction(BCAct);
-    editMenu->addAction(importBCAct);
     //editMenu->addAction(SPAct);
     //editMenu->addAction(importSPAct);
     editMenu->addAction(caseInfoAct);
@@ -507,6 +507,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(newNetworkAct);
     fileToolBar->addAction(openNetworkAct);
     fileToolBar->addAction(importNetworkAct);
+    fileToolBar->addAction(importBCAct);
     fileToolBar->addAction(importMeshAct);
     fileToolBar->addAction(saveAct);
     fileToolBar->setMovable(false);
@@ -557,7 +558,6 @@ void MainWindow::createToolBars()
     operationToolBar->addAction(meshAct);
     operationToolBar->addAction(defaultMeshAct);
     operationToolBar->addAction(simulateAct);
-    operationToolBar->addAction(importBCAct);
     //operationToolBar->addAction(importSPAct);
     //operationToolBar->addAction(importPatientInfoAct);
 }

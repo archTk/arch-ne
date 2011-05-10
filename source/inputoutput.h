@@ -42,13 +42,13 @@ public:
     //QString loadDefaultBC();
 
     void loadMesh(GraphMesh* graphMesh);
+    void loadMeshAfterGenerating(const QString& fileName, GraphMesh* graphMesh);
+    void populateGraphMeshDataStructure(QDomDocument theMeshDoc, GraphMesh* graphMesh);
 
     void saveGraph(const QString& fileName, const QString& wDir, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
     bool saveNetwork(const QString& fileName, const QString& wDir, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties, QVector<int> nodes, QVector<int> edges);
 
     void saveBC(const QString& fName, const QString& wDir, QString BCXML);
-
-    void loadMeshAfterGenerating(const QString& fileName, GraphMesh* graphMesh);
 
     void importBC(NetworkProperties* networkProperties);
     //void importPatientInfo(NetworkProperties* networkProperties);

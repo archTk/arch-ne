@@ -349,7 +349,7 @@ void AppController::goMeshing()
 
     QStringList arguments;
 
-    appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
+    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
 
     arguments << scriptPath << "--wdir" << wDir << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 

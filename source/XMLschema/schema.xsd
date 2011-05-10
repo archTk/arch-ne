@@ -140,9 +140,9 @@
 	
 	<xsd:complexType name="connectionsType">
 		<xsd:sequence>
-			<xsd:element maxOccurs="1" minOccurs="0" name="proximal_artery" type="connectionType"/>
+			<xsd:element maxOccurs="1" minOccurs="1" name="proximal_artery" type="connectionType"/>
 			<xsd:element maxOccurs="1" minOccurs="0" name="distal_artery" type="connectionType"/>
-			<xsd:element maxOccurs="1" minOccurs="0" name="proximal_vein" type="connectionType"/>
+			<xsd:element maxOccurs="1" minOccurs="1" name="proximal_vein" type="connectionType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -221,8 +221,8 @@
 	
 	<xsd:simpleType name="elementType">
 		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="0D_FiveDofsV2"/>
-			<xsd:enumeration value="0D_TwoDofsResistance"/>
+			<xsd:enumeration value="WavePropagation"/>
+			<xsd:enumeration value="Resistance"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	
@@ -276,6 +276,7 @@
 			<xsd:enumeration value="Pa"/>
 			<xsd:enumeration value="Pa-1"/>
 			<xsd:enumeration value="mm-1"/>
+			<xsd:enumeration value="m3/Pa"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	
@@ -305,9 +306,10 @@
 			<xsd:element maxOccurs="1" minOccurs="0" name="young_modulus_array" type="arrayType"/>
 			<xsd:element minOccurs="0" name="wall_thickness" type="nonlinearType"/>
 			<xsd:element minOccurs="0" name="young_modulus" type="parameterType"/>
-			<xsd:element maxOccurs="1" minOccurs="0" name="leakage" type="nonlinearType"/>
 			<xsd:element maxOccurs="1" minOccurs="0" name="resistance" type="nonlinearType"/>
 			<xsd:element maxOccurs="1" minOccurs="0" name="compliance" type="nonlinearType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="nl_compliance" type="nonlinearType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="leakage" type="nonlinearType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -319,10 +321,11 @@
 	</xsd:complexType>
 	
 	<xsd:complexType name="valueType">
-		<xsd:choice>
-			<xsd:element name="scalar" type="xsd:float"/>
-			<xsd:element name="vector" type="vectorType"/>
-		</xsd:choice>
+		<xsd:all>
+			<xsd:element maxOccurs="1" minOccurs="0" name="scalar" type="xsd:float"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="vector" type="vectorType"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="expression" type="xsd:string"/>
+		</xsd:all>
 		<xsd:attribute name="s" type="xsd:float"/>
 	</xsd:complexType>
 	
@@ -330,6 +333,7 @@
 		<xsd:choice>
 			<xsd:element name="scalar" type="xsd:float"/>
 			<xsd:element name="vector" type="vectorType"/>
+			<xsd:element name="expression" type="xsd:string"/>
 		</xsd:choice>
 		<xsd:attributeGroup ref="sharedAttributes"/>
 	</xsd:complexType>
