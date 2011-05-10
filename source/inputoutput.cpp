@@ -65,6 +65,7 @@ bool InputOutput::loadGraphFromLayout(Graph *graph, GraphLayout *graphLayout, Gr
                        "is not present in the same folder.\n\n"
                        "I'm not able to load the network.");
         msgBox.exec();
+        IOout << "LOG@_notdone InputOutput::loadGraphFromLayout()" << endl;
         return false;
     } else {
         if (!graphFile.open(QFile::ReadOnly | QFile::Text)) {
@@ -101,6 +102,7 @@ bool InputOutput::loadGraphFromLayout(Graph *graph, GraphLayout *graphLayout, Gr
     QString wDir = fileInfo.path();
 
     emit curFNameAndWDir(fName, wDir);
+    IOout << "LOG@_done InputOutput::loadGraphFromLayout()" << endl;
     return true;
 }
 
@@ -166,7 +168,7 @@ bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, Gra
     fName.remove("_graph");
 
     emit curFNameAndWDir(fName, wDir);
-
+    IOout << "LOG@_done InputOutput::loadGraphFromGraph()" << endl;
     return true;
 }
 
@@ -462,6 +464,7 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
                                            tr("The file already exists.\n"
                                               "Are you sure you want to replace it?"),
                                            QMessageBox::Yes | QMessageBox::No);
+        IOout << "LOG@_replace InputOutput::saveNetwork()" << endl;
         if (ret == QMessageBox::No) {
             return false;
         }
@@ -614,6 +617,7 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
     //QString wDir = fileInfo.path();
 
     //emit curFNameAndWDir(fileName,wDir);
+    IOout << "LOG@_InputOutput::saveNetwork()" << endl;
     return true;
 }
 

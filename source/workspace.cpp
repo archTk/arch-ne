@@ -99,12 +99,14 @@ void Workspace::addSegment()
 {
     selectedTool = addS;
     clearSelectedAndUpdate();
+    wsout << "LOG@_Workspace::addSegment()" << endl;
 }
 
 void Workspace::bendSegment()
 {
     selectedTool = bendS;
     clearSelectedAndUpdate();
+    wsout << "LOG@_Workspace::bendSegment()" << endl;
 }
 
 void Workspace::removeSegment()
@@ -113,36 +115,42 @@ void Workspace::removeSegment()
 
     deleteSelectedEdges();
     clearSelectedAndUpdate();
+    wsout << "LOG@_Workspace::removeSegment()" << endl;
 }
 
 void Workspace::splitSegment()
 {
     selectedTool = splitS;
     clearSelectedAndUpdate();
+    wsout << "LOG@_Workspace::splitSegment()" << endl;
 }
 
 void Workspace::superEdge()
 {
     selectedTool = superE;
     clearSelectedAndUpdate();
+    wsout << "LOG@_Workspace::superEdge()" << endl;
 }
 
 void Workspace::selectElements()
 {
     selectedTool = selectE;
     clearSelectedAndUpdate();
+    wsout << "LOG@_Workspace::selectElements()" << endl;
 }
 
 void Workspace::info()
 {
     selectedTool = information;
     clearSelectedAndUpdate();
+    wsout << "LOG@_Workspace::info()" << endl;
 }
 
 void Workspace::resultsRequest()
 {
     selectedTool = results;
     clearSelectedAndUpdate();
+    wsout << "LOG@_Workspace::resultsRequest()" << endl;
 }
 
 void Workspace::translate()
@@ -157,6 +165,7 @@ void Workspace::clearSelectedAndUpdate()
     selectedNodes.clear();
     selectedEdges.clear();
     emit updateSignal();
+    wsout << "LOG@_Workspace::clearSelectedAndUpdate()" << endl;
 }
 
 void Workspace::undo()
@@ -222,12 +231,15 @@ void Workspace::undo()
         supportEdges.remove("highlightingEdge");
         checkTooCloseNodes();
         emit updateSignal();
+        wsout << "LOG@_Workspace::undo()" << endl;
     }
+    wsout << "LOG@_Workspace::undo()" << endl;
 }
 
 void Workspace::redo()
 {
     if (currentStatus == statusVector.size() - 1) {
+        wsout << "LOG@_Workspace::redo()" << endl;
         return;
     } else {
         currentStatus++;
@@ -290,6 +302,7 @@ void Workspace::redo()
         supportEdges.remove("highlightingEdge");
         checkTooCloseNodes();
         emit updateSignal();
+        wsout << "LOG@_Workspace::redo()" << endl;
     }
 }
 
@@ -314,6 +327,7 @@ void Workspace::snapToGrid()
     }
 
     emit updateSignal();
+    wsout << "LOG@_Workspace::snapToGrid()" << endl;
 }
 
 void Workspace::showLabels()
@@ -325,6 +339,7 @@ void Workspace::showLabels()
     }
 
     emit updateSignal();
+    wsout << "LOG@_Workspace::showLabels()" << endl;
 }
 
 void Workspace::showMesh()
@@ -336,6 +351,7 @@ void Workspace::showMesh()
     }
 
     emit updateSignal();
+    wsout << "LOG@_Workspace::showMesh()" << endl;
 }
 
 void Workspace::homeView()
@@ -654,7 +670,7 @@ void Workspace::mouseMoved(QPointF pos)
            } else {
                supportEdges.remove("highlightingEdge");
            }
-           emit updateSignal();
+           emit updateSignal();         
            break;
          case superE:
             if (hitEl[0].x() == 2) {  // Hit elements are edges.
@@ -939,6 +955,7 @@ void Workspace::mouseReleased(QPointF pos)
             insertActInHistory(true);
             emit contentsChanged();
             emit updateSignal();
+            wsout << "LOG@_done Workspace::addSegment()" << endl;
             break;
         case bendS:
             bendingEdgeId = -1;
@@ -948,6 +965,7 @@ void Workspace::mouseReleased(QPointF pos)
             break;
         case removeS:
             if (hitEl[0].x() != 2) {        // Hit elements are not edges.
+                wsout << "LOG@_notdone Workspace::removeSegment()" << endl;
                 break;
             }
             graph->deleteEdge(supportEdges.value("removingEdge"));
@@ -955,9 +973,11 @@ void Workspace::mouseReleased(QPointF pos)
             insertActInHistory(true);
             emit contentsChanged();
             emit updateSignal();
+            wsout << "LOG@_done Workspace::removeSegment()" << endl;
             break;
         case splitS:
             if (hitEl[0].x() != 2) {  // Hit elements are not edges.
+                wsout << "LOG@_notdone Workspace::splitSegment()" << endl;
                 break;
             }
 
@@ -988,6 +1008,7 @@ void Workspace::mouseReleased(QPointF pos)
             insertActInHistory(true);
             emit contentsChanged();
             emit updateSignal();
+            wsout << "LOG@_done Workspace::splitSegment()" << endl;
             break;
         case selectE:
             if (!shiftPressed) {
@@ -1016,6 +1037,7 @@ void Workspace::mouseReleased(QPointF pos)
                                     graph->deleteNode(supportNodes.value("selMovingNode"));
                                     supportNodes.remove("selMovingNode");
                                     supportEdges.remove("movingEdge");
+                                    wsout << "LOG@_done Workspace::selectElements()" << endl;
                                 } else {
                                     graph->substituteNodeInEdges(supportNodes.value("selMovingNode"), hitEl[1].y());
                                     graph->deleteNode(supportNodes.value("selMovingNode"));
@@ -1138,7 +1160,7 @@ void Workspace::moveSelectedElements()
             }
 
             setNodePosition(supportNodes.value("selMovingNode"), position2grid(selectingElementsEnd));
-
+            wsout << "LOG@_done Workspace::snapToGrid()" << endl;
             for (int j=0; j < movingNodes.size(); j++) {
                 if (movingNodes.value(j) == supportNodes.value("selMovingNode")) {
                     continue;
@@ -1147,6 +1169,7 @@ void Workspace::moveSelectedElements()
             }
         } else {
             graphTrans = selectingElementsEnd - selectingElementsSupport;
+            wsout << "LOG@_done Workspace::snapToGrid()" << endl;
             for (int j=0; j < movingNodes.size(); j++) {
                 setNodePosition(movingNodes.value(j), getNodePosition(movingNodes.value(j)) + graphTrans);
             }

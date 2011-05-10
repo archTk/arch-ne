@@ -57,11 +57,27 @@ void AppController::parseArguments(QStringList args)
                 editorArea->zoomOut();
             }
         }
-        else if (args.at(i) == "-r") {
+        else if (args.at(i) == "-h") {
             workspace->homeView();
         }
         else if (args.at(i) == "-g") {
             workspace->showGrid();
+        }
+        else if (args.at(i) == "-s") {
+            workspace->snapToGrid();
+        }
+        else if (args.at(i) == "-u") {
+            workspace->undo();
+        }
+        else if (args.at(i) == "-r") {
+            workspace->redo();
+        }
+        else if (args.at(i) == "-n") {
+            this->newNetwork();
+        }
+        else if (args.at(i) == "-f") {
+            fName = args.at(i+1);
+            this->save();
         }
     }
 }
@@ -150,10 +166,12 @@ void AppController::createConnections()
 void AppController::initNewCase()
 {
     clear();
+    appout << "LOG@_AppController::initNewCase()" << endl;
 }
 
 bool AppController::save()
 {
+    appout << "LOG@_AppController::save()" << endl;
     if (fName.isEmpty()) {
         return saveAs();
     } else {
@@ -187,12 +205,12 @@ bool AppController::saveNetwork()
     }
 
     emit restoreCurs();
-
     return saved;
 }
 
 bool AppController::saveAs()
 {
+    appout << "LOG@_AppController::save()" << endl;
     QString fileName = QFileDialog::getSaveFileName();
     if (fileName.isEmpty()) {
         return false;
@@ -201,7 +219,6 @@ bool AppController::saveAs()
     QFileInfo fileInfo(fileName);
     wDir = fileInfo.path();
     fName = fileInfo.fileName();
-
     return saveNetwork();
 }
 
@@ -213,6 +230,7 @@ bool AppController::maybeSave()
                                    tr("The network has been modified.\n"
                                       "Do you want to save the changes?"),
                                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        appout << "LOG@_AppController::maybeSave()" << endl;
         if (ret == QMessageBox::Save) {
             return saveNetwork();
         } else if (ret == QMessageBox::Cancel) {
@@ -237,6 +255,7 @@ void AppController::newNetwork()
     if (maybeSave()) {
         emit currentFile("");
         clear();
+        appout << "LOG@_AppController::newNetwork()" << endl;
         initNewCase();
     }
 }
@@ -246,6 +265,7 @@ void AppController::importNetwork()
     if (maybeSave()) {
         clear();
         initNewCase();
+        appout << "LOG@_AppController::importNetwork()" << endl;
         loadGraphFromGraph();
     }
 }
@@ -255,6 +275,7 @@ void AppController::openNetwork()
     if (maybeSave()) {
         clear();
         initNewCase();
+        appout << "LOG@_AppController::openNetwork()" << endl;
         loadGraphFromLayout();
     }
 }
