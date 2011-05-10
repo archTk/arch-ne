@@ -40,7 +40,7 @@ public:
     void removeAllResultsViewFromResultsDock();
     void removeResultsViewFromResultsDock();
     void setPageInResultsTab(QWidget *theResultsView);
-    //void resTabsContentChanged();
+    void meshElBeenHit(QVector<QPoint> hitMeshEls);
 
     QPoint currVListValue();
     QMap<QWidget*, QPoint> resultsVList();

@@ -146,7 +146,7 @@ void MainWindow::setPageInTab(QWidget* theDataCollector)
 void MainWindow::setPageInResultsTab(QWidget *theResultsView)
 {
     resultsGroupBox->setPageInResultsTab(theResultsView);
-    //resultsTabs->setCurrentWidget(theResultsView);
+    //resTab->setCurrentWidget(theResultsView);
     //emit editingEl2Ws(resultsViewList.value(resultsTabs->currentWidget()));
 }
 
@@ -214,15 +214,9 @@ void MainWindow::elementsBeenHit(QVector<QPoint> hitEls)
 
 void MainWindow::meshElsBeenHit(QVector<QPoint> hitMeshEls)
 {
-//    if (hitMeshEls[0].x() != -1) {
-//        QMapIterator<QWidget*, QPoint> resultsViewIter(resultsViewList);
-//        while (resultsViewIter.hasNext()) {
-//            resultsViewIter.next();
-//            if (resultsViewIter.value() == hitMeshEls[0]) {
-//                resultsTabs->setCurrentWidget(resultsViewIter.key());
-//            }
-//        }
-//    }
+    if (hitMeshEls[0].x() != -1) {
+        resultsGroupBox->meshElBeenHit(hitMeshEls);
+    }
 }
 
 void MainWindow::hideDock()

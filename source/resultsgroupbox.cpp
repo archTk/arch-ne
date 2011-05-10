@@ -98,3 +98,14 @@ QMap<QWidget*, QPoint> ResultsGroupBox::resultsVList()
 {
     return resultsViewList;
 }
+
+void ResultsGroupBox::meshElBeenHit(QVector<QPoint> hitMeshEls)
+{
+    QMapIterator<QWidget*, QPoint> resultsViewIter(resultsViewList);
+    while (resultsViewIter.hasNext()) {
+        resultsViewIter.next();
+        if (resultsViewIter.value() == hitMeshEls[0]) {
+            resTabs->setCurrentWidget(resultsViewIter.key());
+        }
+    }
+}
