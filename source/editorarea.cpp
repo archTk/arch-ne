@@ -645,7 +645,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
     bool firstTime = true;
     bool firstTimeNode = true;
 
-    qreal radius = size2screen(8);
+    qreal radius = size2screen(9);
     float fontSize = size2screen(12);
 
     qreal width = radius * 2;
@@ -657,15 +657,14 @@ void EditorArea::paintMeshEls(QPainter& painter)
         QString elementType;
         elementType.clear();
         if (!nodeMTypeString.isEmpty()) {
-            if (nodeMTypeString == "0D_Anastomosis") {
-                elementType = "A";
-            } else if (nodeMTypeString == "0D_FiveDofsV2") {
-                elementType = "5";
-            } else if (nodeMTypeString == "0D_EndSegment") {
-                elementType = "E";
-            } else if (nodeMTypeString == "0D_TwoDofsResistance") {
-                elementType = "2";
-            }
+            if (nodeMTypeString == "Anastomosis") {
+                elementType = "a";
+            } else if (nodeMTypeString == "Windkessel") {
+                elementType = "w";
+            } else if (nodeMTypeString == "Resistance") {
+                elementType = "r";
+            } else if (nodeMTypeString == "WavePropagation")
+                elementType = "p";
         }
 
         if (!nodeMTypeString.isNull()) {
@@ -748,14 +747,14 @@ void EditorArea::paintMeshEls(QPainter& painter)
             QString elementType;
             elementType.clear();
             if (!edgeMTypes[h].isEmpty()) {
-                if (edgeMTypes[h] == "0D_FiveDofsV2") {
-                    elementType = "5";
-                } else if (edgeMTypes[h] == "0D_EndSegment") {
-                    elementType = "E";
-                } else if (edgeMTypes[h] == "0D_Anastomosis") {
-                    elementType = "A";
-                } else if (edgeMTypes[h] == "0D_TwoDofsResistance") {
-                    elementType = "2";
+                if (edgeMTypes[h] == "Resistance") {
+                    elementType = "r";
+                } else if (edgeMTypes[h] == "WavePropagation") {
+                    elementType = "p";
+                } else if (edgeMTypes[h] == "Anastomosis") {
+                    elementType = "a";
+                } else if (edgeMTypes[h] == "Windkessel") {
+                    elementType = "w";
                 }
             }
 
@@ -888,7 +887,12 @@ void EditorArea::paintLabels(QPainter& painter)
     painter.setPen(Qt::darkBlue);
 
     for (int i = 0; i < edgesIds.size(); i++) {
-        float s = 0.5;
+        float s;
+        if (resToBeDisplayed == 0) {
+            s = 0.5;
+        } else {
+            s = 0.4;
+        }
 
         int t = 0;
         while (sOnBezier.value(edgesIds[i]).at(t) < s) {
@@ -914,8 +918,6 @@ void EditorArea::paintLabels(QPainter& painter)
 
 void EditorArea::paintResults(QPainter &painter)
 {
-    qcout << "EA::paintResults" << endl;
-
     QVector<int> edgesIds = workspace->getEdgesIds();
     float labelW = size2screen(150.0);
     float labelH = size2screen(10.0);
@@ -937,12 +939,12 @@ void EditorArea::paintResults(QPainter &painter)
             //qcout << "edge" << edgesIds[i] <<" s" << j << " " <<edgeResults[j].x() << " " << edgeResults[j].y() << endl;
 
             float s = edgeResults[j].x();
-            if (s == 0) {
-                s = 0.2;
-            }
-            if (s == 1) {
-                s = 0.8;
-            }
+//            if (s == 0) {
+//                s = 0.2;
+//            }
+//            if (s == 1) {
+//                s = 0.8;
+//            }
 
             int t = 0;
             while (sOnBezier.value(edgesIds[i]).at(t) < s) {

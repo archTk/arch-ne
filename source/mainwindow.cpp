@@ -272,6 +272,10 @@ void MainWindow::createActions()
     importMeshAct->setStatusTip(tr("Import an existing mesh"));
     connect(importMeshAct, SIGNAL(triggered()), this, SIGNAL(importMesh()));
 
+    importResultsAct = new QAction(QIcon(":/images/importResults.png"), tr("Import Results"), this);
+    importResultsAct->setStatusTip(tr("Import existing results"));
+    connect(importResultsAct, SIGNAL(triggered()), this, SIGNAL(importResults()));
+
     saveAct = new QAction(QIcon(":/images/save.png"), tr("&Save File"), this);
     saveAct->setShortcut(tr("Ctrl+S"));
     saveAct->setStatusTip(tr("Save the netwrok"));
@@ -423,6 +427,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(importNetworkAct);
     fileMenu->addAction(importBCAct);
     fileMenu->addAction(importMeshAct);
+    fileMenu->addAction(importResultsAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addSeparator();
@@ -509,6 +514,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(importNetworkAct);
     fileToolBar->addAction(importBCAct);
     fileToolBar->addAction(importMeshAct);
+    fileToolBar->addAction(importResultsAct);
     fileToolBar->addAction(saveAct);
     fileToolBar->setMovable(false);
 

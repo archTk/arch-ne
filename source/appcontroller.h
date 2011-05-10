@@ -70,6 +70,7 @@ public slots:
     void importBC();
     void importMesh();
     void importNetwork();
+    void importResults();
     void initNewCase();
     void meshHasBeenGenerated();
     void newNetwork();

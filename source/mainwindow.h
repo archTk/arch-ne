@@ -89,6 +89,7 @@ signals:
     void importBCPressed();
     void importMesh();
     void importNetwork();
+    void importResults();
     //void importSPPressed();
     void infoPressed();
     //void initNewCase();
@@ -200,6 +201,7 @@ private:
     QAction* importBCAct;
     QAction* importMeshAct;
     QAction* importNetworkAct;
+    QAction* importResultsAct;
     //QAction* importPatientInfoAct;
     //QAction* importSPAct;
     QAction* infoAct;

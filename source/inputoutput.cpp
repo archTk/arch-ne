@@ -29,6 +29,7 @@
 #include "graphproperties.h"
 #include "graphmesh.h"
 #include "networkproperties.h"
+#include "workspace.h"
 
 #include <iostream>
 #include <QTextStream>
@@ -326,6 +327,8 @@ void InputOutput::populateGraphMeshDataStructure(QDomDocument theMeshDoc, GraphM
 
 void InputOutput::importBC(NetworkProperties *networkProperties)
 {
+    IOout << "InputOutput::importBC check close file at the end" << endl;
+
     QString BCFileName = QFileDialog::getOpenFileName(0, tr("Import Boundary Conditions"),
                                                     "",
                                                     tr("XML files (*.xml)"));
@@ -345,6 +348,7 @@ void InputOutput::importBC(NetworkProperties *networkProperties)
 
     QTextStream BCIn(&BCFile);
     QString BCXML(BCIn.readAll());
+    //BCFile.close();
 
     networkProperties->setBCXML(BCXML);
 }
@@ -754,6 +758,36 @@ void InputOutput::loadLayout(QDomDocument theDomDoc, GraphLayout *graphLayout)
     }
 }
 
+QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::importResults()
+{
+    QString resultsFileName = QFileDialog::getOpenFileName(0, tr("Import Simulation Results"),
+                                                    "",
+                                                    tr("XML files (*.xml)"));
+
+    if (resultsFileName.isNull()) {
+        QMap<int, QMap<QString, QVector<QPointF> > > tempMap = QMap<int, QMap<QString, QVector<QPointF> > >();
+        return tempMap;
+    }
+
+    QFile resultsFile(resultsFileName);
+    if (!resultsFile.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(resultsFileName)
+                             .arg(resultsFile.errorString()));
+        QMap<int, QMap<QString, QVector<QPointF> > > tempMap = QMap<int, QMap<QString, QVector<QPointF> > >();
+        return tempMap;
+    }
+
+    QTextStream resultsIn(&resultsFile);
+    QDomDocument resDoc("results");
+    resDoc.setContent(resultsIn.readAll());
+
+    resultsFile.close();
+
+    return createResMap(resDoc);
+}
+
 QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QString resFileName)
 {
     QFile resInFile(resFileName);
@@ -765,13 +799,20 @@ QMap< int, QMap<QString, QVector<QPointF> > > InputOutput::loadResData(const QSt
     QDomDocument resDoc("results");
     resDoc.setContent((resStreamIn.readAll()));
 
+    resInFile.close();
+
+    return createResMap(resDoc);
+}
+
+QMap<int, QMap<QString, QVector<QPointF> > > InputOutput::createResMap(QDomDocument theDomDoc)
+{
     QMap< int, QMap<QString, QVector<QPointF> > > resultsMap;
     QMap<QString, QVector<QPointF> > tempMap;
     QVector<QPointF> tempVector;
 
     resultsMap.clear();
 
-    QDomNodeList resultsList = resDoc.elementsByTagName("Solutions");
+    QDomNodeList resultsList = theDomDoc.elementsByTagName("Solutions");
     QDomNode results = resultsList.at(0);
     QDomElement resultsElements = results.firstChildElement("edges");
 

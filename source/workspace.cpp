@@ -1816,7 +1816,7 @@ void Workspace::setResultToDisplay(int theResToDisplay)
 
 void Workspace::setResultsMap(QMap<int, QMap<QString, QVector<QPointF> > > theResultsMap)
 {
-    wsout << "WS::setResultsOut" << endl;
+    wsout << "WS::setResultsMap" << endl;
     resultsMap = theResultsMap;
 }
 

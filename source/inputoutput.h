@@ -28,6 +28,8 @@ class GraphLayout;
 class GraphProperties;
 class GraphMesh;
 class NetworkProperties;
+class Workspace;
+
 class QFile;
 class QPointF;
 
@@ -55,6 +57,8 @@ public:
     //void importSP(NetworkProperties* networkProperties);
 
     QMap<int, QMap<QString, QVector<QPointF> > > loadResData(const QString resFileName);
+    QMap<int, QMap<QString, QVector<QPointF> > > importResults();
+    QMap<int, QMap<QString, QVector<QPointF> > > createResMap(QDomDocument theDomDoc);
 
 signals:
     void curFNameAndWDir(QString theFName, QString theWDir);

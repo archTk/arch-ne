@@ -78,6 +78,7 @@ void AppController::createConnections()
     connect(mainWindow, SIGNAL(importBCPressed()), this, SLOT(importBC()));
     connect(mainWindow, SIGNAL(importMesh()), this, SLOT(importMesh()));
     connect(mainWindow, SIGNAL(importNetwork()), this, SLOT(importNetwork()));
+    connect(mainWindow, SIGNAL(importResults()), this, SLOT(importResults()));
     connect(mainWindow, SIGNAL(infoPressed()), workspace, SLOT(info()));
     connect(mainWindow, SIGNAL(newNetwork()), this, SLOT(newNetwork()));
     connect(mainWindow, SIGNAL(openNetwork()), this, SLOT(openNetwork()));
@@ -535,9 +536,24 @@ void AppController::abortSimulation()
     emit restoreCurs();
 }
 
+void AppController::importResults()
+{
+    InputOutput* inputOutput = new InputOutput();
+    QMap<int, QMap<QString, QVector<QPointF> > > tempMap = QMap<int, QMap<QString, QVector<QPointF> > >();
+
+    tempMap = inputOutput->importResults();
+
+    if (tempMap.isEmpty()) {
+        appout << "appC::resMap is empty!!!!!!!!" << endl;
+        return;
+    }
+
+    workspace->setResultsMap(tempMap);
+}
+
 void AppController::populateResDataStructure()
 {
-    appout << "aapC::populateResDataStructure - eliminare comando di import results dato in showResultsDock" << endl;
+    appout << "aapC::populateResDataStructure" << endl;
 
     QString idPat;
     idPat = workspace->getIdPat();
@@ -628,7 +644,6 @@ void AppController::showResultsDock()
 {
     appout << "Appc::showResultsDock" << endl;
     mainWindow->showResultsDock();
-    populateResDataStructure();
 }
 
 void AppController::showResults(QPoint elementRequest)
