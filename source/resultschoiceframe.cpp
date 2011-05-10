@@ -34,6 +34,6 @@ ResultsChoiceFrame::ResultsChoiceFrame(QWidget *parent) :
 
 void ResultsChoiceFrame::changeDisplayedResult(int newDisplayedResult)
 {
-    choiceOut << "ResultsChoiceFrame::changeDisplayedResults newResults= " << newDisplayedResult << endl;
+    //choiceOut << "ResultsChoiceFrame::changeDisplayedResults newResults= " << newDisplayedResult << endl;
     emit res2BeDisplayedChanged(newDisplayedResult);
 }

@@ -62,6 +62,7 @@ Workspace* EditorArea::getWorkspace()
 void EditorArea::setResToBeDisplayed(int theResult)
 {
     resToBeDisplayed = theResult;
+    updateRender();
 }
 
 void EditorArea::paintEvent(QPaintEvent*)
@@ -927,46 +928,43 @@ void EditorArea::paintResults(QPainter &painter)
 
     QVector<QPointF> edgeResults;
     QString resString;
-    QString sString;
 
     for (int i = 0; i < edgesIds.count(); i++) {
         edgeResults = workspace->getEdgeResults(edgesIds[i]);
         for (int j = 0; j < edgeResults.count(); j++) {
-            sString.setNum(edgeResults[j].x());
+            //sString.setNum(edgeResults[j].x());
             resString.setNum(edgeResults[j].y());
-            //qcout << "edge" << i <<" s" << j << " " <<sString << " " << resString << endl;
-            qcout << "edge" << i <<" s" << j << " " <<edgeResults[j].x() << " " << edgeResults[j].y() << endl;
+            //qcout << "edge" << edgesIds[i] <<" s" << j << " " <<edgeResults[j].x() << " " << edgeResults[j].y() << endl;
+
+            float s = edgeResults[j].x();
+            if (s == 0) {
+                s = 0.2;
+            }
+            if (s == 1) {
+                s = 0.8;
+            }
+
+            int t = 0;
+            while (sOnBezier.value(edgesIds[i]).at(t) < s) {
+                t = t + 1;
+            }
+            float deltaS = s - float(t - 1) / edgeDiscretization;
+
+            float m = float(t) / edgeDiscretization + deltaS;
+
+            QPoint nodesOfEdge = workspace->getNodesOfEdge(edgesIds[i]);
+            QPointF screenXYFirst = graph2screen(workspace->getNodePosition(nodesOfEdge.x()));
+            QPointF screenXYSecond = graph2screen(workspace->getNodePosition(nodesOfEdge.y()));
+            QPointF screenMidPoint = graph2screen(workspace->getThirdPointPos(edgesIds[i]));
+
+            QPointF pointPos = (1 - m) * (1 - m) * screenXYFirst + 2 * (1 - m) * m * screenMidPoint + m * m * screenXYSecond;
+
+            painter.translate(pointPos.x() + x, pointPos.y());
+            painter.drawText(0, 0, labelW, labelH, Qt::AlignLeft | Qt::AlignVCenter, resString);
+            painter.translate(- pointPos.x() - x, - pointPos.y());
+
         }
     }
-
-
-
-
-
-    /*for (int i = 0; i < edgesIds.size(); i++) {
-        QPointF res;
-        float s = 0.5;
-
-        int t = 0;
-        while (sOnBezier.value(edgesIds[i]).at(t) < s) {
-            t = t + 1;
-        }
-        float deltaS = s - float(t - 1) / edgeDiscretization;
-
-        float m = float(t) / edgeDiscretization + deltaS;
-
-        QPoint nodesOfEdge = workspace->getNodesOfEdge(edgesIds[i]);
-        QPointF screenXYFirst = graph2screen(workspace->getNodePosition(nodesOfEdge.x()));
-        QPointF screenXYSecond = graph2screen(workspace->getNodePosition(nodesOfEdge.y()));
-        QPointF screenMidPoint = graph2screen(workspace->getThirdPointPos(edgesIds[i]));
-
-        QPointF pointPos = (1 - m) * (1 - m) * screenXYFirst + 2 * (1 - m) * m * screenMidPoint + m * m * screenXYSecond;
-        temp = "test";
-
-        painter.translate(pointPos.x() + x, pointPos.y());
-        painter.drawText(0, 0, labelW, labelH, Qt::AlignLeft | Qt::AlignVCenter, temp);
-        painter.translate(- pointPos.x() - x, - pointPos.y());
-    }*/
 }
 
 QPointF EditorArea::graph2screen(QPointF graphCoord)
