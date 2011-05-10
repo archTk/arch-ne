@@ -137,8 +137,6 @@ private slots:
     //bool save();
     //bool saveAs();
     //void simulatePressed();
-    void tabsContentChanged();
-    void resultsTabsContentChanged();
 
 public slots:
     void restoreCurs();
@@ -150,8 +148,10 @@ public slots:
     void mouseLeftResultsDock();
     void dockClosed();
     void resultsDockClosed();
+    void resultsTabsContentChanged();
     void setFileName(QString theName);
     void showStatusBarMessage(QString theMessage);
+    void tabsContentChanged();
 
 private:
     void createActions();
@@ -170,7 +170,7 @@ private:
     QDockWidget* dock;
     QDockWidget* resultsDock;
     QTabWidget* tabs;
-    QTabWidget* resultsTabs;
+    //QTabWidget* resultsTabs;
     ResultsGroupBox* resultsGroupBox;
     EditorArea* editorArea;
 

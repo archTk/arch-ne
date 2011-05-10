@@ -40,7 +40,7 @@ public:
     void removeAllResultsViewFromResultsDock();
     void removeResultsViewFromResultsDock();
     void setPageInResultsTab(QWidget *theResultsView);
-    void resTabsContentChanged();
+    //void resTabsContentChanged();
 
     QPoint currVListValue();
     QMap<QWidget*, QPoint> resultsVList();
@@ -48,6 +48,7 @@ public:
 signals:
     void result2BeDisaplyedChanged(int theResult);
     void visualizingEl2Ws(QPoint editingElement);
+    void resTabsContentChanged();
 
 private:
 

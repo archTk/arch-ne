@@ -54,6 +54,7 @@ void ResultsGroupBox::addResultsView(ResultsView* theResultsView, QPoint element
 
        resTabs->insertTab(0, theResultsView, element);
        resTabs->setCurrentWidget(theResultsView);
+       connect(resTabs, SIGNAL(currentChanged(int)), this, SIGNAL(resTabsContentChanged()));
        ////emit editingEl2Ws(elementRequest);
        //resultsDock->setWidget(resultsTabs);
        resTabs->show();

@@ -555,8 +555,17 @@ void Workspace::mouseMoved(QPointF pos)
                 emit updateSignal();
                 break;
             case results:
+//                if (hitEl[0].x() == 2) {            // Hit elements are edges.
+//                    supportEdges.insert("highlightingEdge", hitEl[0].y());
+//                } else {
+//                    supportEdges.remove("highlightingEdge");
+//                }
+
+//                emit updateSignal();
+//                break;
                 emit noMeshHitEls();
                 emit updateSignal();
+                break;
             }
         } else {    // mouseButtonPressed
         switch (selectedTool) {
@@ -1091,6 +1100,7 @@ void Workspace::mouseReleased(QPointF pos)
             if (hitEl[0].x() != -1) {
                 emit showResults(hitMeshEls[0]);
             }
+            break;
     }
 }
 

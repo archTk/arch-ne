@@ -43,9 +43,6 @@ MainWindow::MainWindow()
     tabs = new QTabWidget;
     connect(tabs, SIGNAL(currentChanged(int)),this, SLOT(tabsContentChanged()));
 
-    resultsTabs = new QTabWidget;
-    connect(resultsTabs, SIGNAL(currentChanged(int)), this, SLOT(resultsTabsContentChanged()));
-
     createActions();
     createMenus();
     createToolBars();
@@ -160,8 +157,10 @@ void MainWindow::tabsContentChanged()
 
 void MainWindow::resultsTabsContentChanged()
 {
+    mainout << "MW::resultsTabsContentChanged" << endl;
     editorArea->setMeshElToBeHigh(resultsGroupBox->currVListValue().y());
     setPageInTab(dataCollectorList.key(editorArea->getGraphEl((resultsGroupBox->currVListValue()).y())));
+    editorArea->update();
 }
 
 void MainWindow::mouseEnteredInDock()
@@ -175,8 +174,8 @@ void MainWindow::mouseEnteredInResultsDock()
         return;
     }
 
-    //editorArea->setMeshElToBeHigh(resultsGroupBox->resultsVList().value((resultsGroupBox->currVListValue()).y()));
-    //setPageInTab(dataCollectorList.key(editorArea->getGraphEl((resultsGroupBox->currVListValue()).y()));
+    editorArea->setMeshElToBeHigh ((resultsGroupBox->currVListValue()).y());
+    setPageInTab(dataCollectorList.key(editorArea->getGraphEl((resultsGroupBox->currVListValue()).y())));
 }
 
 void MainWindow::mouseLeftDock()
@@ -588,6 +587,7 @@ void MainWindow::createDockWindows()
     resultsGroupBox = new ResultsGroupBox(this);
     connect(resultsGroupBox, SIGNAL(visualizingEl2Ws(QPoint)), this, SIGNAL(editingEl2Ws(QPoint)));
     connect(resultsGroupBox, SIGNAL(result2BeDisaplyedChanged(int)), this, SIGNAL(resultToDisplay(int)));
+    connect(resultsGroupBox, SIGNAL(resTabsContentChanged()), this, SLOT(resultsTabsContentChanged()));
 
     resultsDock = new ResultsDock(this);
     resultsDock->setWindowTitle("Results");

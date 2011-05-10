@@ -685,7 +685,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
 
             if (showMesh) {
                 painter.setPen(Qt::NoPen);
-                painter.setBrush(Qt::darkYellow);
+                painter.setBrush(Qt::gray);
                 painter.drawPath(path);
                 painter.setPen(Qt::yellow);
                 painter.setBrush(Qt::yellow);

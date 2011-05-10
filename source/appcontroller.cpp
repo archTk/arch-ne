@@ -567,15 +567,6 @@ void AppController::populateResDataStructure()
     showResultsDock();
 }
 
-//void AppController::insertResultString(QStringList theResult)
-//{
-//    QStringListIterator theResultsIter(theResult);
-//    while (theResultsIter.hasNext()) {
-//        theResultsIter.next();
-//        //appout << theResultsIter.value << endl;
-//    }
-//}
-
 void AppController::setFNameAndWDir(QString theFName, QString theWDir)
 {
     mainWindow->setCurrentFile(theFName);
