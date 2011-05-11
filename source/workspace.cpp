@@ -1824,6 +1824,7 @@ void Workspace::unravelNet()
         insertActInHistory(true);
         emit updateSignal();
         emit contentsChanged();
+        wsout << "LOG@_Workspace::unravelNet()" << endl;
     }
 
     unraveller->unravelNet(screenOrigin);

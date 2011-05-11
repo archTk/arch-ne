@@ -79,6 +79,9 @@ void AppController::parseArguments(QStringList args)
             fName = args.at(i+1);
             this->save();
         }
+        else if (args.at(i) == "-b") {
+            this->BCPressed();
+        }
     }
 }
 
@@ -432,7 +435,9 @@ void AppController::BCPressed()
 
     QString XMLSchema(":XMLschema/boundary_conditions.xsd");
 
+
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
+    appout << "LOG@_graph AppController::BCPressed()" << endl;
 }
 
 void AppController::caseInfoPressed()

@@ -544,6 +544,7 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
     networkResult.append(graphProperties->getTransformations());
 
     networkResult.append("</NetworkGraph>");
+    IOout << "LOG@_graph InputOutput::saveNetwork()" << endl;
 
     ///////
 
@@ -604,6 +605,7 @@ bool InputOutput::saveNetwork(const QString& fName, const QString& wDir, GraphLa
     layoutResult.append("</edges_layout>\n");
 
     layoutResult.append("</NetworkGraphLayout>\n");
+    IOout << "LOG@_layout InputOutput::saveNetwork()" << endl;
 
     ///////
 
