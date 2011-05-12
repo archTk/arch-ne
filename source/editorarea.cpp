@@ -706,7 +706,7 @@ void EditorArea::paintMeshEls(QPainter& painter)
 
             if (path.intersects(mousePath) && selectedTool == 7) {
                 painter.setPen(Qt::NoPen);
-                painter.setBrush(Qt::darkCyan);
+                painter.setBrush(Qt::gray);
                 painter.drawPath(path);
                 painter.setPen(Qt::yellow);
                 painter.setBrush(Qt::yellow);

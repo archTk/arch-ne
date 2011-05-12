@@ -30,8 +30,7 @@ class ResultsView : public QWidget
     Q_OBJECT
 
 public:
-    explicit ResultsView(QString cookie, QPixmap pressurePic, QPixmap flowPic, QString PMean,
-                         QString FMean, QWidget *parent = 0);
+    explicit ResultsView(QString cookie, QPixmap pressurePic, QPixmap flowPic, QWidget *parent = 0);
     ~ResultsView();
 
 private:

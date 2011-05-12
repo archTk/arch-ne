@@ -25,14 +25,11 @@ using namespace std;
 
 QTextStream resultsout(stdout);
 
-ResultsView::ResultsView(QString cookie, QPixmap pressurePix, QPixmap flowPix, QString PMean,
-                         QString FMean, QWidget *parent) :
+ResultsView::ResultsView(QString cookie, QPixmap pressurePix, QPixmap flowPix, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ResultsView)
 {
     ui->setupUi(this);
-
-    //connect(ui->splitter, SIGNAL(splitterMoved(int, int)), this, SLOT(resizeLabels()));
 
     pressPix = pressurePix;
     flPix = flowPix;
@@ -40,10 +37,8 @@ ResultsView::ResultsView(QString cookie, QPixmap pressurePix, QPixmap flowPix, Q
     QPixmap shownFImage= flowPix.scaledToWidth(50, Qt::SmoothTransformation);
 
     ui->pressureLabel->setPixmap(shownPImage);
-    //ui->PValue->setText(PMean);
 
     ui->flowLabel->setPixmap(shownFImage);
-    //ui->FValue->setText(FMean);
 
     setResultsCookie(cookie);
 }

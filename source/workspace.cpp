@@ -1089,7 +1089,9 @@ void Workspace::mouseReleased(QPointF pos)
             break;
         case results:
 
-            if (hitEl[0].x() != -1) {
+            //if (hitEl[0].x() != -1) {
+            if (hitMeshEls[0].x() != -1) {
+                wsout << "WS::mouseReleased case reults - hitMeshEl= " << hitMeshEls[0].y() << endl;
                 emit showResults(hitMeshEls[0]);
             }
             break;

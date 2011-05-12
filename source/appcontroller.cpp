@@ -630,6 +630,10 @@ void AppController::showResultsDock()
 
 void AppController::showResults(QPoint elementRequest)
 {
+    if (elementRequest.x() == 1) {
+        return;
+    }
+
     if (resultsMap.values().contains(elementRequest)) {
         mainWindow->setPageInResultsTab(resultsViewList.value(resultsMap.key(elementRequest)));
         mainWindow->showResultsDock();
@@ -652,6 +656,7 @@ void AppController::showResults(QPoint elementRequest)
 
     if (elementRequest.x() == 1 ) {         // MeshElement corresponds to a node of the graph.
         //pressureImageName = imagesDir + elementRequest.y();
+        appout << "AppC::showResults elementRequest= " << elementRequest.x() << " " << elementRequest.y() << endl;
         pressureImageName = imagesDir + elIdString + "_" + workspace->getNodeName(workspace->getNodeMElementId(elementRequest.y())) + "_pressure.png";
         flowImageName = imagesDir + elIdString + "_" + workspace->getNodeName(workspace->getNodeMElementId(elementRequest.y())) + "_flow.png";
     } else if (elementRequest.x() == 2) {   // MeshElement correspond to a segment of an edge of the graph.
@@ -664,18 +669,11 @@ void AppController::showResults(QPoint elementRequest)
     appout << "AppC::showR pressurePath= " << pressureImageName << endl;
     appout << "pressure= " << flowImageName << endl;
 
-
-
     QPixmap pressureImage, flowImage;
     pressureImage.load(pressureImageName);
     flowImage.load(flowImageName);
-    //pressureImage.load(":images/aorta_asc_1_pressure.png");
-    //flowImage.load(":images/aorta_asc_1_flow.png");
 
-    QString PMean = QString("100");
-    QString FMean = QString("150");
-
-    ResultsView* resultsView = new ResultsView(cookie, pressureImage, flowImage, PMean, FMean);
+    ResultsView* resultsView = new ResultsView(cookie, pressureImage, flowImage);
 
     connect(resultsView, SIGNAL(okButtonClicked(QString)), this, SLOT(closeResultsView(QString)));
     connect(resultsView, SIGNAL(deleteItself()), resultsView, SLOT(close()));
@@ -684,13 +682,6 @@ void AppController::showResults(QPoint elementRequest)
 
     mainWindow->insertResultsViewToResultsDock(resultsView, elementRequest);
 }
-
-//void AppController::setResult2Display(int theResult)
-//{
-//    appout << "AppC::setResult2Display theResult= " << theResult << endl;
-
-//    resToBeDisplayed = theResult;
-//}
 
 void AppController::dataRequest(QPoint elementRequest)
 {
