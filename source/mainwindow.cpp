@@ -157,7 +157,7 @@ void MainWindow::tabsContentChanged()
 
 void MainWindow::resultsTabsContentChanged()
 {
-    mainout << "MW::resultsTabsContentChanged" << endl;
+    //mainout << "MW::resultsTabsContentChanged" << endl;
     editorArea->setMeshElToBeHigh(resultsGroupBox->currVListValue().y());
     setPageInTab(dataCollectorList.key(editorArea->getGraphEl((resultsGroupBox->currVListValue()).y())));
     editorArea->update();

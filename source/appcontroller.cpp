@@ -378,6 +378,11 @@ void AppController::errorFromExternal(QProcess::ProcessError)
     appout << "error from external process: " << err << endl;
 }
 
+void AppController::standardOutFromExternal()
+{
+    appout << "AppC::standardOutFromExternal" << endl;
+}
+
 void AppController::BCPressed()
 {
     if (fName.isEmpty()) {
@@ -503,19 +508,25 @@ void AppController::simulateGraph()
 
     QStringList arguments;
 
-    arguments << scriptPath << "--wdir" << wDir << "--xmlNet" << specificNet <<
+    QString wDirPyNS = wDir + "/";
+
+    arguments << scriptPath << "--wdir" << wDirPyNS << "--xmlNet" << specificNet <<
             "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
 
     pyNS = new QProcess(this);
+
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
+    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    //connect(pyNS, SIGNAL(readyReadStandardOutput()), this, SLOT(standardOutFromExternal()));
+    //connect(pyNS, SIGNAL(readyReadStandardError()), this, SLOT(standardOutFromExternal()));
+    //connect(pyNS, SIGNAL(bytesWritten(qint64)), this, SLOT(standardOutFromExternal()));
+    pyNS->start(pythonPath, arguments);
 
     infoDialog = new InfoDialog;
     connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
     infoDialog->initWithMessage(tr("Simulation is running..."));;
     infoDialog->exec();
 
-    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
-    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
-    pyNS->start(pythonPath, arguments);
 }
 
 void AppController::simulationHasBeenPerformed()

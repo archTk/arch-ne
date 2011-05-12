@@ -85,6 +85,7 @@ public slots:
     void showResultsDock();
     void simulateGraph();
     void simulationHasBeenPerformed();
+    void standardOutFromExternal();
 
 private slots:
 
