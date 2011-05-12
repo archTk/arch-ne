@@ -652,7 +652,7 @@ void AppController::showResults(QPoint elementRequest)
 
     if (elementRequest.x() == 1 ) {         // MeshElement corresponds to a node of the graph.
         //pressureImageName = imagesDir + elementRequest.y();
-        pressureImageName = imagesDir + elIdString + "_" + workspace->getNodeName(workspace->getNodeMElementId(elementRequest.y())) + "pressure.png";
+        pressureImageName = imagesDir + elIdString + "_" + workspace->getNodeName(workspace->getNodeMElementId(elementRequest.y())) + "_pressure.png";
         flowImageName = imagesDir + elIdString + "_" + workspace->getNodeName(workspace->getNodeMElementId(elementRequest.y())) + "_flow.png";
     } else if (elementRequest.x() == 2) {   // MeshElement correspond to a segment of an edge of the graph.
         //int edgeId = workspace->getEdgeIdFromMElId(elementRequest.y());
