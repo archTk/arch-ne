@@ -277,6 +277,8 @@ void InputOutput::importBC(NetworkProperties *networkProperties)
     QString BCXML(BCIn.readAll());
 
     networkProperties->setBCXML(BCXML);
+
+    IOout << "LOG@_done InputOutput::importBC()" << endl;
 }
 
 /*void InputOutput::importPatientInfo(NetworkProperties *networkProperties)

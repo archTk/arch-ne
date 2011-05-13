@@ -82,6 +82,9 @@ void AppController::parseArguments(QStringList args)
         else if (args.at(i) == "-b") {
             this->BCPressed();
         }
+        else if (args.at(i) == "-c") {
+            this->caseInfoPressed();
+        }
     }
 }
 
@@ -346,11 +349,13 @@ void AppController::importMesh()
 
 void AppController::importBC()
 {
+    appout << "LOG@_AppController::importBC()" << endl;
     InputOutput* inputOutput = new InputOutput();
     inputOutput->importBC(workspace->getNetworkProperties());
     inputOutput->saveBC(fName, wDir, workspace->getBCXML());
 
     emit messageToBeDisplayed("Boundary Conditions have been imported");
+
 }
 
 void AppController::generateMesh()
@@ -437,7 +442,7 @@ void AppController::BCPressed()
 
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
-    appout << "LOG@_graph AppController::BCPressed()" << endl;
+    appout << "LOG@_AppController::BCPressed()" << endl;
 }
 
 void AppController::caseInfoPressed()
@@ -460,6 +465,7 @@ void AppController::caseInfoPressed()
     QString XMLSchema(":XMLschema/schema.xsd");
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
+    appout << "LOG@_AppController::caseInfoPressed()" << endl;
 }
 
 void AppController::customizeGraph()
@@ -728,10 +734,15 @@ void AppController::collectData(QPoint elementRequest, QString XMLString, QVecto
     connect(dataCollector, SIGNAL(okButtonClicked(QString,QString)), this, SLOT(dataConfirAndClose(QString,QString)));
     connect(dataCollector, SIGNAL(deleteItself()), dataCollector, SLOT(close()));
 
+    if (SIGNAL(deleteItself())){
+        appout << "LOG@_AppController::close()" << endl;
+    }
+
     dataCollectorList.insert(requestKey, dataCollector);
 
     mainWindow->insertDataCollectorToDock(dataCollectorList[requestKey], elementRequest);
     mainWindow->showDock();
+
 }
 
 void AppController::dataConfirmed(QString cookie,QString elementData)
@@ -764,12 +775,14 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         workspace->setBCXML(elementData);
         InputOutput* inputOutput = new InputOutput();
         inputOutput->saveBC(fName, wDir, elementData);
+        appout << "LOG@_AppController::dataConfirmed(BC)" << endl;
         //QDomNodeList patDataList = doc.elementsByTagName("patient_data");
         //QDomNode patDataNode = patDataList.at(0);
         //QDomElement idpat = patDataNode.firstChildElement("idpat");
         //appout << "AppC::dataConfirmed idpat= " << idpat << endl;
     } else if (temp.x() == 5) { // Patient information.
         workspace->setCaseInfoXML(elementData);
+        appout << "LOG@_AppController::dataConfirmed(CI)" << endl;
     }
 }
 
@@ -783,6 +796,7 @@ void AppController::dataConfirAndClose(QString cookie, QString elementData)
     dataCollectorList.remove(requestKey);
 
     mainWindow->removeDataCollectorFromDock();
+    appout << "LOG@_AppController::dataConfirAndClose()" << endl;
 }
 
 void AppController::closeResultsView(QString cookie)

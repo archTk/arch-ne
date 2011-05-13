@@ -1686,6 +1686,7 @@ void Workspace::setBCXML(QString theBCXML)
 
 QString Workspace::getBCXML()
 {
+    wsout << "LOG@_Workspace::getBCXML()" << endl;
     return networkProperties->getBCXML();
 }
 
@@ -1721,6 +1722,7 @@ void Workspace::setCaseInfoXML(QString theCaseInfoXML)
 
 QString Workspace::getCaseInfoXML()
 {
+    wsout << "LOG@_Workspace::getCaseInfoXML()" << endl;
     return networkProperties->getCaseInfoXML();
 }
 
