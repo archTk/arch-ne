@@ -28,10 +28,12 @@
 #include <QTextStream>
 using namespace std;
 
+QTextStream qcout(stdout);
+
 #include "editorarea.h"
 #include "workspace.h"
 
-QTextStream qcout(stdout);
+#include <math.h>
 
 EditorArea::EditorArea(QWidget *parent)
         : QWidget(parent)
@@ -934,8 +936,16 @@ void EditorArea::paintResults(QPainter &painter)
     for (int i = 0; i < edgesIds.count(); i++) {
         edgeResults = workspace->getEdgeResults(edgesIds[i]);
         for (int j = 0; j < edgeResults.count(); j++) {
-            //sString.setNum(edgeResults[j].x());
-            resString.setNum(edgeResults[j].y());
+            if (fabs(edgeResults[j].y()) < 1) {
+                resString.sprintf("%.2f", edgeResults[j].y());
+            } else if (fabs(edgeResults[j].y()) >= 1 && fabs(edgeResults[j].y()) <= 100) {
+                resString.sprintf("%.1f", edgeResults[j].y());
+            } else {
+                resString.sprintf("%.0f", edgeResults[j].y());
+            }
+
+            //resString.setNum(edgeResults[j].y());
+
             //qcout << "edge" << edgesIds[i] <<" s" << j << " " <<edgeResults[j].x() << " " << edgeResults[j].y() << endl;
 
             float s = edgeResults[j].x();
