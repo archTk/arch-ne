@@ -179,7 +179,7 @@ void EditorArea::paintEvent(QPaintEvent*)
         }
     }
 
-    if (meshElToBeHigh != -1) {
+    if (meshElToBeHigh != -1 && meshElToBeHigh !=0 ) {
         paintMeshElToBeHigh(painter);
     }
 }
