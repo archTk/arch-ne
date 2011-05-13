@@ -358,6 +358,8 @@ void AppController::goMeshing()
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshHasBeenGenerated()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    connect(pyNS, SIGNAL(started()), this, SLOT(externalProcessStarted()));
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(externalProcessFinished(int,QProcess::ExitStatus)));
     pyNS->start(pythonPath, arguments);
 }
 
@@ -375,7 +377,17 @@ void AppController::errorFromExternal(QProcess::ProcessError)
     infoDialog->done(1);
 
     int err = pyNS->error();
-    appout << "error from external process: " << err << endl;
+    appout << "AppC::errorFromExternal error= " << err << endl;
+}
+
+void AppController::externalProcessStarted()
+{
+    appout << "AppC::externalProcessStarted" << endl;
+}
+
+void AppController::externalProcessFinished(int exit, QProcess::ExitStatus status)
+{
+    appout << "AppC::externalProcessFinished exitStatus=" << exit << " " << status << endl;
 }
 
 void AppController::standardOutFromExternal()
@@ -470,6 +482,8 @@ void AppController::goCustomizing()
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(graphHasBeenCustomized()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    connect(pyNS, SIGNAL(started()), this, SLOT(externalProcessStarted()));
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(externalProcessFinished(int,QProcess::ExitStatus)));
     pyNS->start(pythonPath, arguments);
 }
 
@@ -517,6 +531,8 @@ void AppController::simulateGraph()
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    connect(pyNS, SIGNAL(started()), this, SLOT(externalProcessStarted()));
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(externalProcessFinished(int,QProcess::ExitStatus)));
     //connect(pyNS, SIGNAL(readyReadStandardOutput()), this, SLOT(standardOutFromExternal()));
     //connect(pyNS, SIGNAL(readyReadStandardError()), this, SLOT(standardOutFromExternal()));
     //connect(pyNS, SIGNAL(bytesWritten(qint64)), this, SLOT(standardOutFromExternal()));

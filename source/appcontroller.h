@@ -63,6 +63,8 @@ public slots:
     void dataRequest(QPoint elementRequest);
     void dockClosed();
     void errorFromExternal(QProcess::ProcessError);
+    void externalProcessFinished(int exit,QProcess::ExitStatus status);
+    void externalProcessStarted();
     void generateMesh();
     void goMeshing();
     void goCustomizing();
