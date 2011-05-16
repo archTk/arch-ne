@@ -348,11 +348,13 @@ void AppController::goMeshing()
     QString xmlSpecificNet = idPat + "_" + fName + "_graph.xml";
     meshOut = wDir + "/" + idPat + "_" + fName + "_mesh.xml";
 
+    QString wDirPyNS = wDir + "/";
     QStringList arguments;
+
 
     //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
 
-    arguments << scriptPath << "--wdir" << wDir << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
+    arguments << scriptPath << "--wdir" << wDirPyNS << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 
     pyNS = new QProcess(this);
 
