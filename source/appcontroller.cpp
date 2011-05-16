@@ -387,15 +387,16 @@ void AppController::goMeshing()
 
     QString scriptPath;
     scriptPath = pyNSPath + "/MeshGenerator_Script.py";
+
     QString idPat = workspace->getIdPat();
     QString xmlSpecificNet = idPat + "_" + fName + "_graph.xml";
     meshOut = wDir + "/" + idPat + "_" + fName + "_mesh.xml";
-
+    QString wDirPyNS = wDir + "/";
     QStringList arguments;
 
-    appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
+    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDirPyNS << " --xmlNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
 
-    arguments << scriptPath << "--wdir" << wDir << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
+    arguments << scriptPath << "--wdir" << wDirPyNS << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 
     pyNS = new QProcess(this);
 
@@ -411,6 +412,7 @@ void AppController::meshHasBeenGenerated()
     emit updateSignal();
     emit restoreCurs();
     emit messageToBeDisplayed(tr("Mesh has been generated"));
+    appout << "LOG@_AppController::meshHasBeenGenerated()" << endl;
 }
 
 void AppController::errorFromExternal(QProcess::ProcessError)
@@ -483,6 +485,7 @@ void AppController::customizeGraph()
     connect(inputOutput, SIGNAL(graphSaved()), this, SLOT(goCustomizing()));
 
     inputOutput->saveGraph(fName, wDir, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
+    appout << "LOG@_AppController::customizeGraph()" << endl;
 }
 
 void AppController::goCustomizing()
@@ -515,6 +518,7 @@ void AppController::graphHasBeenCustomized()
     appout << "AppController::graphHasBeenCustomized synchronize with DataCollector (XML has changed)" << endl;
     emit restoreCurs();
     emit messageToBeDisplayed(tr("The graph has been customized"));
+    appout << "LOG@_AppController::graphHasBeenCustomized()" << endl;
 }
 
 void AppController::simulateGraph()
@@ -549,15 +553,18 @@ void AppController::simulateGraph()
             "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
 
     pyNS = new QProcess(this);
+    pyNS->setStandardOutputFile(wDir + "/pyNSSimulOut");
+    pyNS->setStandardErrorFile(wDir + "/pyNSSimulErr");
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
+    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    pyNS->start(pythonPath, arguments);
 
     infoDialog = new InfoDialog;
     connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
     infoDialog->initWithMessage(tr("Simulation is running..."));;
     infoDialog->exec();
 
-    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
-    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
-    pyNS->start(pythonPath, arguments);
+
 }
 
 void AppController::simulationHasBeenPerformed()

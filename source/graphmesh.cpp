@@ -159,6 +159,7 @@ void GraphMesh::applyDefaultMesh(QVector<int> edgesIds)
             edgesMParameters[edgesIds[i]].append(param);
         }
     }
+graphMout << "LOG@_GraphMesh::applyDefaultMesh()" << endl;
 }
 
 void GraphMesh::clear()
