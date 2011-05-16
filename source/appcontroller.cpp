@@ -349,10 +349,11 @@ void AppController::goMeshing()
     meshOut = wDir + "/" + idPat + "_" + fName + "_mesh.xml";
 
     QStringList arguments;
+    QString wDirPyNS = wDir + "/";
 
-    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
+    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDirPyNS << " --xmlNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
 
-    arguments << scriptPath << "--wdir" << wDir << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
+    arguments << scriptPath << "--wdir" << wDirPyNS << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 
     pyNS = new QProcess(this);
 
@@ -361,6 +362,7 @@ void AppController::goMeshing()
     connect(pyNS, SIGNAL(started()), this, SLOT(externalProcessStarted()));
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(externalProcessFinished(int,QProcess::ExitStatus)));
     pyNS->start(pythonPath, arguments);
+
 }
 
 void AppController::meshHasBeenGenerated()
@@ -528,7 +530,8 @@ void AppController::simulateGraph()
             "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
 
     pyNS = new QProcess(this);
-
+    pyNS->setStandardOutputFile(wDir + "/pyNSSimulOut");
+    pyNS->setStandardErrorFile(wDir + "/pyNSSimulErr");
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     connect(pyNS, SIGNAL(started()), this, SLOT(externalProcessStarted()));
@@ -542,6 +545,8 @@ void AppController::simulateGraph()
     connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
     infoDialog->initWithMessage(tr("Simulation is running..."));;
     infoDialog->exec();
+
+
 
 }
 
