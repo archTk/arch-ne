@@ -1031,24 +1031,25 @@ void Workspace::mouseReleased(QPointF pos)
                     } else if (moveSelectedEls) {
                         if (hitEl[0].x() == 1) { // Hit elements are nodes.
                             if (hitEl.size() > 1) {
-
                                 if (hitEl[0].y() != supportNodes.value("selMovingNode")) {
                                     graph->substituteNodeInEdges(supportNodes.value("selMovingNode"), hitEl[0].y());
                                     graph->deleteNode(supportNodes.value("selMovingNode"));
                                     supportNodes.remove("selMovingNode");
                                     supportEdges.remove("movingEdge");
-                                    wsout << "LOG@_done Workspace::selectElements()" << endl;
                                 } else {
                                     graph->substituteNodeInEdges(supportNodes.value("selMovingNode"), hitEl[1].y());
                                     graph->deleteNode(supportNodes.value("selMovingNode"));
                                     supportNodes.remove("selMovingNode");
-                                    supportEdges.remove("movingEdge");
+                                    supportEdges.remove("movingEdge");                                   
                                 }
+                            wsout << "LOG@_done Workspace::selectElements(join)" << endl;
                             }
                         }
+                    wsout << "LOG@_done Workspace::selectElements()" << endl;
                     }
                 }
             } else {    //shiftPressed.
+                wsout << "LOG@_done Workspace::selectElements(shift)" << endl;
                 if (showSelectingArea) {
                     showSelectingArea = false;
                 }
@@ -1169,7 +1170,7 @@ void Workspace::moveSelectedElements()
             }
         } else {
             graphTrans = selectingElementsEnd - selectingElementsSupport;
-            wsout << "LOG@_done Workspace::snapToGrid()" << endl;
+
             for (int j=0; j < movingNodes.size(); j++) {
                 setNodePosition(movingNodes.value(j), getNodePosition(movingNodes.value(j)) + graphTrans);
             }

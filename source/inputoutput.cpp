@@ -252,6 +252,7 @@ void InputOutput::loadMesh(GraphMesh *graphMesh)
         }
         meshElement = meshElement.nextSiblingElement("element");
     }
+    IOout << "LOG@_done InputOutput::loadMesh()" << endl;
 }
 
 void InputOutput::importBC(NetworkProperties *networkProperties)

@@ -327,6 +327,7 @@ void AppController::loadGraphFromGraph()
 
 void AppController::importMesh()
 {
+    appout << "LOG@_AppController::importMesh()" << endl;
     if (!workspace->dataInGraph()) {
         QMessageBox msgBox;
         msgBox.setText("You need to have a network\n"
@@ -558,7 +559,7 @@ void AppController::simulateGraph()
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     pyNS->start(pythonPath, arguments);
-
+    appout << "LOG@_AppController::simulateGraph()" << endl;
     infoDialog = new InfoDialog;
     connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
     infoDialog->initWithMessage(tr("Simulation is running..."));;
@@ -573,6 +574,7 @@ void AppController::simulationHasBeenPerformed()
 
     emit restoreCurs();
     emit messageToBeDisplayed(tr("Simulation has been completed"));
+    appout << "LOG@_AppController::simulationHasBeenPerformed()" << endl;
 }
 
 void AppController::abortSimulation()
@@ -682,6 +684,7 @@ void AppController::showResults(QPoint elementRequest)
 
     mainWindow->insertResultsViewToResultsDock(resultsView, elementRequest);
     mainWindow->showResultsDock();
+    appout << "LOG@_AppController::showResults()" << endl;
 }
 
 void AppController::dataRequest(QPoint elementRequest)
