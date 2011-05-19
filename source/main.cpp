@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication app(argc, argv);
+
     //app.setStyle(new QPlastiqueStyle);
     MainWindow mainWin;
 
@@ -44,6 +45,8 @@ int main(int argc, char *argv[])
     appController.createConnections();
 
     mainWin.clear();
+
+    appController.parseArguments(app.arguments());
 
     mainWin.show();
 

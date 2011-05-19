@@ -48,6 +48,47 @@ AppController::AppController(QObject *parent) :
     workspace = new Workspace;
 }
 
+void AppController::parseArguments(QStringList args)
+{
+    for(int i=0;i<args.size();++i) {
+        if (args.at(i) == "-z" and args.size()> i+1) {
+            if (args.at(i+1) == "in") {
+                editorArea->zoomIn();
+            } else if (args.at(i+1) == "out") {
+                editorArea->zoomOut();
+            }
+        }
+        else if (args.at(i) == "-h") {
+            workspace->homeView();
+        }
+        else if (args.at(i) == "-g") {
+            workspace->showGrid();
+        }
+        else if (args.at(i) == "-s") {
+            workspace->snapToGrid();
+        }
+        else if (args.at(i) == "-u") {
+            workspace->undo();
+        }
+        else if (args.at(i) == "-r") {
+            workspace->redo();
+        }
+        else if (args.at(i) == "-n") {
+            this->newNetwork();
+        }
+        else if (args.at(i) == "-f") {
+            fName = args.at(i+1);
+            this->save();
+        }
+        else if (args.at(i) == "-b") {
+            this->BCPressed();
+        }
+        else if (args.at(i) == "-c") {
+            this->caseInfoPressed();
+        }
+    }
+}
+
 void AppController::setMainWindow(MainWindow* mainWin)
 {
     mainWindow = mainWin;
@@ -136,10 +177,12 @@ void AppController::createConnections()
 void AppController::initNewCase()
 {
     clear();
+    appout << "LOG@_AppController::initNewCase()" << endl;
 }
 
 bool AppController::save()
 {
+    appout << "LOG@_AppController::save()" << endl;
     if (fName.isEmpty()) {
         return saveAs();
     } else {
@@ -173,12 +216,12 @@ bool AppController::saveNetwork()
     }
 
     emit restoreCurs();
-
     return saved;
 }
 
 bool AppController::saveAs()
 {
+    appout << "LOG@_AppController::save()" << endl;
     QString fileName = QFileDialog::getSaveFileName();
     if (fileName.isEmpty()) {
         return false;
@@ -187,7 +230,6 @@ bool AppController::saveAs()
     QFileInfo fileInfo(fileName);
     wDir = fileInfo.path();
     fName = fileInfo.fileName();
-
     return saveNetwork();
 }
 
@@ -199,6 +241,7 @@ bool AppController::maybeSave()
                                    tr("The network has been modified.\n"
                                       "Do you want to save the changes?"),
                                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        appout << "LOG@_AppController::maybeSave()" << endl;
         if (ret == QMessageBox::Save) {
             return saveNetwork();
         } else if (ret == QMessageBox::Cancel) {
@@ -223,6 +266,7 @@ void AppController::newNetwork()
     if (maybeSave()) {
         emit currentFile("");
         clear();
+        appout << "LOG@_AppController::newNetwork()" << endl;
         initNewCase();
     }
 }
@@ -232,6 +276,7 @@ void AppController::importNetwork()
     if (maybeSave()) {
         clear();
         initNewCase();
+        appout << "LOG@_AppController::importNetwork()" << endl;
         loadGraphFromGraph();
     }
 }
@@ -241,6 +286,7 @@ void AppController::openNetwork()
     if (maybeSave()) {
         clear();
         initNewCase();
+        appout << "LOG@_AppController::openNetwork()" << endl;
         loadGraphFromLayout();
     }
 }
@@ -286,6 +332,7 @@ void AppController::loadGraphFromGraph()
 
 void AppController::importMesh()
 {
+    appout << "LOG@_AppController::importMesh()" << endl;
     if (!workspace->dataInGraph()) {
         QMessageBox msgBox;
         msgBox.setText("You need to have a network\n"
@@ -308,11 +355,13 @@ void AppController::importMesh()
 
 void AppController::importBC()
 {
+    appout << "LOG@_AppController::importBC()" << endl;
     InputOutput* inputOutput = new InputOutput();
     inputOutput->importBC(workspace->getNetworkProperties());
     inputOutput->saveBC(fName, wDir, workspace->getBCXML());
 
     emit messageToBeDisplayed("Boundary Conditions have been imported");
+
 }
 
 void AppController::generateMesh()
@@ -344,9 +393,11 @@ void AppController::goMeshing()
 
     QString scriptPath;
     scriptPath = pyNSPath + "/MeshGenerator_Script.py";
+
     QString idPat = workspace->getIdPat();
     QString xmlSpecificNet = idPat + "_" + fName + "_graph.xml";
     meshOut = wDir + "/" + idPat + "_" + fName + "_mesh.xml";
+<<<<<<< HEAD
 
     QString wDirPyNS = wDir + "/";
     QStringList arguments;
@@ -354,6 +405,13 @@ void AppController::goMeshing()
 
     //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
 
+=======
+    QString wDirPyNS = wDir + "/";
+    QStringList arguments;
+
+    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDirPyNS << " --xmlNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
+
+>>>>>>> testManagement
     arguments << scriptPath << "--wdir" << wDirPyNS << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 
     pyNS = new QProcess(this);
@@ -372,6 +430,7 @@ void AppController::meshHasBeenGenerated()
     emit updateSignal();
     emit restoreCurs();
     emit messageToBeDisplayed(tr("Mesh has been generated"));
+    appout << "LOG@_AppController::meshHasBeenGenerated()" << endl;
 }
 
 void AppController::errorFromExternal(QProcess::ProcessError)
@@ -420,7 +479,9 @@ void AppController::BCPressed()
 
     QString XMLSchema(":XMLschema/boundary_conditions.xsd");
 
+
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
+    appout << "LOG@_AppController::BCPressed()" << endl;
 }
 
 void AppController::caseInfoPressed()
@@ -443,6 +504,7 @@ void AppController::caseInfoPressed()
     QString XMLSchema(":XMLschema/schema.xsd");
 
     collectData(elementRequest, XMLString, hiddenItems, readOnlyItems, XMLSchema);
+    appout << "LOG@_AppController::caseInfoPressed()" << endl;
 }
 
 void AppController::customizeGraph()
@@ -460,6 +522,7 @@ void AppController::customizeGraph()
     connect(inputOutput, SIGNAL(graphSaved()), this, SLOT(goCustomizing()));
 
     inputOutput->saveGraph(fName, wDir, workspace->getGraphProperties(), workspace->getNetworkProperties(), nodes, edges);
+    appout << "LOG@_AppController::customizeGraph()" << endl;
 }
 
 void AppController::goCustomizing()
@@ -494,6 +557,7 @@ void AppController::graphHasBeenCustomized()
     appout << "AppController::graphHasBeenCustomized synchronize with DataCollector (XML has changed)" << endl;
     emit restoreCurs();
     emit messageToBeDisplayed(tr("The graph has been customized"));
+    appout << "LOG@_AppController::graphHasBeenCustomized()" << endl;
 }
 
 void AppController::simulateGraph()
@@ -530,6 +594,7 @@ void AppController::simulateGraph()
             "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
 
     pyNS = new QProcess(this);
+<<<<<<< HEAD
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
@@ -540,11 +605,23 @@ void AppController::simulateGraph()
     //connect(pyNS, SIGNAL(bytesWritten(qint64)), this, SLOT(standardOutFromExternal()));
     pyNS->start(pythonPath, arguments);
 
+=======
+    pyNS->setStandardOutputFile(wDir + "/pyNSSimulOut");
+    pyNS->setStandardErrorFile(wDir + "/pyNSSimulErr");
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
+    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    pyNS->start(pythonPath, arguments);
+    appout << "LOG@_AppController::simulateGraph()" << endl;
+>>>>>>> testManagement
     infoDialog = new InfoDialog;
     connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
     infoDialog->initWithMessage(tr("Simulation is running..."));;
     infoDialog->exec();
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> testManagement
 }
 
 void AppController::simulationHasBeenPerformed()
@@ -555,6 +632,7 @@ void AppController::simulationHasBeenPerformed()
 
     emit restoreCurs();
     emit messageToBeDisplayed(tr("Simulation has been completed"));
+    appout << "LOG@_AppController::simulationHasBeenPerformed()" << endl;
 }
 
 void AppController::abortSimulation()
@@ -699,6 +777,11 @@ void AppController::showResults(QPoint elementRequest)
     resultsViewList.insert(requestKey, resultsView);
 
     mainWindow->insertResultsViewToResultsDock(resultsView, elementRequest);
+<<<<<<< HEAD
+=======
+    mainWindow->showResultsDock();
+    appout << "LOG@_AppController::showResults()" << endl;
+>>>>>>> testManagement
 }
 
 void AppController::dataRequest(QPoint elementRequest)
@@ -758,10 +841,15 @@ void AppController::collectData(QPoint elementRequest, QString XMLString, QVecto
     connect(dataCollector, SIGNAL(okButtonClicked(QString,QString)), this, SLOT(dataConfirAndClose(QString,QString)));
     connect(dataCollector, SIGNAL(deleteItself()), dataCollector, SLOT(close()));
 
+    if (SIGNAL(deleteItself())){
+        appout << "LOG@_AppController::close()" << endl;
+    }
+
     dataCollectorList.insert(requestKey, dataCollector);
 
     mainWindow->insertDataCollectorToDock(dataCollectorList[requestKey], elementRequest);
     mainWindow->showDock();
+
 }
 
 void AppController::dataConfirmed(QString cookie,QString elementData)
@@ -794,12 +882,14 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         workspace->setBCXML(elementData);
         InputOutput* inputOutput = new InputOutput();
         inputOutput->saveBC(fName, wDir, elementData);
+        appout << "LOG@_AppController::dataConfirmed(BC)" << endl;
         //QDomNodeList patDataList = doc.elementsByTagName("patient_data");
         //QDomNode patDataNode = patDataList.at(0);
         //QDomElement idpat = patDataNode.firstChildElement("idpat");
         //appout << "AppC::dataConfirmed idpat= " << idpat << endl;
     } else if (temp.x() == 5) { // Patient information.
         workspace->setCaseInfoXML(elementData);
+        appout << "LOG@_AppController::dataConfirmed(CI)" << endl;
     }
 }
 
@@ -813,6 +903,7 @@ void AppController::dataConfirAndClose(QString cookie, QString elementData)
     dataCollectorList.remove(requestKey);
 
     mainWindow->removeDataCollectorFromDock();
+    appout << "LOG@_AppController::dataConfirAndClose()" << endl;
 }
 
 void AppController::closeResultsView(QString cookie)

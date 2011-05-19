@@ -186,6 +186,7 @@ void EditorArea::paintEvent(QPaintEvent*)
 
 void EditorArea::zoomIn()
 {
+    qcout << "LOG@_EditorArea::zoomIn()" << endl;
     float zoomFactor = workspace->getZoomFactor();
     QPointF screenOrigin = workspace->getScreenOrigin();
 
@@ -203,10 +204,12 @@ void EditorArea::zoomIn()
     emit screenOriginChanged(screenOrigin);
     emit zoomFactorChanged(zoomFactor);
     updateRender();
+    qcout << "LOG@_done EditorArea::zoomIn()" << endl;
 }
 
 void EditorArea::zoomOut()
 {
+    qcout << "LOG@_EditorArea::zoomOut()" << endl;
     float zoomFactor = workspace->getZoomFactor();
     QPointF screenOrigin = workspace->getScreenOrigin();
 
@@ -224,6 +227,8 @@ void EditorArea::zoomOut()
     emit zoomFactorChanged(zoomFactor);
     emit screenOriginChanged(screenOrigin);
     updateRender();
+
+    qcout << "LOG@_done EditorArea::zoomOut()" << endl;
 }
 
 void EditorArea::toBeCleared()
