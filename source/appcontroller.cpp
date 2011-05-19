@@ -395,31 +395,28 @@ void AppController::goMeshing()
     scriptPath = pyNSPath + "/MeshGenerator_Script.py";
 
     QString idPat = workspace->getIdPat();
-    QString xmlSpecificNet = idPat + "_" + fName + "_graph.xml";
-    meshOut = wDir + "/" + idPat + "_" + fName + "_mesh.xml";
-<<<<<<< HEAD
+    QString xmlSpecificNet;
+    if (!fName.startsWith(idPat + "_")) {
+         xmlSpecificNet = idPat + "_" + fName + "_graph.xml";
+         meshOut = wDir + "/" + idPat + "_" + fName + "_mesh.xml";
+    } else {
+         meshOut = wDir + "/" + fName + "_mesh.xml";
+    }
 
     QString wDirPyNS = wDir + "/";
     QStringList arguments;
 
 
-    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xlmNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
+    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xmlNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
 
-=======
-    QString wDirPyNS = wDir + "/";
-    QStringList arguments;
-
-    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDirPyNS << " --xmlNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
-
->>>>>>> testManagement
     arguments << scriptPath << "--wdir" << wDirPyNS << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 
     pyNS = new QProcess(this);
 
+    pyNS->setStandardOutputFile(wDir + "/pyNSSimulOut");
+    pyNS->setStandardErrorFile(wDir + "/pyNSSimulErr");
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshHasBeenGenerated()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
-    connect(pyNS, SIGNAL(started()), this, SLOT(externalProcessStarted()));
-    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(externalProcessFinished(int,QProcess::ExitStatus)));
     pyNS->start(pythonPath, arguments);
 }
 
@@ -594,34 +591,18 @@ void AppController::simulateGraph()
             "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
 
     pyNS = new QProcess(this);
-<<<<<<< HEAD
 
-    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
-    connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
-    connect(pyNS, SIGNAL(started()), this, SLOT(externalProcessStarted()));
-    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(externalProcessFinished(int,QProcess::ExitStatus)));
-    //connect(pyNS, SIGNAL(readyReadStandardOutput()), this, SLOT(standardOutFromExternal()));
-    //connect(pyNS, SIGNAL(readyReadStandardError()), this, SLOT(standardOutFromExternal()));
-    //connect(pyNS, SIGNAL(bytesWritten(qint64)), this, SLOT(standardOutFromExternal()));
-    pyNS->start(pythonPath, arguments);
-
-=======
     pyNS->setStandardOutputFile(wDir + "/pyNSSimulOut");
     pyNS->setStandardErrorFile(wDir + "/pyNSSimulErr");
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     pyNS->start(pythonPath, arguments);
     appout << "LOG@_AppController::simulateGraph()" << endl;
->>>>>>> testManagement
+
     infoDialog = new InfoDialog;
     connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
     infoDialog->initWithMessage(tr("Simulation is running..."));;
     infoDialog->exec();
-
-<<<<<<< HEAD
-=======
-
->>>>>>> testManagement
 }
 
 void AppController::simulationHasBeenPerformed()
@@ -777,11 +758,9 @@ void AppController::showResults(QPoint elementRequest)
     resultsViewList.insert(requestKey, resultsView);
 
     mainWindow->insertResultsViewToResultsDock(resultsView, elementRequest);
-<<<<<<< HEAD
-=======
+
     mainWindow->showResultsDock();
     appout << "LOG@_AppController::showResults()" << endl;
->>>>>>> testManagement
 }
 
 void AppController::dataRequest(QPoint elementRequest)
