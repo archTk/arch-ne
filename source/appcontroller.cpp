@@ -551,6 +551,11 @@ void AppController::goCustomizing()
 void AppController::graphHasBeenCustomized()
 {
     appout << "AppController::graphHasBeenCustomized synchronize with DataCollector (XML has changed)" << endl;
+
+    InputOutput* inputOutput = new InputOutput();
+    inputOutput->updateGraphAfterCustomization(fName, wDir, workspace->getIdPat(), workspace->getGraphProperties());
+    inputOutput->updateBCAfterCustomization(fName, wDir, workspace->getIdPat(), workspace->getNetworkProperties());
+
     emit restoreCurs();
     emit messageToBeDisplayed(tr("The graph has been customized"));
     appout << "LOG@_AppController::graphHasBeenCustomized()" << endl;

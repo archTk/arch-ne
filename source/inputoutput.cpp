@@ -174,6 +174,42 @@ bool InputOutput::loadGraphFromGraph(Graph *graph, GraphLayout *graphLayout, Gra
     return true;
 }
 
+void InputOutput::updateGraphAfterCustomization(const QString &fileName, const QString &wDir, const QString &idPat, GraphProperties *graphProperties)
+{
+    QString networkFileName = wDir + "/" + idPat + "_" + fileName + "_graph.xml";
+    //IOout << "IO::updateGraphAfterCustomization fName= " << networkFileName << endl;
+
+    QFile networkFile(networkFileName);
+    if (!networkFile.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(networkFileName)
+                             .arg(networkFile.errorString()));
+        return;
+    }
+
+    QTextStream networkIn(&networkFile);
+    QDomDocument networkDoc("network");
+    networkDoc.setContent(networkIn.readAll());
+
+    QDomNodeList edgesList = networkDoc.elementsByTagName("edges");
+    QDomNode edges = edgesList.at(0);
+    QDomElement edge = edges.firstChildElement("edge");
+
+    while (!edge.isNull()) {
+        QString attrId = edge.attribute("id");
+        QString attrName = edge.attribute("name");
+
+        QString edgeString;
+        QTextStream edgeStream(&edgeString);
+        edge.save(edgeStream, 4);
+
+        graphProperties->insertEdgeFromXML(attrId, attrName, edgeString);
+
+        edge = edge.nextSiblingElement("edge");
+    }
+}
+
 /*QString InputOutput::loadDefaultBC()
 {
     QFile defBCFile(":XMLschema/defaultBC.xml");
@@ -356,6 +392,26 @@ void InputOutput::importBC(NetworkProperties *networkProperties)
     networkProperties->setBCXML(BCXML);
 
     IOout << "LOG@_done InputOutput::importBC()" << endl;
+}
+
+void InputOutput::updateBCAfterCustomization(const QString &fileName, const QString &wDir, const QString &idPat, NetworkProperties *networkProperties)
+{
+    QString BCFileName = wDir + "/" + idPat + "_BC_" + fileName + "_graph.xml";
+
+    QFile BCFile(BCFileName);
+    if (!BCFile.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(0, tr("ARCHNetworkEditor"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(BCFileName)
+                             .arg(BCFile.errorString()));
+        return;
+    }
+
+    QTextStream BCIn(&BCFile);
+    QString BCXML(BCIn.readAll());
+    //BCFile.close();
+
+    networkProperties->setBCXML(BCXML);
 }
 
 /*void InputOutput::importPatientInfo(NetworkProperties *networkProperties)

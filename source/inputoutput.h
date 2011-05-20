@@ -41,6 +41,7 @@ public:
 
     bool loadGraphFromLayout(Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties);
     bool loadGraphFromGraph(Graph* graph, GraphLayout* graphLayout, GraphProperties* graphProperties, NetworkProperties* networkProperties);
+    void updateGraphAfterCustomization(const QString& fileName, const QString& wDir, const QString& idPat, GraphProperties* graphProperties);
     //QString loadDefaultBC();
 
     void loadMesh(GraphMesh* graphMesh);
@@ -53,6 +54,7 @@ public:
     void saveBC(const QString& fName, const QString& wDir, QString BCXML);
 
     void importBC(NetworkProperties* networkProperties);
+    void updateBCAfterCustomization(const QString& fileName, const QString& wDir, const QString& idPat, NetworkProperties* networkProperties);
     //void importPatientInfo(NetworkProperties* networkProperties);
     //void importSP(NetworkProperties* networkProperties);
 
