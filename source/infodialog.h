@@ -41,6 +41,8 @@ signals:
     void abortSimulation();
     void minimizeApp();
     void maximizeApp();
+    void mouseEnteredInInfoDialog();
+    void mouseLeftInfoDialog();
 
 private:
     Ui::InfoDialog *ui;
@@ -48,6 +50,8 @@ private:
 
 public slots:
     void abortButtonReleased();
+    void enterEvent(QEvent* event);
+    void leaveEvent(QEvent* event);
 };
 
 #endif // INFODIALOG_H

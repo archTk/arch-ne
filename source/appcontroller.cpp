@@ -609,6 +609,8 @@ void AppController::simulateGraph()
     connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
     connect(infoDialog, SIGNAL(minimizeApp()), this, SLOT(minimizeApp()));
     connect(infoDialog, SIGNAL(maximizeApp()), this, SLOT(maximizeApp()));
+    connect(infoDialog, SIGNAL(mouseEnteredInInfoDialog()), this, SIGNAL(restoreCurs()));
+    connect(infoDialog, SIGNAL(mouseLeftInfoDialog()), this, SIGNAL(setCurs()));
     infoDialog->initWithMessage(tr("Simulation is running..."));;
     infoDialog->exec();
 }

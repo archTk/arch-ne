@@ -78,3 +78,15 @@ void InfoDialog::closeEvent(QCloseEvent* event)
     emit abortSimulation();
     event->accept();
 }
+
+void InfoDialog::enterEvent(QEvent *event)
+{
+    event->ignore();
+    emit mouseEnteredInInfoDialog();
+}
+
+void InfoDialog::leaveEvent(QEvent *event)
+{
+    event->ignore();
+    emit mouseLeftInfoDialog();
+}
