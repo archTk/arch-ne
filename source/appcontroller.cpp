@@ -403,11 +403,10 @@ void AppController::goMeshing()
          meshOut = wDir + "/" + fName + "_mesh.xml";
     }
 
-    QString wDirPyNS = wDir + "/";
     QStringList arguments;
+    QString wDirPyNS = wDir + "/";
 
-
-    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDir << " --xmlNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
+    //appout << "AppC::goMesh script " << scriptPath <<  " --wdir " << wDirPyNS << " --xmlNet " << xmlSpecificNet << " --xmlMesh " << meshOut << endl;
 
     arguments << scriptPath << "--wdir" << wDirPyNS << "--xmlNet" << xmlSpecificNet << "--xmlMesh" << meshOut;
 
@@ -418,6 +417,7 @@ void AppController::goMeshing()
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(meshHasBeenGenerated()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     pyNS->start(pythonPath, arguments);
+
 }
 
 void AppController::meshHasBeenGenerated()
