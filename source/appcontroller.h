@@ -73,6 +73,8 @@ public slots:
     void importNetwork();
     void importResults();
     void initNewCase();
+    void maximizeApp();
+    void minimizeApp();
     void meshHasBeenGenerated();
     void newNetwork();
     void openNetwork();
@@ -84,7 +86,7 @@ public slots:
     void showResults(QPoint elementRequest);
     void showResultsDock();
     void simulateGraph();
-    void simulationHasBeenPerformed();
+    void simulationHasBeenPerformed(int, QProcess::ExitStatus);
     void standardOutputFromExternal();
 
 private slots:

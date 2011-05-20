@@ -598,7 +598,7 @@ void AppController::simulateGraph()
 
     //pyNS->setStandardOutputFile(wDir + "/pyNSSimulOut");
     //pyNS->setStandardErrorFile(wDir + "/pyNSSimulErr");
-    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
+    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed(int, QProcess::ExitStatus)));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
     connect(pyNS, SIGNAL(readyReadStandardOutput()), this, SLOT(standardOutputFromExternal()));
     pyNS->start(pythonPath, arguments);
@@ -607,13 +607,33 @@ void AppController::simulateGraph()
 
     infoDialog = new InfoDialog;
     connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
+    connect(infoDialog, SIGNAL(minimizeApp()), this, SLOT(minimizeApp()));
+    connect(infoDialog, SIGNAL(maximizeApp()), this, SLOT(maximizeApp()));
     infoDialog->initWithMessage(tr("Simulation is running..."));;
     infoDialog->exec();
 }
 
-void AppController::simulationHasBeenPerformed()
+void AppController::minimizeApp()
+{
+    appout << "AppC::minimizeApp" << endl;
+    mainWindow->hide();
+}
+
+void AppController::maximizeApp()
+{
+    //appout << "AppC::maximizeApp" << endl;
+    mainWindow->show();
+}
+
+void AppController::simulationHasBeenPerformed(int, QProcess::ExitStatus)
 {
     infoDialog->done(0);
+
+    int exitStatus = pyNS->exitStatus();
+    appout << "AppC::errorFromExternal exitStatus= " << exitStatus << endl;
+    if (exitStatus == 1) {
+        return;
+    }
 
     populateResDataStructure();
 

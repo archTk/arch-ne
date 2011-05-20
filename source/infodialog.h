@@ -35,12 +35,16 @@ public:
 
     void initWithMessage(QString message);
     void changeDisplayedMessage(QString theMessage);
+    void closeEvent(QCloseEvent* event);
 
 signals:
     void abortSimulation();
+    void minimizeApp();
+    void maximizeApp();
 
 private:
     Ui::InfoDialog *ui;
+    void changeEvent(QEvent* event);
 
 public slots:
     void abortButtonReleased();

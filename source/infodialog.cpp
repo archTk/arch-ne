@@ -19,6 +19,7 @@
 #include "infodialog.h"
 #include "ui_infodialog.h"
 
+#include <QCloseEvent>
 #include <iostream>
 #include <QTextStream>
 using namespace std;
@@ -29,6 +30,9 @@ InfoDialog::InfoDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::InfoDialog)
 {
+    setWindowFlags(Qt::WindowMinimizeButtonHint |
+                   Qt::WindowSystemMenuHint);
+
     ui->setupUi(this);
     ui->abortButton->setCheckable(false);
 }
@@ -53,4 +57,25 @@ void InfoDialog::changeDisplayedMessage(QString theMessage)
 {
     theMessage.replace("->", "");
     ui->advanceLabel->setText(theMessage);
+}
+
+void InfoDialog::changeEvent(QEvent *event)
+{
+    infoDout << "InfoDialog::changeEvent" << endl;
+    if (event->type() == QEvent::WindowStateChange) {
+        if (windowState() == Qt::WindowMinimized) {
+            infoDout << "infoD minimized" << endl;
+            infoDout << "InfoD changeEvent eventType= " << event->type() << endl;
+            emit minimizeApp();
+        } else if (windowState() == Qt::WindowActive) {
+            infoDout << "infoD app active" << endl;
+            emit maximizeApp();
+        }
+    }
+}
+
+void InfoDialog::closeEvent(QCloseEvent* event)
+{
+    emit abortSimulation();
+    event->accept();
 }
