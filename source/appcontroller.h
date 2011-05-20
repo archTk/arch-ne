@@ -64,8 +64,6 @@ public slots:
     void dataRequest(QPoint elementRequest);
     void dockClosed();
     void errorFromExternal(QProcess::ProcessError);
-    void externalProcessFinished(int exit,QProcess::ExitStatus status);
-    void externalProcessStarted();
     void generateMesh();
     void goMeshing();
     void goCustomizing();
@@ -83,12 +81,11 @@ public slots:
     bool saveAs();
     void setFNameAndWDir(QString theFName, QString theWDir);
     void setPreferences();
-    //void setResult2Display(int theResult);
     void showResults(QPoint elementRequest);
     void showResultsDock();
     void simulateGraph();
     void simulationHasBeenPerformed();
-    void standardOutFromExternal();
+    void standardOutputFromExternal();
 
 private slots:
 
@@ -120,7 +117,6 @@ private:
     int incrementalResultsRequest;
 
     QString meshOut;
-    //QString imagesDir;
 
     QString fName;  // File name.
     QString wDir;   // Working directory.

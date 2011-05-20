@@ -438,19 +438,11 @@ void AppController::errorFromExternal(QProcess::ProcessError)
     appout << "AppC::errorFromExternal error= " << err << endl;
 }
 
-void AppController::externalProcessStarted()
+void AppController::standardOutputFromExternal()
 {
-    appout << "AppC::externalProcessStarted" << endl;
-}
-
-void AppController::externalProcessFinished(int exit, QProcess::ExitStatus status)
-{
-    appout << "AppC::externalProcessFinished exitStatus=" << exit << " " << status << endl;
-}
-
-void AppController::standardOutFromExternal()
-{
-    appout << "AppC::standardOutFromExternal" << endl;
+    appout << "AppC::standardOutputFromExternal" << endl;
+    QString pyNSOut = pyNS->readAllStandardOutput();
+    appout << pyNSOut;
 }
 
 void AppController::BCPressed()
@@ -544,8 +536,6 @@ void AppController::goCustomizing()
 
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(graphHasBeenCustomized()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
-    connect(pyNS, SIGNAL(started()), this, SLOT(externalProcessStarted()));
-    connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(externalProcessFinished(int,QProcess::ExitStatus)));
     pyNS->start(pythonPath, arguments);
 }
 
@@ -587,17 +577,19 @@ void AppController::simulateGraph()
 
     QString wDirPyNS = wDir + "/";
 
-    arguments << scriptPath << "--wdir" << wDirPyNS << "--xmlNet" << specificNet <<
+    arguments << "-u" << scriptPath << "--wdir" << wDirPyNS << "--xmlNet" << specificNet <<
             "--xmlBound" << specificBC << "--xmlOut" << xmlOut;
 
     pyNS = new QProcess(this);
 
-    pyNS->setStandardOutputFile(wDir + "/pyNSSimulOut");
-    pyNS->setStandardErrorFile(wDir + "/pyNSSimulErr");
+    //pyNS->setStandardOutputFile(wDir + "/pyNSSimulOut");
+    //pyNS->setStandardErrorFile(wDir + "/pyNSSimulErr");
     connect(pyNS, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(simulationHasBeenPerformed()));
     connect(pyNS, SIGNAL(error(QProcess::ProcessError)), this, SLOT(errorFromExternal(QProcess::ProcessError)));
+    connect(pyNS, SIGNAL(readyReadStandardOutput()), this, SLOT(standardOutputFromExternal()));
     pyNS->start(pythonPath, arguments);
     appout << "LOG@_AppController::simulateGraph()" << endl;
+
 
     infoDialog = new InfoDialog;
     connect(infoDialog, SIGNAL(abortSimulation()), this, SLOT(abortSimulation()));
