@@ -24,6 +24,10 @@
 #include "treemodel.h"
 #include "treedelegate.h"
 #include "textdecorator.h"
+#include <QTextStream>
+using namespace std;
+
+QTextStream dataout(stdout);
 
 class MessageHandler : public QAbstractMessageHandler
 {
@@ -444,6 +448,7 @@ void DataCollector::cancelClicked()
 {
     emit(okButtonClicked(requestCookie,requestDom));
     emit deleteItself();
+    dataout << "LOG@_DataCollector::cancelClicked()" << endl;
 }
 
 void DataCollector::setRequestSchemaPath(QString &path)

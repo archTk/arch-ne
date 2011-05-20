@@ -848,6 +848,7 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         if (!attrName.isNull()) {
             workspace->setNodeName(temp.y(), attrName);
         }
+        appout << "LOG@_AppController::dataConfirmed()" << endl;
     } else if (temp.x() == 2) { // Element is an edge.
         workspace->setEdgeProperties(temp.y(), elementData);
         QDomNodeList edgeList = doc.elementsByTagName("edge");
@@ -857,6 +858,7 @@ void AppController::dataConfirmed(QString cookie,QString elementData)
         if (!attrName.isNull()) {
             workspace->setEdgeName(temp.y(), attrName);
         }
+        appout << "LOG@_AppController::dataConfirmed()" << endl;
     } else if (temp.x() == 3) { // Boundary Conditions.
         workspace->setBCXML(elementData);
         InputOutput* inputOutput = new InputOutput();

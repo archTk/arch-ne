@@ -224,6 +224,7 @@ void MainWindow::meshElsBeenHit(QVector<QPoint> hitMeshEls)
 void MainWindow::hideDock()
 {
     dock->hide();
+    mainout << "LOG@_MainWindow::hideDock()" << endl;
 }
 
 void MainWindow::hideResultsDock()
