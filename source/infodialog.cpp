@@ -61,15 +61,14 @@ void InfoDialog::changeDisplayedMessage(QString theMessage)
 
 void InfoDialog::changeEvent(QEvent *event)
 {
-    infoDout << "InfoDialog::changeEvent" << endl;
     if (event->type() == QEvent::WindowStateChange) {
-        if (windowState() == Qt::WindowMinimized) {
-            infoDout << "infoD minimized" << endl;
-            infoDout << "InfoD changeEvent eventType= " << event->type() << endl;
-            emit minimizeApp();
-        } else if (windowState() == Qt::WindowActive) {
+        infoDout << "InfoDialog::changeEvent event=" << event->type() << endl;
+        if (windowState() == Qt::WindowActive) {
             infoDout << "infoD app active" << endl;
             emit maximizeApp();
+        } else {
+            infoDout << "infoD minimized" << endl;
+            emit minimizeApp();
         }
     }
 }
