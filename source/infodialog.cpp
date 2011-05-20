@@ -41,9 +41,16 @@ InfoDialog::~InfoDialog()
 void InfoDialog::initWithMessage(QString message)
 {
     ui->infoLabel->setText(message);
+    ui->advanceLabel->setText("");
 }
 
 void InfoDialog::abortButtonReleased()
 {
     emit abortSimulation();
+}
+
+void InfoDialog::changeDisplayedMessage(QString theMessage)
+{
+    theMessage.replace("->", "");
+    ui->advanceLabel->setText(theMessage);
 }

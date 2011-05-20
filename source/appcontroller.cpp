@@ -440,9 +440,18 @@ void AppController::errorFromExternal(QProcess::ProcessError)
 
 void AppController::standardOutputFromExternal()
 {
-    appout << "AppC::standardOutputFromExternal" << endl;
+    //appout << "AppC::standardOutputFromExternal" << endl;
     QString pyNSOut = pyNS->readAllStandardOutput();
-    appout << pyNSOut;
+    if (pyNSOut.startsWith("->")) {
+        //appout << pyNSOut;
+        setSimulOut(pyNSOut);
+    }
+}
+
+void AppController::setSimulOut(QString theOut)
+{
+    appout << "AppC::setSimulOut " << theOut << endl;
+    infoDialog->changeDisplayedMessage(theOut);
 }
 
 void AppController::BCPressed()

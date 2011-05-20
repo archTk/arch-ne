@@ -98,6 +98,7 @@ private:
     bool maybeSave();
     void populateResDataStructure();
     bool saveNetwork();
+    void setSimulOut(QString theOut);
     void showMessage(QString theTitle, QString theMessage);
     int uniqueDataRequestKey();
     int uniqueResultsRequestKey();

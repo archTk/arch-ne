@@ -34,6 +34,7 @@ public:
     ~InfoDialog();
 
     void initWithMessage(QString message);
+    void changeDisplayedMessage(QString theMessage);
 
 signals:
     void abortSimulation();
