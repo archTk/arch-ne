@@ -1170,7 +1170,7 @@ void Workspace::moveSelectedElements()
             }
         } else {
             graphTrans = selectingElementsEnd - selectingElementsSupport;
-
+            wsout << "LOG@_not Workspace::snapToGrid()" << endl;
             for (int j=0; j < movingNodes.size(); j++) {
                 setNodePosition(movingNodes.value(j), getNodePosition(movingNodes.value(j)) + graphTrans);
             }
