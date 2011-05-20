@@ -24,6 +24,7 @@
 
 extern void qt_set_sequence_auto_mnemonic(bool);
 
+
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(ARCHNetworkEditor);
